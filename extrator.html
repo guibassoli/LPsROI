@@ -823,7 +823,7 @@
   <section class="hero">
     <div class="hero-badge">✨ Ferramenta Exclusiva para Inscritos</div>
     <h1>Descubra o DNA Estratégico da Sua Empresa com IA</h1>
-    <p class="hero-subtitle">Preencha as 16 perguntas abaixo e receba em até 24h um relatório estratégico completo, personalizado para o seu negócio e mercado.</p>
+    <p class="hero-subtitle">Preencha as 20 perguntas abaixo e receba um relatório estratégico completo, personalizado para o seu negócio e mercado. <strong>Empresas de consultoria cobram mais de R$&nbsp;50.000 por algo similar.</strong></p>
   </section>
 
 
@@ -893,7 +893,7 @@
       <div class="time-banner">
         <div class="time-banner-icon">⏱️</div>
         <div class="time-banner-text">
-          <strong>Tempo para completar: 4–6 minutos</strong>
+          <strong>Tempo para completar: 6–10 minutos</strong>
           <span>Responda com atenção — cada detalhe melhora a qualidade do seu relatório personalizado.</span>
         </div>
       </div>
@@ -909,7 +909,7 @@
       <div class="progress-wrap">
         <div class="progress-meta">
           <span class="progress-label">Progresso</span>
-          <span class="progress-counter" id="progress-counter">Pergunta 1 de 16</span>
+          <span class="progress-counter" id="progress-counter">Pergunta 1 de 20</span>
         </div>
         <div class="progress-track">
           <div class="progress-fill" id="progress-fill"></div>
@@ -966,14 +966,60 @@
 
 
       <!-- ╔══════════════════════════════════════════╗ -->
-      <!-- ║  BLOCO 2/5 — ESTÁGIO ATUAL COM IA        ║ -->
+      <!-- ║  BLOCO 2/6 — PRESENÇA DIGITAL E MARCA   ║ -->
       <!-- ╚══════════════════════════════════════════╝ -->
       <div class="form-block">
-        <div class="block-title">🤖 Bloco 2/5: Seu Estágio Atual com IA</div>
+        <div class="block-title">🌐 Bloco 2/6: Presença Digital e Identidade de Marca</div>
+
+        <!-- Q4: Instagram da marca -->
+        <div class="form-field">
+          <label class="field-label" for="q_instagram">4. @ do Instagram da Marca *</label>
+          <span class="field-hint">Informe o arroba da marca que será analisada.</span>
+          <input type="text" id="q_instagram" name="q_instagram" placeholder="Ex: @roicomia, @henryrisutti">
+        </div>
+
+        <!-- Q5: Site -->
+        <div class="form-field">
+          <label class="field-label" for="q_site">5. Website / URL da Empresa</label>
+          <span class="field-hint">Opcional — nos ajuda a analisar seu posicionamento digital.</span>
+          <input type="url" id="q_site" name="q_site" placeholder="Ex: https://roicomia.com.br">
+        </div>
+
+        <!-- Q6: Concorrentes -->
+        <div class="form-field">
+          <label class="field-label" for="q_concorrentes">6. @ dos Principais Concorrentes *</label>
+          <span class="field-hint">Informe o @ do Instagram ou nome dos 2–3 principais concorrentes. Essencial para a análise competitiva do relatório.</span>
+          <div class="char-wrap">
+            <textarea id="q_concorrentes" name="q_concorrentes" rows="3" maxlength="300"
+              placeholder="Ex: @concorrente1, @concorrente2, @concorrente3"></textarea>
+            <span class="char-count"><span id="q_concorrentes-count">0</span>/300 caracteres</span>
+          </div>
+        </div>
+
+        <!-- Q7: Tom de voz -->
+        <div class="form-field">
+          <label class="field-label">7. Tom de Voz da Marca *</label>
+          <span class="field-hint">Como a sua marca se comunica com o mercado?</span>
+          <div class="options-list" id="q_tonvoz-group">
+            <label class="radio-opt" data-name="q_tonvoz"><input type="radio" name="q_tonvoz" value="Formal e Técnico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Formal e Técnico</span><span class="opt-sublabel">Linguagem especializada, focada em dados e resultados</span></span></label>
+            <label class="radio-opt" data-name="q_tonvoz"><input type="radio" name="q_tonvoz" value="Consultivo e Profissional"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Consultivo e Profissional</span><span class="opt-sublabel">Próximo, mas com autoridade — como um especialista de confiança</span></span></label>
+            <label class="radio-opt" data-name="q_tonvoz"><input type="radio" name="q_tonvoz" value="Direto e Objetivo"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Direto e Objetivo</span><span class="opt-sublabel">Sem rodeios — clareza e foco em resultado</span></span></label>
+            <label class="radio-opt" data-name="q_tonvoz"><input type="radio" name="q_tonvoz" value="Inspirador e Aspiracional"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Inspirador e Aspiracional</span><span class="opt-sublabel">Motiva transformação e mudança de mentalidade</span></span></label>
+            <label class="radio-opt" data-name="q_tonvoz"><input type="radio" name="q_tonvoz" value="Descontraído e Próximo"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Descontraído e Próximo</span><span class="opt-sublabel">Linguagem acessível, como uma conversa entre amigos</span></span></label>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ╔══════════════════════════════════════════╗ -->
+      <!-- ║  BLOCO 3/6 — ESTÁGIO ATUAL COM IA        ║ -->
+      <!-- ╚══════════════════════════════════════════╝ -->
+      <div class="form-block">
+        <div class="block-title">🤖 Bloco 3/6: Seu Estágio Atual com IA</div>
 
         <!-- Q4 -->
         <div class="form-field">
-          <label class="field-label">4. Qual estágio você está hoje em relação a IA? *</label>
+          <label class="field-label">8. Qual estágio você está hoje em relação a IA? *</label>
           <div class="options-list" id="q4-group">
 
             <label class="radio-opt" data-name="q4">
@@ -1015,11 +1061,11 @@
       <!-- ║  BLOCO 3/5 — POSICIONAMENTO              ║ -->
       <!-- ╚══════════════════════════════════════════╝ -->
       <div class="form-block">
-        <div class="block-title">🎯 Bloco 3/5: Posicionamento no Mercado</div>
+        <div class="block-title">🎯 Bloco 4/6: Posicionamento no Mercado</div>
 
         <!-- Q5 -->
         <div class="form-field">
-          <label class="field-label" for="q5">5. Público-Alvo / ICP *</label>
+          <label class="field-label" for="q5">9. Público-Alvo / ICP *</label>
           <span class="field-hint">Quem é seu cliente ideal?</span>
           <div class="char-wrap">
             <textarea id="q5" name="q5" rows="4" maxlength="250"
@@ -1030,7 +1076,7 @@
 
         <!-- Q6 -->
         <div class="form-field">
-          <label class="field-label" for="q6">6. Diferencial Competitivo *</label>
+          <label class="field-label" for="q6">10. Diferencial Competitivo *</label>
           <span class="field-hint">O que te diferencia dos concorrentes?</span>
           <div class="char-wrap">
             <textarea id="q6" name="q6" rows="4" maxlength="250"
@@ -1041,7 +1087,7 @@
 
         <!-- Q7 -->
         <div class="form-field">
-          <label class="field-label">7. Principais Canais de Aquisição de Clientes *</label>
+          <label class="field-label">11. Principais Canais de Aquisição de Clientes *</label>
           <span class="field-hint">Marque até 3 opções:</span>
           <div class="options-list" id="q7-group">
 
@@ -1065,7 +1111,7 @@
 
         <!-- Q8 -->
         <div class="form-field">
-          <label class="field-label">8. Ticket Médio do Produto/Serviço Principal *</label>
+          <label class="field-label">12. Ticket Médio do Produto/Serviço Principal *</label>
           <div class="options-list" id="q8-group">
             <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="Até R$ 500"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Até R$ 500</span></span></label>
             <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="R$ 500 – R$ 2 mil"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">R$ 500 – R$ 2 mil</span></span></label>
@@ -1081,11 +1127,11 @@
       <!-- ║  BLOCO 4/5 — OPERAÇÃO E INFRAESTRUTURA  ║ -->
       <!-- ╚══════════════════════════════════════════╝ -->
       <div class="form-block">
-        <div class="block-title">⚙️ Bloco 4/5: Operação e Infraestrutura</div>
+        <div class="block-title">⚙️ Bloco 5/6: Operação e Infraestrutura</div>
 
         <!-- Q9 -->
         <div class="form-field">
-          <label class="field-label">9. Tamanho da Equipe *</label>
+          <label class="field-label">13. Tamanho da Equipe *</label>
           <span class="field-hint">(incluindo você, sócios, CLT, PJs)</span>
           <div class="options-list" id="q9-group">
             <label class="radio-opt" data-name="q9"><input type="radio" name="q9" value="1-3 pessoas (solopreneur/micro)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">1–3 pessoas</span><span class="opt-sublabel">Solopreneur / micro</span></span></label>
@@ -1098,7 +1144,7 @@
 
         <!-- Q10 -->
         <div class="form-field">
-          <label class="field-label">10. Processo que Mais Consome Tempo *</label>
+          <label class="field-label">14. Processo que Mais Consome Tempo *</label>
           <span class="field-hint">Qual processo operacional consome MAIS tempo por semana?</span>
           <div class="options-list" id="q10-group">
             <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Atendimento/qualificação de leads (pré-venda)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Atendimento / qualificação de leads (pré-venda)</span></span></label>
@@ -1118,7 +1164,7 @@
 
         <!-- Q11 -->
         <div class="form-field">
-          <label class="field-label">11. Ferramentas Digitais que Já Usa *</label>
+          <label class="field-label">15. Ferramentas Digitais que Já Usa *</label>
           <span class="field-hint">Marque todas que se aplicam:</span>
           <div class="options-list" id="q11-group">
             <label class="cb-opt"><input type="checkbox" class="q11-cb" value="CRM"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">CRM</span><span class="opt-sublabel">HubSpot, Pipedrive, RD Station, GoHighLevel, etc.</span></span></label>
@@ -1139,7 +1185,7 @@
 
         <!-- Q12 -->
         <div class="form-field">
-          <label class="field-label">12. Nível de Maturidade Digital *</label>
+          <label class="field-label">16. Nível de Maturidade Digital *</label>
           <div class="options-list" id="q12-group">
             <label class="radio-opt" data-name="q12"><input type="radio" name="q12" value="Básico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Básico</span><span class="opt-sublabel">Ainda muito manual, pouca ou nenhuma automação</span></span></label>
             <label class="radio-opt" data-name="q12"><input type="radio" name="q12" value="Intermediário"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Intermediário</span><span class="opt-sublabel">Alguns processos automatizados, mas maioria manual</span></span></label>
@@ -1154,13 +1200,13 @@
       <!-- ║  BLOCO 5/5 — OBJETIVOS E EXPECTATIVAS   ║ -->
       <!-- ╚══════════════════════════════════════════╝ -->
       <div class="form-block">
-        <div class="block-title">🚀 Bloco 5/5: Objetivos e Expectativas</div>
+        <div class="block-title">🚀 Bloco 6/6: Objetivos e Expectativas</div>
 
         <!-- Q13 -->
         <div class="form-field">
-          <label class="field-label">13. Principal Objetivo com IA *</label>
+          <label class="field-label">17. Principal Objetivo com IA *</label>
           <div class="options-list" id="q13-group">
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Reduzir custos operacionais em X%"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Reduzir custos operacionais em X%</span></span></label>
+            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Reduzir custos operacionais e gerar economia real"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Reduzir custos operacionais e gerar economia real</span></span></label>
             <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Escalar faturamento sem aumentar equipe"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Escalar faturamento sem aumentar equipe</span></span></label>
             <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Aumentar velocidade de entrega/atendimento"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Aumentar velocidade de entrega / atendimento</span></span></label>
             <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Melhorar qualidade e consistência dos processos"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Melhorar qualidade e consistência dos processos</span></span></label>
@@ -1175,13 +1221,13 @@
 
         <!-- Q14 -->
         <div class="form-field">
-          <label class="field-label">14. Meta de ROI em 90 Dias *</label>
+          <label class="field-label">18. Meta de ROI em 90 Dias *</label>
           <div class="options-list" id="q14-group">
             <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Economizar 10-20% do tempo em 1 processo crítico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Economizar 10–20% do tempo em 1 processo crítico</span></span></label>
             <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Economizar 30-50% do tempo em 1 processo crítico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Economizar 30–50% do tempo em 1 processo crítico</span></span></label>
             <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Automatizar completamente 1 processo do início ao fim"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Automatizar completamente 1 processo do início ao fim</span></span></label>
             <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Implementar IA em 2-3 processos diferentes"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Implementar IA em 2–3 processos diferentes</span></span></label>
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Ter ROI mensurável de R$ X mil/mês"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Ter ROI mensurável de R$ X mil / mês</span></span></label>
+            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Ter ROI financeiro mensurável em reais por mês"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Ter ROI financeiro mensurável em reais por mês</span></span></label>
             <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Outro"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
           </div>
           <div class="reveal-field" id="q14-outro-wrap">
@@ -1191,7 +1237,7 @@
 
         <!-- Q15 -->
         <div class="form-field">
-          <label class="field-label">15. Prazo para Começar *</label>
+          <label class="field-label">19. Prazo para Começar *</label>
           <div class="options-list" id="q15-group">
             <label class="radio-opt" data-name="q15"><input type="radio" name="q15" value="Imediatamente (próximos 30 dias)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Imediatamente (próximos 30 dias)</span></span></label>
             <label class="radio-opt" data-name="q15"><input type="radio" name="q15" value="Nos próximos 1-3 meses"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Nos próximos 1–3 meses</span></span></label>
@@ -1202,7 +1248,7 @@
 
         <!-- Q16 -->
         <div class="form-field">
-          <label class="field-label">16. Responsável pela Implementação *</label>
+          <label class="field-label">20. Responsável pela Implementação *</label>
           <div class="options-list" id="q16-group">
             <label class="radio-opt" data-name="q16"><input type="radio" name="q16" value="Eu mesmo (decisor/fundador)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Eu mesmo (decisor / fundador)</span></span></label>
             <label class="radio-opt" data-name="q16"><input type="radio" name="q16" value="Alguém da equipe atual"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Alguém da equipe atual</span></span></label>
@@ -1305,7 +1351,7 @@ function syncCheckboxOpt(label) {
 }
 
 // Init radio listeners for all groups
-['q4','q8','q9','q10','q12','q13','q14','q15','q16'].forEach(name => {
+['q4','q8','q9','q10','q12','q13','q14','q15','q16','q_tonvoz'].forEach(name => {
   document.querySelectorAll(`[name="${name}"]`).forEach(inp => {
     inp.addEventListener('change', () => {
       // Update visual state for all options in group
@@ -1346,12 +1392,14 @@ function updateProgress() {
   // Q2: valid select
   const q2v = document.getElementById('q2').value;
   if (q2v && q2v !== '') answered++;
-  // Q3, Q5, Q6: any text
-  ['q3','q5','q6'].forEach(id => {
+  // Q3, Q5, Q6, q_concorrentes: any text
+  ['q3','q5','q6','q_concorrentes'].forEach(id => {
     if ((document.getElementById(id).value || '').trim().length > 0) answered++;
   });
-  // Radios: Q4, Q8, Q9, Q10, Q12, Q13, Q14, Q15, Q16
-  ['q4','q8','q9','q10','q12','q13','q14','q15','q16'].forEach(name => {
+  // q_instagram: not empty
+  if ((document.getElementById('q_instagram').value || '').trim().length > 0) answered++;
+  // Radios: Q4, Q8, Q9, Q10, Q12, Q13, Q14, Q15, Q16, q_tonvoz
+  ['q4','q8','q9','q10','q12','q13','q14','q15','q16','q_tonvoz'].forEach(name => {
     if (document.querySelector(`[name="${name}"]:checked`)) answered++;
   });
   // Q7: at least 1 checkbox
@@ -1359,7 +1407,7 @@ function updateProgress() {
   // Q11: at least 1 checkbox
   if (document.querySelectorAll('.q11-cb:checked').length >= 1) answered++;
 
-  const total = 16;
+  const total = 20;
   const pct   = Math.round(answered / total * 100);
 
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -1371,6 +1419,8 @@ function updateProgress() {
 document.getElementById('q1').addEventListener('input', updateProgress);
 document.getElementById('q2').addEventListener('change', updateProgress);
 document.getElementById('q3').addEventListener('input', updateProgress);
+document.getElementById('q_instagram').addEventListener('input', updateProgress);
+document.getElementById('q_concorrentes').addEventListener('input', updateProgress);
 document.getElementById('q5').addEventListener('input', updateProgress);
 document.getElementById('q6').addEventListener('input', updateProgress);
 
@@ -1382,9 +1432,9 @@ updateProgress();
 
 
 // ══════════════════════════════════════════════════════════════
-// CHAR COUNTERS — Q3, Q5, Q6
+// CHAR COUNTERS — Q3, Q5, Q6, q_concorrentes
 // ══════════════════════════════════════════════════════════════
-['q3','q5','q6'].forEach(id => {
+['q3','q5','q6','q_concorrentes'].forEach(id => {
   const el      = document.getElementById(id);
   const counter = document.getElementById(id + '-count');
   el.addEventListener('input', () => {

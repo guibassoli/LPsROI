@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório em Geração — RoicomIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:   #000000;
+      --surface: #0d0d0d;
+      --card:    #111111;
+      --border:  rgba(255,255,255,0.07);
+      --green:   #6aeb98;
+      --cyan:    #25d0c8;
+      --purple:  #6c62e4;
+      --orange:  #fc8132;
+      --white:   #ffffff;
+      --muted:   rgba(255,255,255,0.55);
+      --muted2:  rgba(255,255,255,0.35);
+      --font-serif: 'Libre Baskerville', Georgia, serif;
+      --font-sans:  'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NOISE ─────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+    * { position: relative; z-index: 1; }
+
+    /* ── STICKY HEADER ──────────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 24px;
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 52px;
+    }
+
+    .header-logo img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    .header-badge {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--green), var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── PAGE WRAPPER ───────────────────────────────── */
+    .page-content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── HERO ───────────────────────────────────────── */
+    .hero {
+      padding: clamp(56px, 8vw, 88px) 0 clamp(40px, 5vw, 64px);
+      text-align: center;
+    }
+
+    .hero-check {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(106,235,152,0.15);
+      border: 2px solid rgba(106,235,152,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 28px;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(26px, 4.5vw, 40px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .hero-copy {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 12px;
+    }
+
+    .hero-email-row {
+      font-size: 16px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .lead-email {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* ── TIMELINE CARD ──────────────────────────────── */
+    .timeline-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: clamp(24px, 4vw, 36px);
+      margin-bottom: 40px;
+    }
+
+    .timeline-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 28px;
+    }
+
+    .timeline-list { list-style: none; padding: 0; }
+
+    .timeline-item {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 0;
+    }
+
+    .tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 36px;
+    }
+
+    .tl-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .tl-dot.done {
+      background: rgba(106,235,152,0.15);
+      border-color: rgba(106,235,152,0.5);
+    }
+
+    .tl-dot.active {
+      background: rgba(108,98,228,0.2);
+      border-color: rgba(108,98,228,0.6);
+      box-shadow: 0 0 0 4px rgba(108,98,228,0.1);
+    }
+
+    .tl-line {
+      width: 2px;
+      flex: 1;
+      min-height: 24px;
+      background: rgba(255,255,255,0.07);
+      margin: 6px 0;
+    }
+
+    .tl-body {
+      padding-bottom: 28px;
+      padding-top: 6px;
+    }
+
+    .timeline-item:last-child .tl-body { padding-bottom: 0; }
+    .timeline-item:last-child .tl-line { display: none; }
+
+    .tl-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+
+    .tl-label.green { color: var(--green); }
+
+    .tl-time {
+      font-size: 13px;
+      color: var(--muted2);
+    }
+
+    .tl-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(106,235,152,0.15);
+      border: 1px solid rgba(106,235,152,0.35);
+      color: var(--green);
+    }
+
+    /* ── ACTIONS GRID ───────────────────────────────── */
+    .actions-section {
+      margin-bottom: 56px;
+    }
+
+    .actions-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .action-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .action-card:hover {
+      border-color: rgba(255,255,255,0.18);
+      transform: translateY(-2px);
+    }
+
+    .action-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .action-card h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .action-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    .btn-action-green {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--green) 0%, #25d366 100%);
+      color: #000;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      transition: opacity 0.2s, transform 0.2s;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-action-green:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn-action-outline {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-action-outline:hover {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ── FAQ SECTION ────────────────────────────────── */
+    .faq-section {
+      margin-bottom: 64px;
+    }
+
+    .faq-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .faq-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+
+    .faq-q {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+
+    .faq-a {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────── */
+    .site-footer {
+      background: #0a0a0a;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+    .footer-disclaimer {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      max-width: 640px;
+      margin: 0 auto 12px;
+      line-height: 1.6;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 768px) {
+      .actions-grid { grid-template-columns: 1fr; }
+      .header-badge { font-size: 9.5px; }
+    }
+
+    @media (max-width: 480px) {
+      .header-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── STICKY HEADER ─────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="logo.png" alt="RoicomIA" height="32">
+      </a>
+      <div class="header-badge">🧬 Extrator de DNA de Marca — Ferramenta Exclusiva</div>
+    </div>
+  </header>
+
+
+  <!-- ── PAGE CONTENT ──────────────────────────────── -->
+  <main>
+    <div class="page-content">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-check">✅</div>
+        <h1>Perfeito! Seu Relatório Está Sendo Gerado 🎉</h1>
+        <p class="hero-copy">Recebemos suas informações e nossa equipe já começou a analisar o DNA estratégico da sua empresa.</p>
+        <p class="hero-email-row" id="email-row" style="display:none;">
+          Você receberá seu relatório completo em até 24 horas no email:
+          <span class="lead-email" id="display-email"></span>
+        </p>
+      </section>
+
+
+      <!-- TIMELINE -->
+      <div class="timeline-card">
+        <p class="timeline-title">⏰ Prazo de Entrega</p>
+        <ul class="timeline-list">
+
+          <li class="timeline-item">
+            <div class="tl-left">
+              <div class="tl-dot done">✔</div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-label">Hoje — Dados enviados</div>
+              <div class="tl-time">Suas respostas foram recebidas com sucesso</div>
+            </div>
+          </li>
+
+          <li class="timeline-item">
+            <div class="tl-left">
+              <div class="tl-dot active">⚙️</div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-label">Análise dos dados</div>
+              <div class="tl-time">2–6 horas • Mapeamento do DNA estratégico da sua empresa</div>
+            </div>
+          </li>
+
+          <li class="timeline-item">
+            <div class="tl-left">
+              <div class="tl-dot">🤖</div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-label">Geração do relatório</div>
+              <div class="tl-time">6–12 horas • IA + especialistas constroem seu relatório personalizado</div>
+            </div>
+          </li>
+
+          <li class="timeline-item">
+            <div class="tl-left">
+              <div class="tl-dot">🔍</div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-label">Revisão e envio</div>
+              <div class="tl-time">2–4 horas • Validação final antes do envio</div>
+            </div>
+          </li>
+
+          <li class="timeline-item">
+            <div class="tl-left">
+              <div class="tl-dot done">📧</div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-label green">Amanhã — Relatório no seu email!</div>
+              <div class="tl-time">Em até 24 horas a partir do envio</div>
+              <span class="tl-badge">Meta: até 24h</span>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+
+      <!-- ACTIONS GRID -->
+      <section class="actions-section">
+        <h2 class="actions-title">Enquanto isso, aproveite para:</h2>
+        <div class="actions-grid">
+
+          <div class="action-card">
+            <div class="action-icon">📱</div>
+            <h3>Entre no Grupo WhatsApp</h3>
+            <p>Se ainda não entrou, confirme sua inscrição agora. É lá que você recebe atualizações em tempo real sobre o evento e seu relatório.</p>
+            <a href="grupo.html" class="btn-action-green">Entrar no Grupo</a>
+          </div>
+
+          <div class="action-card">
+            <div class="action-icon">📄</div>
+            <h3>Baixe o Workbook</h3>
+            <p>Material exclusivo sobre as 4 revoluções industriais e os níveis de IA. Leitura recomendada antes do evento ao vivo.</p>
+            <a href="#" class="btn-action-outline">Baixar Workbook</a>
+          </div>
+
+          <div class="action-card">
+            <div class="action-icon">📅</div>
+            <h3>Salve a Data</h3>
+            <p>Evento ao vivo: <strong style="color:#fff;">Terça-feira às 20h BRT</strong>. Adicione ao seu calendário para não perder nenhuma parte.</p>
+            <a href="#" class="btn-action-outline">Adicionar ao Calendário</a>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- FAQ -->
+      <section class="faq-section">
+        <h2 class="faq-title">Dúvidas Frequentes</h2>
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <div class="faq-q">Quanto tempo leva para receber meu relatório?</div>
+            <div class="faq-a">O prazo máximo é de 24 horas a partir do envio do formulário. Em geral, os relatórios são entregues entre 12 e 18 horas após a submissão. Verifique sua caixa de entrada e a pasta de spam.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">O que exatamente vou receber no relatório?</div>
+            <div class="faq-a">Você receberá um documento completo com análise de posicionamento, mapeamento de oportunidades com IA, stack tecnológico recomendado, plano de 90 dias, projeção de ROI e uma lista priorizada de próximos passos — tudo personalizado para o seu negócio e estágio atual.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">Minhas informações são confidenciais?</div>
+            <div class="faq-a">Sim, 100%. Seus dados são usados exclusivamente para gerar o relatório e melhorar sua experiência no evento. Não compartilhamos suas informações com terceiros.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">Posso refazer o formulário se errei alguma resposta?</div>
+            <div class="faq-a">Sim. Entre em contato pelo grupo do WhatsApp informando seu nome e empresa, e nossa equipe te enviará um novo link de acesso para refazer o formulário antes da análise começar.</div>
+          </div>
+
+        </div>
+      </section>
+
+    </div><!-- /.page-content -->
+  </main>
+
+
+  <!-- ── FOOTER ─────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="#">Política de Privacidade</a>
+      <span style="color:rgba(255,255,255,0.15)">|</span>
+      <a href="#">Termos de Uso</a>
+    </div>
+    <p class="footer-disclaimer">Este site não é afiliado ao Facebook ou a qualquer entidade do Facebook. Depois que você sair do Facebook, a responsabilidade não é deles e sim do nosso site. Fazemos todos os esforços para indicar claramente e mostrar apenas produtos e serviços honestos.</p>
+    <p class="footer-copy">©2026 RoicomIA. Todos os direitos reservados.</p>
+  </footer>
+
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// LEAD DATA FROM URL PARAMS
+// Lê ?nome=&email= passados pelo extrator.html após o submit
+// ══════════════════════════════════════════════════════════════
+(function() {
+  const urlP  = new URLSearchParams(window.location.search);
+  const nome  = urlP.get('nome')  || '';
+  const email = urlP.get('email') || '';
+
+  // Inject first name where .lead-nome appears
+  if (nome) {
+    const firstName = nome.split(' ')[0];
+    document.querySelectorAll('.lead-nome').forEach(el => {
+      el.textContent = firstName;
+    });
+
+    // Personalise the h1 with the first name
+    const h1 = document.querySelector('.hero h1');
+    if (h1) {
+      h1.textContent = firstName
+        ? firstName + ', Seu Relatório Está Sendo Gerado 🎉'
+        : 'Perfeito! Seu Relatório Está Sendo Gerado 🎉';
+    }
+  }
+
+  // Show email row if email is present
+  if (email) {
+    document.querySelectorAll('.lead-email').forEach(el => {
+      el.textContent = email;
+    });
+    const emailRow = document.getElementById('email-row');
+    if (emailRow) emailRow.style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>

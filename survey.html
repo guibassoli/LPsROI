@@ -750,8 +750,8 @@
     // ╔══════════════════════════════════════════════╗
     // ║           CONFIGURAÇÕES DA PÁGINA            ║
     // ╠══════════════════════════════════════════════╣
-    // ║ 1. Cole o link do grupo WhatsApp abaixo      ║
-    const WHATSAPP_LINK = 'https://chat.whatsapp.com/SEU-LINK-AQUI';
+    // ║ Próxima página do funil (não alterar)        ║
+    const NEXT_PAGE = 'grupo.html';
     // ╚══════════════════════════════════════════════╝
 
     // ── PROGRESS BAR ANIMATE IN ────────────────────
@@ -816,7 +816,8 @@
       renderDots();
       console.log('Survey answers:', answers);
 
-      setTimeout(() => { window.location.href = WHATSAPP_LINK; }, 2000);
+      const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
+      setTimeout(() => { window.location.href = NEXT_PAGE + '?' + p.toString(); }, 2000);
     }
 
     function finishSurvey() {
@@ -827,7 +828,8 @@
       currentQ = totalQuestions + 1;
       renderDots();
       console.log('Survey answers:', answers);
-      setTimeout(() => { window.location.href = WHATSAPP_LINK; }, 2000);
+      const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
+      setTimeout(() => { window.location.href = NEXT_PAGE + '?' + p.toString(); }, 2000);
     }
 
     function goToQuestion(from, to) {

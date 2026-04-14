@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Último Passo — RoicomIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:   #000000;
+      --green:   #6aeb98;
+      --cyan:    #00c2cb;
+      --orange:  #fc8132;
+      --white:   #ffffff;
+      --muted:   #888888;
+      --blue:    #2563eb;
+      --purple:  #6c62e4;
+      --font-serif: 'Libre Baskerville', Georgia, serif;
+      --font-sans:  'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND GLOW ──────────────────────────── */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-glow::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      right: -10%;
+      width: 55vw;
+      height: 70vh;
+      background: radial-gradient(ellipse, rgba(106,235,152,0.10) 0%, transparent 65%);
+      filter: blur(50px);
+    }
+    .bg-glow::after {
+      content: '';
+      position: absolute;
+      bottom: 5%;
+      left: 5%;
+      width: 40vw;
+      height: 45vh;
+      background: radial-gradient(ellipse, rgba(108,98,228,0.10) 0%, transparent 65%);
+      filter: blur(60px);
+    }
+
+    * { position: relative; z-index: 1; }
+
+    /* ── WARNING BAR ──────────────────────────────── */
+    #warning-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: #e8453c;
+      text-align: center;
+      padding: 10px 16px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    /* ── PROGRESS BAR ─────────────────────────────── */
+    #progress-wrap {
+      position: fixed;
+      top: 38px; left: 0; right: 0;
+      z-index: 999;
+      background: rgba(0,0,0,0.6);
+      padding: 8px 0 6px;
+    }
+    .progress-track {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+    }
+    .progress-bar-bg {
+      height: 22px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 100px;
+      overflow: visible;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6c62e4 0%, #6aeb98 55%, #fc8132 100%);
+      border-radius: 100px;
+      position: relative;
+      transition: width 1.6s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 14px rgba(106,235,152,0.55), 0 0 28px rgba(108,98,228,0.35);
+      animation: progress-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes progress-pulse {
+      0%, 100% { box-shadow: 0 0 14px rgba(106,235,152,0.55), 0 0 28px rgba(108,98,228,0.35); }
+      50%       { box-shadow: 0 0 22px rgba(106,235,152,0.85), 0 0 44px rgba(108,98,228,0.55); }
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 60%);
+    }
+    .progress-label {
+      position: absolute;
+      right: calc(4% - 0px);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+      z-index: 2;
+    }
+
+    /* ── MAIN LAYOUT ──────────────────────────────── */
+    .page-wrap {
+      padding-top: 100px;
+      padding-bottom: 80px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── HEADLINE ─────────────────────────────────── */
+    .headline-block {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-top: 24px;
+    }
+    .headline-block h1 {
+      font-family: var(--font-sans);
+      font-size: clamp(24px, 4.5vw, 36px);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      letter-spacing: -0.01em;
+    }
+    .headline-block h1 .accent {
+      background: linear-gradient(135deg, #6aeb98 0%, #5ad4ff 45%, #6c62e4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .headline-block .sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ── STEPS CARD ───────────────────────────────── */
+    .steps-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 48px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Step row */
+    .step-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 32px 36px;
+    }
+    .step-row + .step-row {
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .step-info { flex: 1; min-width: 0; }
+
+    .step-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .step-label .num {
+      background: linear-gradient(135deg, #6aeb98 0%, #5ad4ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+      max-width: 360px;
+    }
+    .step-desc strong { color: rgba(255,255,255,0.85); }
+
+    /* Step 1 CTA */
+    .step-cta { flex-shrink: 0; text-align: center; }
+
+    .btn-join {
+      display: inline-block;
+      background: linear-gradient(135deg, #25d366 0%, #1db954 100%);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(37,211,102,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .btn-join::after {
+      content: '';
+      position: absolute;
+      top: -30%; left: -80%;
+      width: 55%; height: 160%;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%);
+      transform: skewX(-15deg);
+      animation: btn-shine 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes btn-shine {
+      0%   { left: -80%; }
+      40%  { left: 130%; }
+      100% { left: 130%; }
+    }
+    .btn-join:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(37,211,102,0.5); }
+
+    .btn-join-sub {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.5;
+    }
+    .btn-join-sub a {
+      color: rgba(106,235,152,0.7);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s;
+    }
+    .btn-join-sub a:hover { color: var(--green); }
+
+    /* Step 2 check icon */
+    .step-check {
+      flex-shrink: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(106,235,152,0.12);
+      border: 1px solid rgba(106,235,152,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 22px;
+    }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 24px 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+    .footer-links a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-disclaimer {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      max-width: 480px;
+      margin: 0 auto 10px;
+      line-height: 1.6;
+    }
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ── MOBILE ───────────────────────────────────── */
+    @media (max-width: 600px) {
+      #warning-bar { font-size: 11px; padding: 9px 12px; line-height: 1.4; }
+      #progress-wrap { top: 34px; padding: 6px 0 5px; }
+      .progress-track { padding: 0 16px; }
+      .progress-bar-bg { height: 18px; }
+      .progress-label { font-size: 11px; }
+
+      .page-wrap { padding-top: 76px; padding-bottom: 48px; }
+      .container { padding: 0 16px; }
+
+      .headline-block { margin-bottom: 28px; padding-top: 20px; }
+      .headline-block h1 { font-size: 22px; }
+      .headline-block .sub { font-size: 14px; }
+
+      .steps-card { border-radius: 12px; }
+
+      .step-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 24px 20px;
+      }
+
+      .step-title { font-size: 17px; }
+      .step-desc { font-size: 13px; max-width: 100%; }
+
+      .step-cta { width: 100%; }
+      .btn-join { width: 100%; text-align: center; padding: 15px 20px; font-size: 13px; }
+
+      .step-check { width: 44px; height: 44px; font-size: 18px; }
+
+      .footer-links { gap: 14px; }
+      .footer-disclaimer { font-size: 10px; }
+    }
+
+    @media (max-width: 380px) {
+      .headline-block h1 { font-size: 19px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <!-- WARNING BAR -->
+  <div id="warning-bar">⚠ &nbsp;NÃO FECHE NEM ATUALIZE ESTA PÁGINA!</div>
+
+  <!-- PROGRESS BAR -->
+  <div id="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill">
+          <span class="progress-label">98%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="page-wrap">
+    <div class="container">
+
+      <!-- HEADLINE -->
+      <div class="headline-block">
+        <h1>Falta <span class="accent">apenas um passo</span> para garantir seu acesso ao grupo e ao Material Bônus</h1>
+        <p class="sub">Veja o que você precisa fazer agora…</p>
+      </div>
+
+      <!-- STEPS CARD -->
+      <div class="steps-card">
+
+        <!-- STEP 1 -->
+        <div class="step-row">
+          <div class="step-info">
+            <div class="step-label"><span class="num">Passo 1:</span> Entre no Grupo do WhatsApp</div>
+            <div class="step-title">Acesse o Grupo Exclusivo</div>
+            <p class="step-desc">
+              Clique no botão ao lado para entrar no grupo privado do WhatsApp.
+              Lá você receberá a <strong>Ferramenta de IA Gratuita</strong> e todos
+              os materiais bônus do evento.
+            </p>
+          </div>
+          <div class="step-cta">
+            <!-- ════════════════════════════════════════
+                 SUBSTITUA O HREF ABAIXO PELO LINK DO GRUPO
+            ════════════════════════════════════════ -->
+            <a href="https://chat.whatsapp.com/SEU-LINK-AQUI" id="btn-join" class="btn-join" target="_blank" rel="noopener">
+              ✅ &nbsp;ENTRAR AGORA
+            </a>
+            <span class="btn-join-sub">
+              Não tem WhatsApp?
+              <a href="https://www.whatsapp.com/download" target="_blank" rel="noopener">Baixe aqui.</a><br>
+              Será essencial para acompanhar o evento.
+            </span>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step-row">
+          <div class="step-info">
+            <div class="step-label"><span class="num">Passo 2:</span> Verifique seu E-mail</div>
+            <div class="step-title">Confirme sua Inscrição</div>
+            <p class="step-desc">
+              Após entrar no grupo, verifique seu e-mail com o assunto
+              <strong>"Acesso Liberado"</strong>. Abra e confirme sua inscrição
+              para garantir o acesso completo à <strong>Plataforma Estratégica de DNA de Marca</strong>.
+            </p>
+          </div>
+          <div class="step-check">✉</div>
+        </div>
+
+      </div>
+      <!-- /steps-card -->
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+    </div>
+    <p class="footer-disclaimer">
+      Este site não é parte do Facebook nem é endossado pelo Facebook de nenhuma forma.<br>
+      FACEBOOK é uma marca registrada de FACEBOOK, Inc.
+    </p>
+    <p class="footer-copy">©2026 RoicomIA. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    // ── PROGRESS BAR: anima até 98% no load ────────
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('progress-fill').style.width = '98%';
+      }, 300);
+    });
+
+    // ── LÊ DADOS DO LEAD VIA URL PARAMS (opcional) ─
+    // A survey.html pode passar os dados para cá via URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const leadNome  = urlParams.get('nome') || '';
+
+    // Personaliza o botão se tiver o nome
+    if (leadNome) {
+      const btn = document.getElementById('btn-join');
+      btn.textContent = '✅  ENTRAR AGORA, ' + leadNome.split(' ')[0].toUpperCase();
+    }
+  </script>
+
+</body>
+</html>

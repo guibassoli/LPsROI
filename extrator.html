@@ -975,14 +975,14 @@
         <div class="form-field">
           <label class="field-label" for="q_instagram">4. @ do Instagram da Marca *</label>
           <span class="field-hint">Informe o arroba da marca que será analisada.</span>
-          <input type="text" id="q_instagram" name="q_instagram" placeholder="Ex: @roicomia, @henryrisutti">
+          <input type="text" id="q_instagram" name="q_instagram" placeholder="Ex: @suamarca">
         </div>
 
         <!-- Q5: Site -->
         <div class="form-field">
           <label class="field-label" for="q_site">5. Website / URL da Empresa</label>
           <span class="field-hint">Opcional — nos ajuda a analisar seu posicionamento digital.</span>
-          <input type="url" id="q_site" name="q_site" placeholder="Ex: https://roicomia.com.br">
+          <input type="url" id="q_site" name="q_site" placeholder="Ex: https://suaempresa.com.br">
         </div>
 
         <!-- Q6: Concorrentes -->
@@ -1111,14 +1111,9 @@
 
         <!-- Q8 -->
         <div class="form-field">
-          <label class="field-label">12. Ticket Médio do Produto/Serviço Principal *</label>
-          <div class="options-list" id="q8-group">
-            <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="Até R$ 500"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Até R$ 500</span></span></label>
-            <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="R$ 500 – R$ 2 mil"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">R$ 500 – R$ 2 mil</span></span></label>
-            <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="R$ 2 mil – R$ 10 mil"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">R$ 2 mil – R$ 10 mil</span></span></label>
-            <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="R$ 10 mil – R$ 50 mil"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">R$ 10 mil – R$ 50 mil</span></span></label>
-            <label class="radio-opt" data-name="q8"><input type="radio" name="q8" value="Acima de R$ 50 mil"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Acima de R$ 50 mil</span></span></label>
-          </div>
+          <label class="field-label" for="q8_valor">12. Ticket Médio do Produto/Serviço Principal *</label>
+          <span class="field-hint">Digite o valor aproximado em reais — sem necessidade de formatação.</span>
+          <input type="text" id="q8_valor" name="q8_valor" placeholder="Ex: 500 ou 2500 ou 15000 ou 80000" inputmode="numeric">
         </div>
       </div>
 
@@ -1205,14 +1200,15 @@
         <!-- Q13 -->
         <div class="form-field">
           <label class="field-label">17. Principal Objetivo com IA *</label>
+          <span class="field-hint">Selecione todos que se aplicam:</span>
           <div class="options-list" id="q13-group">
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Reduzir custos operacionais e gerar economia real"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Reduzir custos operacionais e gerar economia real</span></span></label>
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Escalar faturamento sem aumentar equipe"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Escalar faturamento sem aumentar equipe</span></span></label>
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Aumentar velocidade de entrega/atendimento"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Aumentar velocidade de entrega / atendimento</span></span></label>
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Melhorar qualidade e consistência dos processos"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Melhorar qualidade e consistência dos processos</span></span></label>
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Ganhar vantagem competitiva no meu setor"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Ganhar vantagem competitiva no meu setor</span></span></label>
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Liberar tempo da equipe para trabalho estratégico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Liberar tempo da equipe para trabalho estratégico</span></span></label>
-            <label class="radio-opt" data-name="q13"><input type="radio" name="q13" value="Outro"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q13-cb" value="Reduzir custos operacionais e gerar economia real"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Reduzir custos operacionais e gerar economia real</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q13-cb" value="Escalar faturamento sem aumentar equipe"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Escalar faturamento sem aumentar equipe</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q13-cb" value="Aumentar velocidade de entrega e atendimento"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Aumentar velocidade de entrega e atendimento</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q13-cb" value="Melhorar qualidade e consistência dos processos"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Melhorar qualidade e consistência dos processos</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q13-cb" value="Ganhar vantagem competitiva no meu setor"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Ganhar vantagem competitiva no meu setor</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q13-cb" value="Liberar tempo da equipe para trabalho estratégico"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Liberar tempo da equipe para trabalho estratégico</span></span></label>
+            <label class="cb-opt" id="q13-outro-label"><input type="checkbox" class="q13-cb" value="Outro"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
           </div>
           <div class="reveal-field" id="q13-outro-wrap">
             <input type="text" id="q13-outro" name="q13-outro" placeholder="Qual é seu objetivo?">
@@ -1222,13 +1218,14 @@
         <!-- Q14 -->
         <div class="form-field">
           <label class="field-label">18. Meta de ROI em 90 Dias *</label>
+          <span class="field-hint">Selecione todos que se aplicam:</span>
           <div class="options-list" id="q14-group">
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Economizar 10-20% do tempo em 1 processo crítico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Economizar 10–20% do tempo em 1 processo crítico</span></span></label>
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Economizar 30-50% do tempo em 1 processo crítico"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Economizar 30–50% do tempo em 1 processo crítico</span></span></label>
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Automatizar completamente 1 processo do início ao fim"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Automatizar completamente 1 processo do início ao fim</span></span></label>
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Implementar IA em 2-3 processos diferentes"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Implementar IA em 2–3 processos diferentes</span></span></label>
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Ter ROI financeiro mensurável em reais por mês"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Ter ROI financeiro mensurável em reais por mês</span></span></label>
-            <label class="radio-opt" data-name="q14"><input type="radio" name="q14" value="Outro"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q14-cb" value="Economizar 10-20% do tempo em 1 processo crítico"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Economizar 10–20% do tempo em 1 processo crítico</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q14-cb" value="Economizar 30-50% do tempo em 1 processo crítico"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Economizar 30–50% do tempo em 1 processo crítico</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q14-cb" value="Automatizar completamente 1 processo do início ao fim"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Automatizar completamente 1 processo do início ao fim</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q14-cb" value="Implementar IA em 2-3 processos diferentes"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Implementar IA em 2–3 processos diferentes</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q14-cb" value="Ter ROI financeiro mensurável em reais por mês"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Ter ROI financeiro mensurável em reais por mês</span></span></label>
+            <label class="cb-opt" id="q14-outro-label"><input type="checkbox" class="q14-cb" value="Outro"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
           </div>
           <div class="reveal-field" id="q14-outro-wrap">
             <input type="text" id="q14-outro" name="q14-outro" placeholder="Qual é sua meta?">
@@ -1237,7 +1234,7 @@
 
         <!-- Q15 -->
         <div class="form-field">
-          <label class="field-label">19. Prazo para Começar *</label>
+          <label class="field-label">19. Quer implementar IA quando: *</label>
           <div class="options-list" id="q15-group">
             <label class="radio-opt" data-name="q15"><input type="radio" name="q15" value="Imediatamente (próximos 30 dias)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Imediatamente (próximos 30 dias)</span></span></label>
             <label class="radio-opt" data-name="q15"><input type="radio" name="q15" value="Nos próximos 1-3 meses"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Nos próximos 1–3 meses</span></span></label>
@@ -1274,9 +1271,8 @@
         </button>
 
         <div class="submit-microcopy">
-          <p>🔒 Seus dados são 100% seguros e confidenciais.</p>
           <p>📧 Seu relatório personalizado será enviado em até 24h no email cadastrado.</p>
-          <p>⏰ Tempo médio de geração: 12–18 horas</p>
+          <p>⏰ Tempo médio de geração: 30 minutos</p>
         </div>
       </div>
 
@@ -1351,7 +1347,7 @@ function syncCheckboxOpt(label) {
 }
 
 // Init radio listeners for all groups
-['q4','q8','q9','q10','q12','q13','q14','q15','q16','q_tonvoz'].forEach(name => {
+['q4','q9','q10','q12','q15','q16','q_tonvoz'].forEach(name => {
   document.querySelectorAll(`[name="${name}"]`).forEach(inp => {
     inp.addEventListener('change', () => {
       // Update visual state for all options in group
@@ -1398,14 +1394,17 @@ function updateProgress() {
   });
   // q_instagram: not empty
   if ((document.getElementById('q_instagram').value || '').trim().length > 0) answered++;
-  // Radios: Q4, Q8, Q9, Q10, Q12, Q13, Q14, Q15, Q16, q_tonvoz
-  ['q4','q8','q9','q10','q12','q13','q14','q15','q16','q_tonvoz'].forEach(name => {
+  // Q8 ticket médio: text input
+  if ((document.getElementById('q8_valor').value || '').trim().length > 0) answered++;
+  // Radios: Q4, Q9, Q10, Q12, Q15, Q16, q_tonvoz
+  ['q4','q9','q10','q12','q15','q16','q_tonvoz'].forEach(name => {
     if (document.querySelector(`[name="${name}"]:checked`)) answered++;
   });
-  // Q7: at least 1 checkbox
+  // Q7, Q11, Q13, Q14: at least 1 checkbox
   if (document.querySelectorAll('.q7-cb:checked').length >= 1) answered++;
-  // Q11: at least 1 checkbox
   if (document.querySelectorAll('.q11-cb:checked').length >= 1) answered++;
+  if (document.querySelectorAll('.q13-cb:checked').length >= 1) answered++;
+  if (document.querySelectorAll('.q14-cb:checked').length >= 1) answered++;
 
   const total = 20;
   const pct   = Math.round(answered / total * 100);
@@ -1424,8 +1423,8 @@ document.getElementById('q_concorrentes').addEventListener('input', updateProgre
 document.getElementById('q5').addEventListener('input', updateProgress);
 document.getElementById('q6').addEventListener('input', updateProgress);
 
-document.querySelectorAll('.q7-cb').forEach(cb => cb.addEventListener('change', updateProgress));
-document.querySelectorAll('.q11-cb').forEach(cb => cb.addEventListener('change', updateProgress));
+document.querySelectorAll('.q7-cb, .q11-cb, .q13-cb, .q14-cb').forEach(cb => cb.addEventListener('change', updateProgress));
+document.getElementById('q8_valor').addEventListener('input', updateProgress);
 
 // Initial call
 updateProgress();
@@ -1597,10 +1596,10 @@ function handleSubmit() {
     if (!firstError) firstError = g;
   }
 
-  // Q8
-  if (!document.querySelector('[name="q8"]:checked')) {
-    const g = showGroupError('q8-group', 'Por favor, selecione o ticket médio.');
-    if (!firstError) firstError = g;
+  // Q8 ticket médio (text)
+  if (!(document.getElementById('q8_valor').value || '').trim()) {
+    showFieldError('q8_valor', 'Por favor, informe o ticket médio aproximado.');
+    if (!firstError) firstError = document.getElementById('q8_valor');
   }
 
   // Q9
@@ -1627,15 +1626,15 @@ function handleSubmit() {
     if (!firstError) firstError = g;
   }
 
-  // Q13
-  if (!document.querySelector('[name="q13"]:checked')) {
-    const g = showGroupError('q13-group', 'Por favor, selecione seu principal objetivo com IA.');
+  // Q13 (checkboxes)
+  if (document.querySelectorAll('.q13-cb:checked').length === 0) {
+    const g = showGroupError('q13-group', 'Por favor, selecione pelo menos 1 objetivo com IA.');
     if (!firstError) firstError = g;
   }
 
-  // Q14
-  if (!document.querySelector('[name="q14"]:checked')) {
-    const g = showGroupError('q14-group', 'Por favor, selecione sua meta de ROI em 90 dias.');
+  // Q14 (checkboxes)
+  if (document.querySelectorAll('.q14-cb:checked').length === 0) {
+    const g = showGroupError('q14-group', 'Por favor, selecione pelo menos 1 meta de ROI.');
     if (!firstError) firstError = g;
   }
 

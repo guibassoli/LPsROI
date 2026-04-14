@@ -1140,17 +1140,17 @@
         <!-- Q10 -->
         <div class="form-field">
           <label class="field-label">14. Processo que Mais Consome Tempo *</label>
-          <span class="field-hint">Qual processo operacional consome MAIS tempo por semana?</span>
+          <span class="field-hint">Selecione todos que se aplicam:</span>
           <div class="options-list" id="q10-group">
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Atendimento/qualificação de leads (pré-venda)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Atendimento / qualificação de leads (pré-venda)</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Produção de propostas/apresentações"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Produção de propostas / apresentações</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Criação de conteúdo (posts, emails, vídeos)"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Criação de conteúdo (posts, emails, vídeos)</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Relatórios e análises de dados"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Relatórios e análises de dados</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Follow-up e nutrição de clientes"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Follow-up e nutrição de clientes</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Processos administrativos/financeiros"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Processos administrativos / financeiros</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Onboarding de novos clientes"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Onboarding de novos clientes</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Suporte pós-venda"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Suporte pós-venda</span></span></label>
-            <label class="radio-opt" data-name="q10"><input type="radio" name="q10" value="Outro"><span class="custom-radio"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Atendimento/qualificação de leads (pré-venda)"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Atendimento / qualificação de leads (pré-venda)</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Produção de propostas/apresentações"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Produção de propostas / apresentações</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Criação de conteúdo (posts, emails, vídeos)"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Criação de conteúdo (posts, emails, vídeos)</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Relatórios e análises de dados"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Relatórios e análises de dados</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Follow-up e nutrição de clientes"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Follow-up e nutrição de clientes</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Processos administrativos/financeiros"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Processos administrativos / financeiros</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Onboarding de novos clientes"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Onboarding de novos clientes</span></span></label>
+            <label class="cb-opt"><input type="checkbox" class="q10-cb" value="Suporte pós-venda"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Suporte pós-venda</span></span></label>
+            <label class="cb-opt" id="q10-outro-label"><input type="checkbox" class="q10-cb" value="Outro"><span class="custom-checkbox"></span><span class="opt-text"><span class="opt-label">Outro</span></span></label>
           </div>
           <div class="reveal-field" id="q10-outro-wrap">
             <input type="text" id="q10-outro" name="q10-outro" placeholder="Qual processo?">
@@ -1271,6 +1271,7 @@
         </button>
 
         <div class="submit-microcopy">
+          <p>🔒 Seus dados são 100% seguros e confidenciais.</p>
           <p>📧 Seu relatório personalizado será enviado em até 24h no email cadastrado.</p>
           <p>⏰ Tempo médio de geração: 30 minutos</p>
         </div>
@@ -1347,7 +1348,7 @@ function syncCheckboxOpt(label) {
 }
 
 // Init radio listeners for all groups
-['q4','q9','q10','q12','q15','q16','q_tonvoz'].forEach(name => {
+['q4','q9','q12','q15','q16','q_tonvoz'].forEach(name => {
   document.querySelectorAll(`[name="${name}"]`).forEach(inp => {
     inp.addEventListener('change', () => {
       // Update visual state for all options in group
@@ -1360,20 +1361,17 @@ function syncCheckboxOpt(label) {
 });
 
 // Init checkbox listeners
-document.querySelectorAll('.q7-cb, .q11-cb').forEach(cb => {
+document.querySelectorAll('.q7-cb, .q10-cb, .q11-cb, .q13-cb, .q14-cb').forEach(cb => {
   cb.addEventListener('change', () => {
     syncCheckboxOpt(cb.closest('.cb-opt'));
   });
 });
 
 // Accept row visual sync
-document.getElementById('aceite-row').addEventListener('click', function() {
-  const inp = document.getElementById('aceite');
-  // Toggle will fire via the checkbox naturally
-  setTimeout(() => {
-    this.classList.toggle('checked', inp.checked);
-    document.getElementById('aceite-box').classList.toggle('checked', inp.checked);
-  }, 0);
+document.getElementById('aceite').addEventListener('change', function() {
+  const row = document.getElementById('aceite-row');
+  row.classList.toggle('checked', this.checked);
+  document.getElementById('aceite-box').classList.toggle('checked', this.checked);
 });
 
 
@@ -1396,17 +1394,18 @@ function updateProgress() {
   if ((document.getElementById('q_instagram').value || '').trim().length > 0) answered++;
   // Q8 ticket médio: text input
   if ((document.getElementById('q8_valor').value || '').trim().length > 0) answered++;
-  // Radios: Q4, Q9, Q10, Q12, Q15, Q16, q_tonvoz
-  ['q4','q9','q10','q12','q15','q16','q_tonvoz'].forEach(name => {
+  // Radios: Q4, Q9, Q12, Q15, Q16, q_tonvoz
+  ['q4','q9','q12','q15','q16','q_tonvoz'].forEach(name => {
     if (document.querySelector(`[name="${name}"]:checked`)) answered++;
   });
-  // Q7, Q11, Q13, Q14: at least 1 checkbox
+  // Q7, Q10, Q11, Q13, Q14: at least 1 checkbox
   if (document.querySelectorAll('.q7-cb:checked').length >= 1) answered++;
+  if (document.querySelectorAll('.q10-cb:checked').length >= 1) answered++;
   if (document.querySelectorAll('.q11-cb:checked').length >= 1) answered++;
   if (document.querySelectorAll('.q13-cb:checked').length >= 1) answered++;
   if (document.querySelectorAll('.q14-cb:checked').length >= 1) answered++;
 
-  const total = 20;
+  const total = 21;
   const pct   = Math.round(answered / total * 100);
 
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -1423,7 +1422,7 @@ document.getElementById('q_concorrentes').addEventListener('input', updateProgre
 document.getElementById('q5').addEventListener('input', updateProgress);
 document.getElementById('q6').addEventListener('input', updateProgress);
 
-document.querySelectorAll('.q7-cb, .q11-cb, .q13-cb, .q14-cb').forEach(cb => cb.addEventListener('change', updateProgress));
+document.querySelectorAll('.q7-cb, .q10-cb, .q11-cb, .q13-cb, .q14-cb').forEach(cb => cb.addEventListener('change', updateProgress));
 document.getElementById('q8_valor').addEventListener('input', updateProgress);
 
 // Initial call
@@ -1443,16 +1442,17 @@ updateProgress();
 
 
 // ══════════════════════════════════════════════════════════════
-// REVEAL "OUTRO" — RADIOS: Q10, Q13, Q14
+// REVEAL "OUTRO" — CHECKBOXES: Q10, Q13, Q14
 // ══════════════════════════════════════════════════════════════
-['q10','q13','q14'].forEach(name => {
-  document.querySelectorAll(`[name="${name}"]`).forEach(radio => {
-    radio.addEventListener('change', function() {
-      const wrap = document.getElementById(name + '-outro-wrap');
-      if (wrap) {
-        wrap.style.display = this.value === 'Outro' ? 'block' : 'none';
-      }
-    });
+['q10-cb','q13-cb','q14-cb'].forEach(cls => {
+  const prefix = cls.replace('-cb', '');
+  document.querySelectorAll('.' + cls).forEach(cb => {
+    if (cb.value === 'Outro') {
+      cb.addEventListener('change', function() {
+        const wrap = document.getElementById(prefix + '-outro-wrap');
+        if (wrap) wrap.style.display = this.checked ? 'block' : 'none';
+      });
+    }
   });
 });
 
@@ -1609,8 +1609,8 @@ function handleSubmit() {
   }
 
   // Q10
-  if (!document.querySelector('[name="q10"]:checked')) {
-    const g = showGroupError('q10-group', 'Por favor, selecione o processo que mais consome tempo.');
+  if (document.querySelectorAll('.q10-cb:checked').length === 0) {
+    const g = showGroupError('q10-group', 'Por favor, selecione pelo menos 1 processo que consome tempo.');
     if (!firstError) firstError = g;
   }
 

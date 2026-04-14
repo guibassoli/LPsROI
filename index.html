@@ -1337,6 +1337,197 @@
       .free-highlight { padding: 24px; }
       .urgency-reason { gap: 14px; }
     }
+
+    /* ══════════════════════════════════════════════
+       MOBILE — max-width: 768px
+       Preserva 100% do desktop. Só adiciona regras.
+    ══════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* ── BASE ──────────────────────────────────── */
+      body { font-size: 16px; }
+      section { padding: 64px 0; }
+      .container, .container-wide { padding: 0 20px; }
+
+      /* ── STICKY NAV ────────────────────────────── */
+      #sticky-nav { padding: 12px 16px; }
+      #sticky-nav .nav-logo img { height: 28px; }
+      #sticky-nav .nav-vagas { display: none; }
+      #sticky-nav .btn-nav { padding: 9px 16px; font-size: 12px; }
+
+      /* ── HERO ──────────────────────────────────── */
+      #hero .hero-image-wrap {
+        height: 52vw;
+        min-height: 220px;
+        margin: 0 0 0;
+        border-radius: 0;
+        -webkit-mask-image: radial-gradient(ellipse 90% 85% at 50% 40%, black 20%, transparent 80%);
+        mask-image: radial-gradient(ellipse 90% 85% at 50% 40%, black 20%, transparent 80%);
+      }
+      .hero-badge-neon-row { margin-top: -24px; padding: 0 16px; }
+      #hero h1 {
+        font-size: clamp(26px, 7vw, 38px);
+        margin-bottom: 10px;
+        padding: 0 4px;
+      }
+      #hero .subheadline {
+        font-size: clamp(14px, 3.8vw, 16px);
+        padding: 0 8px;
+      }
+      #hero .hero-content { padding: 8px 20px 28px; }
+      .btn-cta {
+        font-size: 14px;
+        padding: 16px 28px;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+
+      /* ── SECTION TITLES ────────────────────────── */
+      .section-title {
+        font-size: clamp(28px, 7.5vw, 40px);
+      }
+
+      /* ── PROMESSA ──────────────────────────────── */
+      .promise-card { padding: 32px 20px; }
+      .promise-list { gap: 20px; }
+      .promise-list li { font-size: 15px; gap: 14px; }
+
+      /* ── PROOF / METRICS ───────────────────────── */
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 36px 0;
+      }
+      .metrics-grid .metric-card:last-child {
+        grid-column: 1 / -1;
+      }
+      .metric-card { padding: 24px 16px; }
+      .metric-card .metric-number { font-size: 30px; }
+      .proof-story { font-size: 15px; }
+
+      /* ── DETALHES (3 cards quadrados) ─────────── */
+      .details-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin: 32px 0;
+      }
+      .details-grid .detail-card {
+        aspect-ratio: unset;
+        padding: 28px 24px;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+        justify-content: flex-start;
+      }
+      .details-grid .detail-card .detail-icon {
+        width: 44px; height: 44px;
+        flex-shrink: 0;
+        margin-bottom: 0;
+      }
+      .details-grid .detail-card .detail-text-wrap {
+        display: flex;
+        flex-direction: column;
+      }
+      .detail-card .detail-tag { margin-bottom: 6px; }
+      .detail-card h3 { font-size: 18px; margin-bottom: 8px; }
+      .detail-card p { font-size: 14px; }
+
+      /* ── DESCOBRIR ─────────────────────────────── */
+      .discover-list { gap: 12px; }
+      .discover-item { padding: 20px; }
+      .discover-item h3 { font-size: 16px; }
+
+      /* ── HISTÓRIA ──────────────────────────────── */
+      .story-body { font-size: 15px; }
+      .story-highlight { padding: 24px 20px; }
+
+      /* ── MÉTODO ────────────────────────────────── */
+      .method-steps { grid-template-columns: 1fr; gap: 12px; }
+      .method-step { padding: 24px 20px; }
+      .method-wrong { padding: 20px; }
+
+      /* ── BIO (Henry) ───────────────────────────── */
+      .bio-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .bio-photo {
+        width: 100%;
+        max-width: 300px;
+        height: 320px;
+        margin: 0 auto;
+      }
+      .bio-content h2 { font-size: clamp(26px, 7vw, 36px); }
+      .bio-content p { font-size: 15px; margin-bottom: 24px; }
+      .bio-stats { gap: 20px; }
+      .bio-stat .num { font-size: 24px; }
+
+      /* ── PARA QUEM ─────────────────────────────── */
+      .for-who-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin: 32px 0;
+      }
+      .for-who-card { padding: 28px 20px; }
+      .for-who-list li { font-size: 14px; }
+
+      /* ── POR QUE GRATUITO ──────────────────────── */
+      .free-question { font-size: clamp(18px, 5vw, 24px); margin-bottom: 32px; }
+      .free-body { font-size: 15px; }
+      .free-highlight { padding: 24px 20px; margin: 28px auto; }
+      .free-highlight p { font-size: 17px; }
+
+      /* ── URGÊNCIA ──────────────────────────────── */
+      .urgency-reasons { margin: 28px auto; gap: 12px; }
+      .urgency-reason { padding: 16px 18px; gap: 14px; }
+      .urgency-reason .num { font-size: 22px; min-width: 24px; }
+      .urgency-reason p { font-size: 14px; }
+
+      /* ── CTA BUTTONS (sm) ──────────────────────── */
+      .btn-cta-sm {
+        width: 100%;
+        justify-content: center;
+        font-size: 14px;
+        padding: 18px 24px;
+      }
+      .cta-group { width: 100%; }
+      .section-cta { padding: 0 0; }
+
+      /* ── FORMULÁRIO ────────────────────────────── */
+      .form-card { padding: 32px 20px; border-radius: 16px; }
+      .form-card .form-title { font-size: 24px; }
+      .form-group input { font-size: 16px; padding: 14px 16px; }
+      .btn-submit { font-size: 15px; padding: 18px; }
+      .form-microcopy p { font-size: 12px; }
+
+      /* ── FAQ ───────────────────────────────────── */
+      .faq-question { font-size: 15px; padding: 18px 16px; text-align: left; }
+      .faq-answer-inner { font-size: 14px; padding: 0 16px 20px; }
+
+      /* ── FOOTER ────────────────────────────────── */
+      footer { padding: 40px 20px; }
+      footer .footer-logo img { height: 36px; }
+      footer .footer-links { gap: 16px; }
+      footer .footer-disclaimer { font-size: 11px; }
+
+      /* ── FOMO WIDGET ───────────────────────────── */
+      #fomo-widget { left: 12px; bottom: 16px; }
+      .fomo-toast { min-width: 240px; max-width: calc(100vw - 24px); padding: 10px 14px; }
+      .fomo-avatar { width: 32px; height: 32px; font-size: 13px; }
+      .fomo-name { font-size: 12px; }
+      .fomo-detail { font-size: 10px; }
+    }
+
+    /* ── MOBILE PEQUENO (max 400px) ──────────────── */
+    @media (max-width: 400px) {
+      #hero h1 { font-size: 24px; }
+      .section-title { font-size: 26px; }
+      .btn-cta { font-size: 13px; padding: 15px 20px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .metrics-grid .metric-card:last-child { grid-column: auto; }
+    }
   </style>
 </head>
 <body>
@@ -1558,9 +1749,11 @@
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
           </div>
-          <span class="detail-tag">O que</span>
-          <h3>Evento gratuito online</h3>
-          <p>Como implementar IA no seu negócio com método estruturado e gerar ROI comprovado imediatamente.</p>
+          <div class="detail-text-wrap">
+            <span class="detail-tag">O que</span>
+            <h3>Evento gratuito online</h3>
+            <p>Como implementar IA no seu negócio com método estruturado e gerar ROI comprovado imediatamente.</p>
+          </div>
         </div>
         <div class="detail-card fade-up">
           <div class="detail-icon">
@@ -1571,9 +1764,11 @@
               <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
           </div>
-          <span class="detail-tag">Quando</span>
-          <h3>Terça-feira, 20h</h3>
-          <p>Evento online e gratuito, para assistir de onde estiver, mas venha preparado para o Q&amp;A.</p>
+          <div class="detail-text-wrap">
+            <span class="detail-tag">Quando</span>
+            <h3>Terça-feira, 20h</h3>
+            <p>Evento online e gratuito, para assistir de onde estiver, mas venha preparado para o Q&amp;A.</p>
+          </div>
         </div>
         <div class="detail-card fade-up">
           <div class="detail-icon">
@@ -1583,9 +1778,11 @@
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
             </svg>
           </div>
-          <span class="detail-tag">Onde</span>
-          <h3>100% online</h3>
-          <p>O link de acesso enviado apenas no WhatsApp após a confirmação da inscrição.</p>
+          <div class="detail-text-wrap">
+            <span class="detail-tag">Onde</span>
+            <h3>100% online</h3>
+            <p>O link de acesso enviado apenas no WhatsApp após a confirmação da inscrição.</p>
+          </div>
         </div>
       </div>
 

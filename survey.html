@@ -96,29 +96,45 @@
       position: relative;
     }
     .progress-bar-bg {
-      height: 8px;
-      background: rgba(255,255,255,0.1);
+      height: 22px;
+      background: rgba(255,255,255,0.07);
       border-radius: 100px;
       overflow: visible;
       position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
     }
     .progress-bar-fill {
       height: 100%;
-      width: 62%;
-      background: linear-gradient(90deg, #2563eb, #38bdf8);
+      width: 0%;
+      background: linear-gradient(90deg, #6c62e4 0%, #6aeb98 55%, #fc8132 100%);
       border-radius: 100px;
       position: relative;
-      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+      transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 14px rgba(106,235,152,0.55), 0 0 28px rgba(108,98,228,0.35);
+      animation: progress-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes progress-pulse {
+      0%, 100% { box-shadow: 0 0 14px rgba(106,235,152,0.55), 0 0 28px rgba(108,98,228,0.35); }
+      50%       { box-shadow: 0 0 22px rgba(106,235,152,0.85), 0 0 44px rgba(108,98,228,0.55); }
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 60%);
     }
     .progress-label {
       position: absolute;
-      right: calc(38% - 16px);
+      right: calc(38% - 20px);
       top: 50%;
       transform: translateY(-50%);
-      font-size: 10px;
-      font-weight: 700;
-      color: #38bdf8;
-      letter-spacing: 0.05em;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+      z-index: 2;
     }
 
     /* ── MAIN LAYOUT ──────────────────────────────── */
@@ -280,7 +296,12 @@
       max-width: 480px;
       margin: 0 auto;
     }
-    .step2-block h2 .accent { color: var(--green); }
+    .step2-block h2 .accent {
+      background: linear-gradient(135deg, #6aeb98 0%, #5ad4ff 45%, #6c62e4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
     /* ── SURVEY CARD ──────────────────────────────── */
     .survey-card {
@@ -392,6 +413,25 @@
     .btn-next:hover { background: #1d4ed8; transform: translateY(-1px); }
     .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
+    /* Back button */
+    .btn-back {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: #999;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 20px;
+      transition: color 0.15s;
+    }
+    .btn-back:hover { color: #555; }
+    .survey-question.can-go-back .btn-back { display: inline-flex; }
+
     /* Progress dots */
     .survey-progress {
       display: flex;
@@ -468,16 +508,71 @@
 
     /* ── MOBILE ───────────────────────────────────── */
     @media (max-width: 600px) {
-      #warning-bar { font-size: 11px; padding: 9px 12px; }
-      #progress-wrap { top: 34px; }
-      .page-wrap { padding-top: 72px; }
-      .headline-block h1 { font-size: 20px; }
+      /* Warning bar */
+      #warning-bar { font-size: 11px; padding: 9px 12px; line-height: 1.4; }
+
+      /* Progress */
+      #progress-wrap { top: 34px; padding: 6px 0 5px; }
+      .progress-track { padding: 0 16px; }
+      .progress-bar-bg { height: 18px; }
+      .progress-label { font-size: 11px; }
+
+      /* Layout */
+      .page-wrap { padding-top: 68px; padding-bottom: 48px; }
+      .container { padding: 0 16px; }
+
+      /* Headline */
+      .headline-block { margin-bottom: 24px; padding-top: 24px; }
+      .headline-block h1 { font-size: 19px; }
+      .headline-block p { font-size: 13px; }
+
+      /* VSL */
       .vsl-wrap { border-radius: 6px; }
-      .survey-card { padding: 24px 18px; }
-      .q-title { font-size: 16px; }
-      .mc-option { font-size: 13px; padding: 11px 14px; }
-      .step2-block h2 { font-size: 19px; }
-      .btn-cta-survey { font-size: 12px; padding: 14px 28px; }
+      .vsl-placeholder p { font-size: 15px; }
+      .vsl-options { flex-direction: column; gap: 16px; align-items: flex-start; padding: 0 8px; }
+
+      /* CTA pill */
+      .cta-survey-wrap { margin-bottom: 48px; }
+      .btn-cta-survey { font-size: 12px; padding: 14px 24px; width: 100%; text-align: center; }
+
+      /* Step 2 */
+      .step-badge { font-size: 10px; padding: 4px 12px; }
+      .step2-block h2 { font-size: 18px; }
+      .step2-block { margin-bottom: 24px; }
+
+      /* Survey card */
+      .survey-card { padding: 20px 16px; border-radius: 10px; }
+
+      /* Question */
+      .q-title { font-size: 15px; }
+      .q-subtitle { font-size: 12px; margin-bottom: 16px; }
+
+      /* MC options */
+      .mc-options { gap: 8px; }
+      .mc-option { font-size: 13px; padding: 11px 12px; gap: 10px; }
+
+      /* Text input */
+      .q-input { font-size: 16px; /* prevents iOS zoom */ padding: 13px 12px; }
+
+      /* Buttons */
+      .btn-next { width: 100%; justify-content: center; padding: 13px 20px; font-size: 14px; margin-top: 4px; }
+      .btn-back { margin-bottom: 16px; }
+
+      /* Divergence alert */
+      #divergence-alert { font-size: 12px !important; padding: 12px 12px !important; }
+      #divergence-alert div { flex-direction: column !important; gap: 8px !important; }
+      #confirm-new-phone,
+      #revert-phone { width: 100%; text-align: center; padding: 10px 12px !important; }
+
+      /* Footer */
+      .footer-links { gap: 14px; }
+      .footer-disclaimer { font-size: 10px; }
+    }
+
+    @media (max-width: 380px) {
+      .headline-block h1 { font-size: 17px; }
+      .step2-block h2 { font-size: 16px; }
+      .btn-cta-survey { font-size: 11px; }
     }
   </style>
 </head>
@@ -543,7 +638,7 @@
       <!-- STEP 2 -->
       <div class="step2-block" id="pesquisa">
         <span class="step-badge">PASSO 2</span>
-        <h2>Responda a Pesquisa Abaixo Para Desbloquear uma <span class="accent">Ferramenta de IA Gratuita</span> Dentro do Grupo do WhatsApp</h2>
+        <h2>Responda a Pesquisa para Finalizar sua Inscrição e acessar o <span class="accent">Material Bônus</span> no WhatsApp e a <span class="accent">Plataforma Estratégica de DNA de Marca</span></h2>
       </div>
 
       <!-- SURVEY CARD -->
@@ -557,77 +652,72 @@
           <div class="q-title">Qual é o faturamento anual da sua empresa?</div>
           <div class="q-subtitle">Selecione a opção que mais se aproxima da sua realidade.</div>
           <div class="mc-options">
-            <div class="mc-option" data-value="Abaixo de R$ 500k/ano">
-              <div class="mc-dot"></div> Abaixo de R$ 500 mil/ano
-            </div>
-            <div class="mc-option" data-value="Entre R$ 500k e R$ 1M/ano">
-              <div class="mc-dot"></div> Entre R$ 500 mil e R$ 1M/ano
-            </div>
-            <div class="mc-option" data-value="Entre R$ 1M e R$ 5M/ano">
-              <div class="mc-dot"></div> Entre R$ 1M e R$ 5M/ano
-            </div>
-            <div class="mc-option" data-value="Entre R$ 5M e R$ 20M/ano">
-              <div class="mc-dot"></div> Entre R$ 5M e R$ 20M/ano
-            </div>
-            <div class="mc-option" data-value="Acima de R$ 20M/ano">
-              <div class="mc-dot"></div> Acima de R$ 20M/ano
-            </div>
+            <div class="mc-option" data-value="Abaixo de R$ 500k/ano"><div class="mc-dot"></div> Abaixo de R$ 500 mil/ano</div>
+            <div class="mc-option" data-value="Entre R$ 500k e R$ 1M/ano"><div class="mc-dot"></div> Entre R$ 500 mil e R$ 1M/ano</div>
+            <div class="mc-option" data-value="Entre R$ 1M e R$ 5M/ano"><div class="mc-dot"></div> Entre R$ 1M e R$ 5M/ano</div>
+            <div class="mc-option" data-value="Entre R$ 5M e R$ 20M/ano"><div class="mc-dot"></div> Entre R$ 5M e R$ 20M/ano</div>
+            <div class="mc-option" data-value="Acima de R$ 20M/ano"><div class="mc-dot"></div> Acima de R$ 20M/ano</div>
           </div>
-          <button class="btn-next" id="next-q1" disabled>Próximo →</button>
         </div>
 
-        <!-- Q2: Maior desafio -->
+        <!-- Q2: Cargo -->
         <div class="survey-question" id="q2">
+          <button class="btn-back" id="back-q2">← Voltar</button>
+          <div class="q-title">Qual é o seu cargo na empresa?</div>
+          <div class="q-subtitle">Selecione a opção que melhor descreve sua posição.</div>
+          <div class="mc-options">
+            <div class="mc-option" data-value="CEO / Sócio-Fundador"><div class="mc-dot"></div> CEO / Sócio-Fundador</div>
+            <div class="mc-option" data-value="Diretor / C-level"><div class="mc-dot"></div> Diretor / C-level</div>
+            <div class="mc-option" data-value="Gerente / Coordenador"><div class="mc-dot"></div> Gerente / Coordenador</div>
+            <div class="mc-option" data-value="Analista / Assistente"><div class="mc-dot"></div> Analista / Assistente</div>
+          </div>
+        </div>
+
+        <!-- Q3: Maior desafio -->
+        <div class="survey-question" id="q3">
+          <button class="btn-back" id="back-q3">← Voltar</button>
           <div class="q-title">Qual é o maior desafio do seu negócio hoje?</div>
           <div class="q-subtitle">Selecione a opção que mais representa sua situação atual.</div>
           <div class="mc-options">
-            <div class="mc-option" data-value="Reduzir custos operacionais">
-              <div class="mc-dot"></div> Reduzir custos operacionais
-            </div>
-            <div class="mc-option" data-value="Escalar sem contratar mais pessoas">
-              <div class="mc-dot"></div> Escalar sem contratar mais pessoas
-            </div>
-            <div class="mc-option" data-value="Automatizar processos repetitivos">
-              <div class="mc-dot"></div> Automatizar processos repetitivos
-            </div>
-            <div class="mc-option" data-value="Gerar mais leads e vendas">
-              <div class="mc-dot"></div> Gerar mais leads e vendas
-            </div>
-            <div class="mc-option" data-value="Melhorar a experiência do cliente">
-              <div class="mc-dot"></div> Melhorar a experiência do cliente
-            </div>
+            <div class="mc-option" data-value="Reduzir custos operacionais"><div class="mc-dot"></div> Reduzir custos operacionais</div>
+            <div class="mc-option" data-value="Escalar sem contratar mais pessoas"><div class="mc-dot"></div> Escalar sem contratar mais pessoas</div>
+            <div class="mc-option" data-value="Automatizar processos repetitivos"><div class="mc-dot"></div> Automatizar processos repetitivos</div>
+            <div class="mc-option" data-value="Gerar mais leads e vendas"><div class="mc-dot"></div> Gerar mais leads e vendas</div>
+            <div class="mc-option" data-value="Melhorar a experiência do cliente"><div class="mc-dot"></div> Melhorar a experiência do cliente</div>
           </div>
-          <button class="btn-next" id="next-q2" disabled>Próximo →</button>
         </div>
 
-        <!-- Q3: Experiência com IA -->
-        <div class="survey-question" id="q3">
+        <!-- Q4: Experiência com IA -->
+        <div class="survey-question" id="q4">
+          <button class="btn-back" id="back-q4">← Voltar</button>
           <div class="q-title">Você já tentou usar IA no seu negócio?</div>
           <div class="q-subtitle">Seja honesto — isso nos ajuda a preparar o conteúdo certo para você.</div>
           <div class="mc-options">
-            <div class="mc-option" data-value="Nunca tentei">
-              <div class="mc-dot"></div> Nunca tentei
-            </div>
-            <div class="mc-option" data-value="Tentei mas não funcionou">
-              <div class="mc-dot"></div> Tentei, mas não funcionou como esperava
-            </div>
-            <div class="mc-option" data-value="Uso pontualmente">
-              <div class="mc-dot"></div> Uso pontualmente (ChatGPT, etc.), mas sem método
-            </div>
-            <div class="mc-option" data-value="Já implementei com resultados">
-              <div class="mc-dot"></div> Já implementei e tenho resultados
-            </div>
+            <div class="mc-option" data-value="Nunca tentei"><div class="mc-dot"></div> Nunca tentei</div>
+            <div class="mc-option" data-value="Tentei mas não funcionou"><div class="mc-dot"></div> Tentei, mas não funcionou como esperava</div>
+            <div class="mc-option" data-value="Uso pontualmente"><div class="mc-dot"></div> Uso pontualmente (ChatGPT, etc.), mas sem método</div>
+            <div class="mc-option" data-value="Já implementei com resultados"><div class="mc-dot"></div> Já implementei e tenho resultados</div>
           </div>
-          <button class="btn-next" id="next-q3" disabled>Próximo →</button>
         </div>
 
-        <!-- Q4: Nome / WhatsApp -->
-        <div class="survey-question" id="q4">
-          <div class="q-title">Qual é o seu WhatsApp?</div>
-          <div class="q-subtitle">Vamos enviar o link do grupo diretamente para você.</div>
-          <input type="tel" class="q-input" id="q4-input" placeholder="(11) 99999-9999" autocomplete="tel">
-          <br>
-          <button class="btn-next" id="next-q4">Concluir e Entrar no Grupo →</button>
+        <!-- Q5: Confirmar WhatsApp -->
+        <div class="survey-question" id="q5">
+          <button class="btn-back" id="back-q5">← Voltar</button>
+          <div class="q-title">Confirme seu WhatsApp</div>
+          <div class="q-subtitle">Usaremos este número para enviar o link do grupo. Verifique se está correto.</div>
+          <input type="tel" class="q-input" id="q5-input" placeholder="(11) 99999-9999" autocomplete="tel">
+
+          <!-- Alerta de divergência (oculto por padrão) -->
+          <div id="divergence-alert" style="display:none; margin: 12px 0 16px; padding: 12px 14px; background: #fff8e1; border: 1px solid #f59e0b; border-radius: 8px; font-size: 13px; color: #92400e; line-height: 1.5;">
+            ⚠️ O número informado é diferente do cadastrado na inscrição (<strong id="original-phone-display"></strong>).<br>
+            Tem certeza que quer usar o novo número?
+            <div style="display:flex; gap:10px; margin-top:10px;">
+              <button id="confirm-new-phone" style="background:#f59e0b;color:#000;border:none;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">Sim, usar novo número</button>
+              <button id="revert-phone" style="background:none;border:1px solid #d97706;color:#92400e;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">Voltar ao original</button>
+            </div>
+          </div>
+
+          <button class="btn-next" id="next-q5">Concluir e Entrar no Grupo →</button>
         </div>
 
         <!-- SUCCESS -->
@@ -657,19 +747,41 @@
   </footer>
 
   <script>
+    // ╔══════════════════════════════════════════════╗
+    // ║           CONFIGURAÇÕES DA PÁGINA            ║
+    // ╠══════════════════════════════════════════════╣
+    // ║ 1. Cole o link do grupo WhatsApp abaixo      ║
+    const WHATSAPP_LINK = 'https://chat.whatsapp.com/SEU-LINK-AQUI';
+    // ╚══════════════════════════════════════════════╝
+
     // ── PROGRESS BAR ANIMATE IN ────────────────────
     window.addEventListener('load', () => {
+      // Começa em 0%, anima até 62% após pequeno delay
       setTimeout(() => {
-        document.getElementById('progress-fill').style.width = '62%';
-      }, 400);
+        const fill = document.getElementById('progress-fill');
+        fill.style.width = '62%';
+      }, 300);
     });
 
+    // ── LÊ DADOS DO LEAD VIA URL PARAMS ───────────
+    const urlParams  = new URLSearchParams(window.location.search);
+    const leadNome   = urlParams.get('nome')  || '';
+    const leadEmail  = urlParams.get('email') || '';
+    const leadPhone  = urlParams.get('phone') || '';
+
     // ── SURVEY ENGINE ──────────────────────────────
-    const totalQuestions = 4;
-    const answers = {};
+    const answers = { nome: leadNome, email: leadEmail, phone: leadPhone };
     let currentQ = 1;
 
-    // Build progress dots
+    // Progresso: começa em 62%, termina em 92% (próxima página = 98%)
+    const PROGRESS_STEPS = { 1: 62, 2: 69, 3: 76, 4: 84, 5: 90, done: 92 };
+
+    function setProgress(pct) {
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.querySelector('.progress-label').textContent = pct + '%';
+    }
+
+    const totalQuestions = 5;
     function renderDots() {
       const wrap = document.getElementById('survey-dots');
       wrap.innerHTML = '';
@@ -681,86 +793,138 @@
     }
     renderDots();
 
-    // Multiple choice selection
+    function restoreAnswer(qNum) {
+      if (qNum === 5) {
+        document.getElementById('q5-input').value = answers.phone || leadPhone || '';
+        return;
+      }
+      const saved = answers['q' + qNum];
+      if (!saved) return;
+      document.getElementById('q' + qNum).querySelectorAll('.mc-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.value === saved);
+      });
+    }
+
+    function completeSurvey(lastQ) {
+      const selected = document.getElementById('q' + lastQ).querySelector('.mc-option.selected');
+      if (selected) answers['q' + lastQ] = selected.dataset.value;
+
+      document.getElementById('q' + lastQ).classList.remove('active');
+      document.getElementById('survey-success').style.display = 'block';
+      setProgress(PROGRESS_STEPS.done);
+      currentQ = totalQuestions + 1;
+      renderDots();
+      console.log('Survey answers:', answers);
+
+      setTimeout(() => { window.location.href = WHATSAPP_LINK; }, 2000);
+    }
+
+    function finishSurvey() {
+      document.getElementById('q5').classList.remove('active');
+      document.getElementById('divergence-alert').style.display = 'none';
+      document.getElementById('survey-success').style.display = 'block';
+      setProgress(PROGRESS_STEPS.done);
+      currentQ = totalQuestions + 1;
+      renderDots();
+      console.log('Survey answers:', answers);
+      setTimeout(() => { window.location.href = WHATSAPP_LINK; }, 2000);
+    }
+
+    function goToQuestion(from, to) {
+      const fromEl = document.getElementById('q' + from);
+      const selected = fromEl.querySelector('.mc-option.selected');
+      if (selected) answers['q' + from] = selected.dataset.value;
+      fromEl.classList.remove('active');
+
+      if (to <= totalQuestions) {
+        const toEl = document.getElementById('q' + to);
+        toEl.classList.add('active', 'can-go-back');
+        restoreAnswer(to);
+        currentQ = to;
+        renderDots();
+        setProgress(PROGRESS_STEPS[to]);
+      } else {
+        // Última pergunta respondida — conclui
+        completeSurvey(from);
+      }
+    }
+
+    function goBack(from) {
+      document.getElementById('q' + from).classList.remove('active');
+      const to = from - 1;
+      const toEl = document.getElementById('q' + to);
+      toEl.classList.add('active');
+      restoreAnswer(to);
+      currentQ = to;
+      renderDots();
+      setProgress(PROGRESS_STEPS[to]);
+    }
+
+    // Múltipla escolha — auto-avança ao selecionar
     document.querySelectorAll('.mc-options').forEach(group => {
       group.querySelectorAll('.mc-option').forEach(opt => {
         opt.addEventListener('click', () => {
           group.querySelectorAll('.mc-option').forEach(o => o.classList.remove('selected'));
           opt.classList.add('selected');
-          // Enable next button for this question
-          const qEl = opt.closest('.survey-question');
-          const btn = qEl.querySelector('.btn-next');
-          if (btn) btn.disabled = false;
+          const qNum = parseInt(opt.closest('.survey-question').id.replace('q', ''));
+          setTimeout(() => goToQuestion(qNum, qNum + 1), 280);
         });
       });
     });
 
-    // Phone mask for Q4
-    const q4Input = document.getElementById('q4-input');
-    if (q4Input) {
-      q4Input.addEventListener('input', () => {
-        let v = q4Input.value.replace(/\D/g, '').slice(0, 11);
-        if (v.length >= 7) {
-          v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
-        } else if (v.length >= 3) {
-          v = `(${v.slice(0,2)}) ${v.slice(2)}`;
-        }
-        q4Input.value = v;
-      });
-    }
+    // Botões voltar
+    document.getElementById('back-q2').addEventListener('click', () => goBack(2));
+    document.getElementById('back-q3').addEventListener('click', () => goBack(3));
+    document.getElementById('back-q4').addEventListener('click', () => goBack(4));
+    document.getElementById('back-q5').addEventListener('click', () => goBack(5));
 
-    // Next buttons
-    function goToQuestion(from, to) {
-      // Save answer
-      const fromEl = document.getElementById('q' + from);
-      const selected = fromEl.querySelector('.mc-option.selected');
-      if (selected) answers['q' + from] = selected.dataset.value;
+    // ── Q5: WHATSAPP ────────────────────────────────
+    // Pré-preenche com o número vindo da URL
+    document.getElementById('q5-input').value = leadPhone;
 
-      // Hide current, show next
-      fromEl.classList.remove('active');
-
-      if (to <= totalQuestions) {
-        const toEl = document.getElementById('q' + to);
-        toEl.classList.add('active');
-        currentQ = to;
-        renderDots();
-
-        // Update progress bar
-        const pct = Math.round((to / totalQuestions) * 100);
-        document.getElementById('progress-fill').style.width = pct + '%';
-        document.querySelector('.progress-label').textContent = pct + '%';
+    // Máscara de telefone
+    document.getElementById('q5-input').addEventListener('input', function () {
+      let v = this.value.replace(/\D/g, '').slice(0, 11);
+      if (v.length <= 10) {
+        v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+      } else {
+        v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
       }
-    }
+      this.value = v;
+      // Esconde alerta enquanto edita
+      document.getElementById('divergence-alert').style.display = 'none';
+    });
 
-    document.getElementById('next-q1').addEventListener('click', () => goToQuestion(1, 2));
-    document.getElementById('next-q2').addEventListener('click', () => goToQuestion(2, 3));
-    document.getElementById('next-q3').addEventListener('click', () => goToQuestion(3, 4));
+    // Botão "Concluir"
+    document.getElementById('next-q5').addEventListener('click', () => {
+      const input = document.getElementById('q5-input').value.trim();
+      if (!input) { document.getElementById('q5-input').focus(); return; }
 
-    document.getElementById('next-q4').addEventListener('click', () => {
-      const phone = q4Input.value.replace(/\D/g,'');
-      if (phone.length < 10) {
-        q4Input.style.borderColor = '#ef4444';
-        q4Input.focus();
-        return;
+      const normalize = v => v.replace(/\D/g, '');
+      const inputDigits = normalize(input);
+      const leadDigits  = normalize(leadPhone);
+
+      if (leadDigits && inputDigits !== leadDigits) {
+        // Números divergem — mostra alerta
+        document.getElementById('original-phone-display').textContent = leadPhone;
+        document.getElementById('divergence-alert').style.display = 'block';
+      } else {
+        // Igual ou sem número original — conclui
+        answers.phone = input;
+        finishSurvey();
       }
-      answers['q4'] = q4Input.value;
+    });
 
-      // Hide Q4, show success
-      document.getElementById('q4').classList.remove('active');
-      document.getElementById('survey-success').style.display = 'block';
+    // Confirmou novo número
+    document.getElementById('confirm-new-phone').addEventListener('click', () => {
+      answers.phone = document.getElementById('q5-input').value.trim();
+      finishSurvey();
+    });
 
-      // Update progress to 100%
-      document.getElementById('progress-fill').style.width = '100%';
-      document.querySelector('.progress-label').textContent = '100%';
-      renderDots();
-
-      console.log('Survey answers:', answers);
-
-      // ── REDIRECIONAR APÓS PESQUISA ──────────────
-      // Substitua a URL abaixo pelo link do seu grupo do WhatsApp
-      setTimeout(() => {
-        window.location.href = 'https://chat.whatsapp.com/SEU-LINK-AQUI';
-      }, 2000);
+    // Volta para o original
+    document.getElementById('revert-phone').addEventListener('click', () => {
+      document.getElementById('q5-input').value = leadPhone;
+      document.getElementById('divergence-alert').style.display = 'none';
     });
 
     // ── SMOOTH SCROLL AO CLICAR NO CTA ────────────

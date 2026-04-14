@@ -2423,8 +2423,12 @@
         btn.textContent = 'Confirmando...';
 
         setTimeout(() => {
-          form.style.display = 'none';
-          success.style.display = 'block';
+          // Passa os dados do lead via URL para a página de pesquisa
+          const nome  = form.querySelector('[type="text"]').value.trim();
+          const email = form.querySelector('[type="email"]').value.trim();
+          const phone = form.querySelector('[type="tel"]').value.trim();
+          const params = new URLSearchParams({ nome, email, phone });
+          window.location.href = 'survey.html?' + params.toString();
         }, 800);
       });
     }

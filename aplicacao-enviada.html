@@ -390,6 +390,187 @@
       .expect-card, .mentor-card { padding: 24px 20px; }
       .steps-section, .expect-section, .mentor-section { padding-left: 20px; padding-right: 20px; }
     }
+
+    /* ── INLINE CALENDAR ──────────────────────────── */
+    #inline-cal-wrap {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #inline-cal-wrap.open { max-height: 1200px; }
+
+    .ic-panel {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 24px;
+    }
+
+    /* Steps */
+    .ic-steps {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 24px;
+    }
+    .ic-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 0;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .ic-step.active { color: var(--white); }
+    .ic-step.done   { color: var(--green); }
+    .ic-step-num {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; flex-shrink: 0;
+    }
+    .ic-step.done .ic-step-num  { background: var(--green); border-color: var(--green); color: #000; }
+    .ic-step.active .ic-step-num { background: #fff; border-color: #fff; color: #000; }
+    .ic-step-div { flex:1; height:1px; background: rgba(255,255,255,0.07); margin: 0 6px; }
+    .ic-step:last-child .ic-step-div { display:none; }
+
+    /* Panels */
+    .ic-body { padding: 28px 24px; }
+    .icpanel { display: none; }
+    .icpanel.active { display: block; animation: icIn 0.25s ease both; }
+    @keyframes icIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Calendar */
+    .ic-cal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .ic-cal-month { font-size: 15px; font-weight: 700; }
+    .ic-cal-nav { display: flex; gap: 4px; }
+    .ic-cal-btn {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; color: var(--white); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; transition: background 0.15s;
+    }
+    .ic-cal-btn:hover { background: rgba(255,255,255,0.1); }
+    .ic-wdays {
+      display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 6px;
+    }
+    .ic-wday { text-align:center; font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:rgba(255,255,255,0.28); padding:3px 0; }
+    .ic-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+    .ic-day {
+      aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+      border-radius:8px; font-size:13px; font-weight:500;
+      cursor:default; transition:all 0.12s; color:rgba(255,255,255,0.2);
+    }
+    .ic-day.ic-empty { pointer-events:none; }
+    .ic-day.ic-past  { color:rgba(255,255,255,0.1); pointer-events:none; }
+    .ic-day.ic-unavail { color:rgba(255,255,255,0.15); pointer-events:none; }
+    .ic-day.ic-avail {
+      color:var(--white); cursor:pointer;
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06);
+      position:relative;
+    }
+    .ic-day.ic-avail::after {
+      content:''; position:absolute; bottom:4px; left:50%; transform:translateX(-50%);
+      width:3px; height:3px; border-radius:50%; background:var(--green); opacity:0.7;
+    }
+    .ic-day.ic-avail:hover { background:rgba(106,235,152,0.1); border-color:rgba(106,235,152,0.3); color:var(--green); }
+    .ic-day.ic-sel { background:var(--green)!important; border-color:var(--green)!important; color:#000!important; font-weight:700; }
+    .ic-day.ic-sel::after { display:none; }
+
+    /* Slots */
+    .ic-slots-label { font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--green); margin-bottom:4px; }
+    .ic-slots-head  { font-size:18px; font-weight:700; margin-bottom:4px; font-family:var(--font-serif); }
+    .ic-slots-tz    { font-size:11px; color:var(--muted); margin-bottom:20px; }
+    .ic-slots-grid  { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:24px; }
+    @media(max-width:480px){ .ic-slots-grid { grid-template-columns:repeat(2,1fr); } }
+    .ic-slot {
+      padding:12px 10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px; color:var(--white); font-family:var(--font-sans); font-size:14px;
+      font-weight:600; cursor:pointer; text-align:center; transition:all 0.12s;
+    }
+    .ic-slot:hover { background:rgba(108,98,228,0.12); border-color:rgba(108,98,228,0.35); }
+    .ic-slot.ic-sel-slot { background:var(--purple); border-color:var(--purple); box-shadow:0 0 16px rgba(108,98,228,0.3); }
+    .ic-slot-period { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; opacity:0.55; }
+
+    /* Back btn */
+    .ic-back {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:12px; color:var(--muted); cursor:pointer;
+      background:none; border:none; padding:0; font-family:var(--font-sans);
+      margin-bottom:20px; transition:color 0.15s;
+    }
+    .ic-back:hover { color:var(--white); }
+
+    /* Confirm summary */
+    .ic-booking-info {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px; padding:16px 18px; display:flex; gap:16px; margin-bottom:22px;
+    }
+    @media(max-width:480px){ .ic-booking-info { flex-direction:column; gap:10px; } }
+    .ic-binfo-block .ic-binfo-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:2px; }
+    .ic-binfo-block .ic-binfo-val   { font-size:13px; font-weight:700; }
+    .ic-binfo-block .ic-binfo-sub   { font-size:11px; color:var(--muted); }
+
+    .ic-field-group { margin-bottom:14px; }
+    .ic-field-group label { display:block; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:6px; }
+    .ic-field-group input {
+      width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+      border-radius:10px; padding:12px 14px; color:var(--white); font-family:var(--font-sans);
+      font-size:14px; outline:none; transition:border-color 0.15s;
+    }
+    .ic-field-group input:focus { border-color:rgba(108,98,228,0.5); }
+    .ic-field-group input.ic-prefilled { border-color:rgba(106,235,152,0.25); background:rgba(106,235,152,0.04); }
+    .ic-field-error { display:none; font-size:11px; color:#f87171; margin-top:4px; }
+
+    .btn-ic-confirm {
+      width:100%; padding:15px 24px; background:var(--green); color:#000;
+      border:none; border-radius:100px; font-family:var(--font-sans); font-size:15px;
+      font-weight:800; cursor:pointer; letter-spacing:-0.01em;
+      transition:transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 24px rgba(106,235,152,0.15);
+    }
+    .btn-ic-confirm:hover { transform:translateY(-2px); box-shadow:0 0 36px rgba(106,235,152,0.3); }
+    .btn-ic-confirm:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+    /* Success state */
+    .ic-success { text-align:center; padding:8px 0; }
+    .ic-success-icon {
+      width:72px; height:72px; border-radius:50%;
+      background:rgba(106,235,152,0.1); border:2px solid rgba(106,235,152,0.3);
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 20px;
+      animation:icSuccPop 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .ic-success-icon svg { width:32px; height:32px; }
+    @keyframes icSuccPop { from { transform:scale(0.4); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .ic-success h3 { font-family:var(--font-serif); font-size:22px; font-weight:700; margin-bottom:8px; }
+    .ic-success h3 em { font-style:italic; color:var(--green); }
+    .ic-success p  { font-size:14px; color:var(--muted); line-height:1.6; max-width:380px; margin:0 auto 22px; }
+    .ic-sum-card {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px; padding:16px 20px; text-align:left; max-width:380px; margin:0 auto 20px;
+    }
+    .ic-sum-row { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:13px; }
+    .ic-sum-row:last-child { border-bottom:none; }
+    .ic-sum-ico { font-size:15px; line-height:1.4; flex-shrink:0; }
+    .ic-sum-val { font-weight:700; }
+    .ic-sum-sub { font-size:11px; color:var(--muted); }
+    .btn-ic-gcal {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:10px 20px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      border-radius:100px; color:var(--white); font-family:var(--font-sans);
+      font-size:12px; font-weight:600; text-decoration:none; transition:background 0.15s;
+    }
+    .btn-ic-gcal:hover { background:rgba(255,255,255,0.1); }
   </style>
 </head>
 <body>
@@ -491,17 +672,137 @@
 
 <hr class="section-divider">
 
-<!-- CTA AGENDAMENTO -->
+<!-- CTA AGENDAMENTO + INLINE CALENDAR -->
 <section class="expect-section" style="padding-top: 48px;">
   <div class="expect-inner">
-    <div class="expect-card" style="text-align:center; padding: 40px 32px;">
+    <div class="expect-card" style="text-align:center; padding: 40px 32px 32px;">
       <div style="font-size:40px; margin-bottom:16px;">🗺️</div>
       <h2 style="font-family:var(--font-serif);font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px;">Seu Mapa de Implementação<br>já está sendo gerado</h2>
-      <p style="font-size:15px;color:var(--muted);line-height:1.65;max-width:440px;margin:0 auto 28px;">Enquanto nossa equipe analisa sua ficha, você já pode adiantar e agendar sua sessão estratégica de 30 minutos para apresentação do mapa completo.</p>
-      <a id="cta-agendar" href="agendar.html" style="display:inline-flex;align-items:center;gap:8px;padding:16px 36px;background:var(--green);color:var(--black);font-family:var(--font-sans);font-size:16px;font-weight:800;letter-spacing:-0.01em;border-radius:100px;text-decoration:none;box-shadow:0 0 32px rgba(106,235,152,0.2);transition:transform 0.2s,box-shadow 0.2s;">
+      <p style="font-size:15px;color:var(--muted);line-height:1.65;max-width:440px;margin:0 auto 24px;">Enquanto nossa equipe analisa sua ficha, você já pode adiantar e agendar sua sessão estratégica de 30 minutos para apresentação do mapa completo.</p>
+
+      <button id="btn-toggle-cal" onclick="toggleInlineCal()" style="display:inline-flex;align-items:center;gap:8px;padding:16px 36px;background:var(--green);color:var(--black);font-family:var(--font-sans);font-size:16px;font-weight:800;letter-spacing:-0.01em;border-radius:100px;border:none;cursor:pointer;box-shadow:0 0 32px rgba(106,235,152,0.2);transition:transform 0.2s,box-shadow 0.2s;">
         🗓️ Agendar minha sessão estratégica
-      </a>
+      </button>
       <p style="margin-top:12px;font-size:12px;color:var(--muted2);">Gratuito · 30 minutos · Sem compromisso</p>
+
+      <!-- ── INLINE CALENDAR ─────────────────────── -->
+      <div id="inline-cal-wrap">
+        <div class="ic-panel">
+
+          <!-- Steps -->
+          <div class="ic-steps" id="ic-steps">
+            <div class="ic-step active" id="icstep-1">
+              <div class="ic-step-num" id="icstep-num-1">1</div>Dia
+              <div class="ic-step-div"></div>
+            </div>
+            <div class="ic-step" id="icstep-2">
+              <div class="ic-step-num" id="icstep-num-2">2</div>Horário
+              <div class="ic-step-div"></div>
+            </div>
+            <div class="ic-step" id="icstep-3">
+              <div class="ic-step-num" id="icstep-num-3">3</div>Confirmar
+            </div>
+          </div>
+
+          <div class="ic-body">
+
+            <!-- STEP 1: Calendar -->
+            <div class="icpanel active" id="icpanel-1">
+              <div class="ic-cal-header">
+                <span class="ic-cal-month" id="ic-month-label">Abril 2026</span>
+                <div class="ic-cal-nav">
+                  <button class="ic-cal-btn" id="ic-prev" onclick="icCalNav(-1)">‹</button>
+                  <button class="ic-cal-btn" id="ic-next" onclick="icCalNav(1)">›</button>
+                </div>
+              </div>
+              <div class="ic-wdays">
+                <div class="ic-wday">Dom</div><div class="ic-wday">Seg</div>
+                <div class="ic-wday">Ter</div><div class="ic-wday">Qua</div>
+                <div class="ic-wday">Qui</div><div class="ic-wday">Sex</div>
+                <div class="ic-wday">Sáb</div>
+              </div>
+              <div class="ic-grid" id="ic-grid"></div>
+            </div>
+
+            <!-- STEP 2: Slots -->
+            <div class="icpanel" id="icpanel-2">
+              <button class="ic-back" onclick="icGoStep(1)">‹ Voltar ao calendário</button>
+              <p class="ic-slots-label" id="ic-slots-label"></p>
+              <h3 class="ic-slots-head">Selecione um horário</h3>
+              <p class="ic-slots-tz">Horário de Brasília (BRT · UTC−3)</p>
+              <div class="ic-slots-grid" id="ic-slots-grid"></div>
+            </div>
+
+            <!-- STEP 3: Confirm -->
+            <div class="icpanel" id="icpanel-3">
+              <button class="ic-back" onclick="icGoStep(2)">‹ Voltar aos horários</button>
+              <div class="ic-booking-info" id="ic-booking-info">
+                <div class="ic-binfo-block">
+                  <div class="ic-binfo-label">Data</div>
+                  <div class="ic-binfo-val" id="ic-conf-date">—</div>
+                  <div class="ic-binfo-sub" id="ic-conf-date-sub"></div>
+                </div>
+                <div class="ic-binfo-block">
+                  <div class="ic-binfo-label">Horário</div>
+                  <div class="ic-binfo-val" id="ic-conf-time">—</div>
+                  <div class="ic-binfo-sub">30 min · BRT</div>
+                </div>
+                <div class="ic-binfo-block">
+                  <div class="ic-binfo-label">Formato</div>
+                  <div class="ic-binfo-val">Online</div>
+                  <div class="ic-binfo-sub">Link por e-mail</div>
+                </div>
+              </div>
+
+              <div class="ic-field-group">
+                <label>Nome completo *</label>
+                <input type="text" id="icf-nome" placeholder="Seu nome completo">
+                <div class="ic-field-error" id="icf-err-nome">Informe seu nome.</div>
+              </div>
+              <div class="ic-field-group">
+                <label>E-mail *</label>
+                <input type="email" id="icf-email" placeholder="seu@email.com">
+                <div class="ic-field-error" id="icf-err-email">Informe um e-mail válido.</div>
+              </div>
+              <div class="ic-field-group">
+                <label>WhatsApp *</label>
+                <input type="tel" id="icf-wpp" placeholder="+55 (11) 99999-9999">
+                <div class="ic-field-error" id="icf-err-wpp">Informe seu WhatsApp com DDD.</div>
+              </div>
+
+              <button class="btn-ic-confirm" id="btn-ic-confirm" onclick="icConfirm()">
+                ✓ Confirmar Agendamento
+              </button>
+              <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:10px;">🔒 Seus dados são confidenciais.</p>
+            </div>
+
+            <!-- STEP 4: Success -->
+            <div class="icpanel" id="icpanel-4">
+              <div class="ic-success">
+                <div class="ic-success-icon">
+                  <svg viewBox="0 0 36 36" fill="none">
+                    <circle cx="18" cy="18" r="16" stroke="#6aeb98" stroke-width="1.5" opacity="0.4"/>
+                    <path d="M11 18.5l5 5 9-10" stroke="#6aeb98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <h3>Agendamento <em>confirmado!</em></h3>
+                <p>Você receberá o link da reunião por e-mail. Até lá!</p>
+                <div class="ic-sum-card" id="ic-sum-card">
+                  <div class="ic-sum-row"><span class="ic-sum-ico">🗓️</span><div><div class="ic-sum-val" id="ic-sum-date">—</div><div class="ic-sum-sub" id="ic-sum-time">—</div></div></div>
+                  <div class="ic-sum-row"><span class="ic-sum-ico">👤</span><div><div class="ic-sum-val" id="ic-sum-nome">—</div><div class="ic-sum-sub" id="ic-sum-email">—</div></div></div>
+                  <div class="ic-sum-row"><span class="ic-sum-ico">💻</span><div><div class="ic-sum-val">Google Meet</div><div class="ic-sum-sub">Link enviado por e-mail</div></div></div>
+                </div>
+                <a href="#" id="ic-gcal-link" class="btn-ic-gcal" target="_blank">
+                  <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.25"/><path d="M2 7h12M5 1v4M11 1v4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+                  Adicionar ao Google Calendar
+                </a>
+              </div>
+            </div>
+
+          </div><!-- /.ic-body -->
+        </div><!-- /.ic-panel -->
+      </div><!-- /#inline-cal-wrap -->
+
     </div>
   </div>
 </section>
@@ -624,6 +925,205 @@
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
     });
+  })();
+
+  // ── INLINE CALENDAR ──────────────────────────────
+  const IC_MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const IC_DAYS   = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  const IC_SLOTS  = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+
+  const icToday = new Date();
+  let icYear  = icToday.getFullYear();
+  let icMonth = icToday.getMonth();
+  let icSelDate = null;
+  let icSelSlot = null;
+  let icStep = 1;
+  let icCalOpen = false;
+
+  function toggleInlineCal() {
+    const wrap = document.getElementById('inline-cal-wrap');
+    const btn  = document.getElementById('btn-toggle-cal');
+    icCalOpen = !icCalOpen;
+    wrap.classList.toggle('open', icCalOpen);
+    btn.textContent = icCalOpen ? '✕ Fechar calendário' : '🗓️ Agendar minha sessão estratégica';
+    if (icCalOpen) {
+      icRenderCal();
+      setTimeout(() => {
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }
+
+  function icIsAvail(date) {
+    const dow = date.getDay();
+    if (dow === 0 || dow === 6) return false;
+    const diff = Math.floor((date - icToday) / 86400000);
+    if (diff < 2 || diff > 45) return false;
+    const hash = parseInt(date.toISOString().split('T')[0].replace(/-/g,'').slice(-2));
+    return hash % 5 !== 0;
+  }
+
+  function icRenderCal() {
+    document.getElementById('ic-month-label').textContent = IC_MONTHS[icMonth] + ' ' + icYear;
+    const grid = document.getElementById('ic-grid');
+    grid.innerHTML = '';
+    const firstDow = new Date(icYear, icMonth, 1).getDay();
+    const daysIn   = new Date(icYear, icMonth + 1, 0).getDate();
+
+    for (let i = 0; i < firstDow; i++) {
+      const el = document.createElement('div');
+      el.className = 'ic-day ic-empty';
+      grid.appendChild(el);
+    }
+    for (let d = 1; d <= daysIn; d++) {
+      const date = new Date(icYear, icMonth, d);
+      const el   = document.createElement('div');
+      el.textContent = d;
+      if (date < icToday && date.toDateString() !== icToday.toDateString()) {
+        el.className = 'ic-day ic-past';
+      } else if (!icIsAvail(date)) {
+        el.className = 'ic-day ic-unavail';
+      } else {
+        el.className = 'ic-day ic-avail';
+        if (icSelDate && date.toDateString() === icSelDate.toDateString()) el.classList.add('ic-sel');
+        el.addEventListener('click', () => icSelectDate(date));
+      }
+      grid.appendChild(el);
+    }
+    const isNow = (icMonth === icToday.getMonth() && icYear === icToday.getFullYear());
+    document.getElementById('ic-prev').style.opacity = isNow ? '0.3' : '1';
+    document.getElementById('ic-prev').disabled = isNow;
+  }
+
+  function icCalNav(dir) {
+    icMonth += dir;
+    if (icMonth < 0)  { icMonth = 11; icYear--; }
+    if (icMonth > 11) { icMonth = 0;  icYear++; }
+    const isNow = (icYear < icToday.getFullYear()) || (icYear === icToday.getFullYear() && icMonth < icToday.getMonth());
+    if (isNow) { icMonth = icToday.getMonth(); icYear = icToday.getFullYear(); }
+    icRenderCal();
+  }
+
+  function icSelectDate(date) {
+    icSelDate = date;
+    icSelSlot = null;
+    icRenderSlots();
+    icGoStep(2);
+  }
+
+  function icRenderSlots() {
+    if (!icSelDate) return;
+    const dow = icSelDate.getDay();
+    const label = IC_DAYS[dow].charAt(0).toUpperCase() + IC_DAYS[dow].slice(1) + ', ' + icSelDate.getDate() + ' de ' + IC_MONTHS[icSelDate.getMonth()];
+    document.getElementById('ic-slots-label').textContent = label;
+
+    const dateKey = icSelDate.toISOString().split('T')[0];
+    const hash = parseInt(dateKey.replace(/-/g,'').slice(-3));
+    const bookings = JSON.parse(localStorage.getItem('roicomia_bookings') || '[]');
+    const booked   = bookings.filter(b => b.date === dateKey).map(b => b.time);
+
+    const grid = document.getElementById('ic-slots-grid');
+    grid.innerHTML = '';
+    const avail = IC_SLOTS.filter((t, i) => !booked.includes(t) && (i + hash) % 7 !== 0);
+
+    if (!avail.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:rgba(255,255,255,0.4);font-size:13px;">Sem horários neste dia. Escolha outra data.</div>';
+      return;
+    }
+    avail.forEach(time => {
+      const h = parseInt(time.split(':')[0]);
+      const btn = document.createElement('button');
+      btn.className = 'ic-slot' + (icSelSlot === time ? ' ic-sel-slot' : '');
+      btn.innerHTML = '<div style="font-weight:700;font-size:15px;">' + time + '</div><div class="ic-slot-period">' + (h < 12 ? 'manhã' : 'tarde') + '</div>';
+      btn.onclick = () => icSelectSlot(time, btn);
+      grid.appendChild(btn);
+    });
+  }
+
+  function icSelectSlot(time, el) {
+    icSelSlot = time;
+    document.querySelectorAll('.ic-slot').forEach(b => b.classList.remove('ic-sel-slot'));
+    el.classList.add('ic-sel-slot');
+    setTimeout(() => { icUpdateConfirmInfo(); icGoStep(3); }, 320);
+  }
+
+  function icUpdateConfirmInfo() {
+    if (!icSelDate || !icSelSlot) return;
+    const dow = icSelDate.getDay();
+    const dateStr = IC_DAYS[dow].charAt(0).toUpperCase() + IC_DAYS[dow].slice(1) + ', ' + icSelDate.getDate() + ' de ' + IC_MONTHS[icSelDate.getMonth()];
+    document.getElementById('ic-conf-date').textContent = dateStr;
+    document.getElementById('ic-conf-date-sub').textContent = IC_MONTHS[icSelDate.getMonth()] + ' ' + icSelDate.getFullYear();
+    document.getElementById('ic-conf-time').textContent = icSelSlot;
+  }
+
+  async function icConfirm() {
+    const nome  = document.getElementById('icf-nome').value.trim();
+    const email = document.getElementById('icf-email').value.trim();
+    const wpp   = document.getElementById('icf-wpp').value.trim();
+    let ok = true;
+    document.querySelectorAll('.ic-field-error').forEach(e => e.style.display = 'none');
+    if (!nome) { document.getElementById('icf-err-nome').style.display = 'block'; ok = false; }
+    if (!email || !/\S+@\S+\.\S+/.test(email)) { document.getElementById('icf-err-email').style.display = 'block'; ok = false; }
+    if (!wpp || wpp.replace(/\D/g,'').length < 10) { document.getElementById('icf-err-wpp').style.display = 'block'; ok = false; }
+    if (!ok) return;
+
+    const btn = document.getElementById('btn-ic-confirm');
+    btn.disabled = true;
+    btn.textContent = 'Confirmando...';
+
+    // TODO: chamada real à API GHL/n8n
+    await new Promise(r => setTimeout(r, 1500));
+
+    // Save
+    const dateKey = icSelDate.toISOString().split('T')[0];
+    const bookings = JSON.parse(localStorage.getItem('roicomia_bookings') || '[]');
+    bookings.push({ id: Date.now(), nome, email, wpp, date: dateKey, time: icSelSlot, status: 'confirmed', created: new Date().toISOString() });
+    localStorage.setItem('roicomia_bookings', JSON.stringify(bookings));
+
+    // Success state
+    const dow = icSelDate.getDay();
+    const dateStr = IC_DAYS[dow].charAt(0).toUpperCase() + IC_DAYS[dow].slice(1) + ', ' + icSelDate.getDate() + ' de ' + IC_MONTHS[icSelDate.getMonth()] + ' de ' + icSelDate.getFullYear();
+    document.getElementById('ic-sum-date').textContent = dateStr;
+    document.getElementById('ic-sum-time').textContent = icSelSlot + ' (BRT) · 30 min';
+    document.getElementById('ic-sum-nome').textContent = nome;
+    document.getElementById('ic-sum-email').textContent = email;
+
+    // GCal link
+    function icGCalDate(date, time, addMins) {
+      const [h, m] = time.split(':').map(Number);
+      const d = new Date(date); d.setHours(h, m + addMins, 0, 0);
+      return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    }
+    document.getElementById('ic-gcal-link').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      + '&text=' + encodeURIComponent('Sessão Estratégica - Mapa de IA RoicomIA')
+      + '&dates=' + icGCalDate(icSelDate, icSelSlot, 0) + '/' + icGCalDate(icSelDate, icSelSlot, 30)
+      + '&details=' + encodeURIComponent('Sessão de análise do Mapa de Implementação.\nLink da reunião enviado por e-mail.');
+
+    document.getElementById('ic-steps').style.display = 'none';
+    icGoStep(4);
+  }
+
+  function icGoStep(n) {
+    document.querySelectorAll('.icpanel').forEach((p, i) => p.classList.toggle('active', i + 1 === n));
+    for (let i = 1; i <= 3; i++) {
+      const s = document.getElementById('icstep-' + i);
+      const num = document.getElementById('icstep-num-' + i);
+      if (!s) continue;
+      s.classList.remove('active','done');
+      if (i < n)  { s.classList.add('done'); num.textContent = '✓'; }
+      if (i === n) { s.classList.add('active'); num.textContent = i; }
+      if (i > n)   num.textContent = i;
+    }
+    icStep = n;
+  }
+
+  // Pre-fill from URL params
+  (function() {
+    const p = new URLSearchParams(window.location.search);
+    const nome  = p.get('nome')  || '';
+    const email = p.get('email') || '';
+    if (nome)  { const el = document.getElementById('icf-nome');  if(el){ el.value=nome;  el.classList.add('ic-prefilled'); } }
+    if (email) { const el = document.getElementById('icf-email'); if(el){ el.value=email; el.classList.add('ic-prefilled'); } }
   })();
 </script>
 

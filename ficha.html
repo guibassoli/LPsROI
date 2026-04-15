@@ -1569,10 +1569,12 @@ function setStepActive(n) {
 }
 
 // ══════════════════════════════════════════════════
-// PROGRESSO
+// PROGRESSO — avança conforme blocos completados
 // ══════════════════════════════════════════════════
 let filledFields = 0;
 const TOTAL_FIELDS = 9;
+// Campos acumulados até ANTES de entrar no bloco N
+const BLOCK_CUMULATIVE = { 1: 0, 2: 3, 3: 6, 4: 7, 5: 8 };
 
 function updateProgress(filled) {
   filledFields = filled;
@@ -1580,6 +1582,11 @@ function updateProgress(filled) {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = filled + ' de ' + TOTAL_FIELDS + ' campos preenchidos';
   document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function updateProgressFromBlock(blockNum) {
+  const filled = BLOCK_CUMULATIVE[blockNum] || 0;
+  updateProgress(filled);
 }
 
 // ══════════════════════════════════════════════════
@@ -1918,6 +1925,7 @@ document.getElementById('application-form').addEventListener('submit', async fun
     await new Promise(r => setTimeout(r, 1800));
 
     hideLoading();
+    updateProgress(9); // 100%
     showMapaSection();
 
   } catch (err) {
@@ -1997,6 +2005,9 @@ function goToBlock(n) {
   }
 
   currentBlock = n;
+
+  // Update progress bar
+  updateProgressFromBlock(n);
 
   // Update dots
   for (let i = 1; i <= BLOCK_TOTAL; i++) {

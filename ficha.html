@@ -709,6 +709,224 @@
     @media (max-width: 420px) {
       .header-badge { display: none; }
     }
+
+    /* ── MAPA DE IMPLEMENTAÇÃO ─────────────────────── */
+    #mapa-section {
+      background: var(--black);
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+    .mapa-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+    }
+    #mapa-confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Hero */
+    .mapa-hero {
+      padding: 64px 0 48px;
+      text-align: center;
+    }
+    .mapa-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: rgba(106,235,152,0.08);
+      border: 2px solid rgba(106,235,152,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 28px;
+      animation: mapaPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes mapaPopIn {
+      from { transform: scale(0.4) rotate(-20deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .mapa-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 14px;
+    }
+    .mapa-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .mapa-headline em {
+      font-style: italic;
+      color: var(--green);
+    }
+    .mapa-sub {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 540px;
+      margin: 0 auto 32px;
+    }
+    .mapa-sub strong { color: var(--white); }
+
+    /* Progress bar */
+    .mapa-progress-wrap {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .mapa-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .mapa-pct { color: var(--green); font-weight: 700; }
+    .mapa-progress-track {
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .mapa-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), #25d0c8);
+      border-radius: 100px;
+      width: 0%;
+      transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Cards section */
+    .mapa-cards-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .mapa-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 500px) {
+      .mapa-cards { grid-template-columns: 1fr; }
+    }
+    .mapa-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+      animation: cardSlideIn 0.4s ease both;
+    }
+    .mapa-card:nth-child(1) { animation-delay: 0.05s; }
+    .mapa-card:nth-child(2) { animation-delay: 0.1s; }
+    .mapa-card:nth-child(3) { animation-delay: 0.15s; }
+    .mapa-card:nth-child(4) { animation-delay: 0.2s; }
+    .mapa-card:nth-child(5) { animation-delay: 0.25s; }
+    .mapa-card:nth-child(6) { animation-delay: 0.3s; }
+    @keyframes cardSlideIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .mapa-card-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .mapa-card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .mapa-card-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .mapa-card-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .mapa-card-value.blurred {
+      filter: blur(5px);
+      user-select: none;
+      color: var(--green);
+    }
+    .mapa-lock {
+      font-size: 16px;
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+    .mapa-card.locked {
+      border-color: rgba(255,255,255,0.05);
+    }
+    .mapa-card.locked::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.01), rgba(255,255,255,0.03));
+      border-radius: inherit;
+    }
+
+    /* CTA */
+    .mapa-cta-wrap {
+      text-align: center;
+    }
+    .mapa-cta-hint {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .btn-mapa-agendar {
+      display: inline-block;
+      padding: 18px 40px;
+      background: var(--green);
+      color: var(--black);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 32px rgba(106,235,152,0.25);
+    }
+    .btn-mapa-agendar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 48px rgba(106,235,152,0.4);
+    }
+    .mapa-cta-micro {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted2);
+      letter-spacing: 0.04em;
+    }
   </style>
 </head>
 <body>
@@ -1100,6 +1318,107 @@
   </footer>
 
 
+  <!-- ── MAPA DE IMPLEMENTAÇÃO ─────────────────────── -->
+  <section id="mapa-section" style="display:none;">
+    <div class="mapa-inner">
+
+      <!-- Confetti canvas -->
+      <canvas id="mapa-confetti"></canvas>
+
+      <!-- Topo de celebração -->
+      <div class="mapa-hero">
+        <div class="mapa-ring" id="mapa-ring">
+          <span class="mapa-ring-icon">🗺️</span>
+        </div>
+        <p class="mapa-eyebrow">Análise concluída</p>
+        <h1 class="mapa-headline">Seu Mapa de Implementação<br><em>está pronto,</em> <span id="mapa-nome"></span>!</h1>
+        <p class="mapa-sub">Com base no seu perfil, nossos agentes de IA mapearam as maiores oportunidades para o seu negócio.<br>Para acessar a análise completa, agende uma sessão estratégica de 30 minutos.</p>
+
+        <!-- Progress bar analise -->
+        <div class="mapa-progress-wrap">
+          <div class="mapa-progress-label">
+            <span>Análise do perfil</span>
+            <span class="mapa-pct">100%</span>
+          </div>
+          <div class="mapa-progress-track">
+            <div class="mapa-progress-fill" id="mapa-prog-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards bloqueados -->
+      <div class="mapa-cards-title">O que está no seu Mapa</div>
+      <div class="mapa-cards">
+
+        <div class="mapa-card locked">
+          <div class="mapa-card-icon">⚡</div>
+          <div class="mapa-card-body">
+            <span class="mapa-card-label">Automações Prioritárias</span>
+            <span class="mapa-card-value blurred">8 oportunidades mapeadas</span>
+          </div>
+          <div class="mapa-lock">🔒</div>
+        </div>
+
+        <div class="mapa-card locked">
+          <div class="mapa-card-icon">📈</div>
+          <div class="mapa-card-body">
+            <span class="mapa-card-label">Estimativa de ROI</span>
+            <span class="mapa-card-value blurred">R$ 240k em 90 dias</span>
+          </div>
+          <div class="mapa-lock">🔒</div>
+        </div>
+
+        <div class="mapa-card locked">
+          <div class="mapa-card-icon">🧭</div>
+          <div class="mapa-card-body">
+            <span class="mapa-card-label">Sequência de Implementação</span>
+            <span class="mapa-card-value blurred">4 etapas definidas</span>
+          </div>
+          <div class="mapa-lock">🔒</div>
+        </div>
+
+        <div class="mapa-card locked">
+          <div class="mapa-card-icon">🛠️</div>
+          <div class="mapa-card-body">
+            <span class="mapa-card-label">Ferramentas Recomendadas</span>
+            <span class="mapa-card-value blurred">Stack ideal para seu setor</span>
+          </div>
+          <div class="mapa-lock">🔒</div>
+        </div>
+
+        <div class="mapa-card locked">
+          <div class="mapa-card-icon">💰</div>
+          <div class="mapa-card-body">
+            <span class="mapa-card-label">Investimento para Implementar</span>
+            <span class="mapa-card-value blurred">Estimativa detalhada</span>
+          </div>
+          <div class="mapa-lock">🔒</div>
+        </div>
+
+        <div class="mapa-card locked">
+          <div class="mapa-card-icon">🎯</div>
+          <div class="mapa-card-body">
+            <span class="mapa-card-label">Quick Wins (primeiros 30 dias)</span>
+            <span class="mapa-card-value blurred">3 ações de alto impacto</span>
+          </div>
+          <div class="mapa-lock">🔒</div>
+        </div>
+
+      </div>
+
+      <!-- Unlock CTA -->
+      <div class="mapa-cta-wrap">
+        <p class="mapa-cta-hint">🗓️ Selecione um horário e nossa equipe apresenta o mapa completo em uma sessão ao vivo de 30 minutos.</p>
+        <a class="btn-mapa-agendar" id="btn-agendar" href="agendar.html">
+          → Agendar minha sessão estratégica
+        </a>
+        <p class="mapa-cta-micro">Gratuito · 30 minutos · Sem compromisso</p>
+      </div>
+
+    </div>
+  </section>
+
+
   <!-- ── LOADING OVERLAY ───────────────────────────── -->
   <div id="loading-overlay">
     <div class="spinner"></div>
@@ -1485,9 +1804,7 @@ document.getElementById('application-form').addEventListener('submit', async fun
     await new Promise(r => setTimeout(r, 1800));
 
     hideLoading();
-    const nomeVal = encodeURIComponent(document.getElementById('f-nome').value.split(' ')[0]);
-    const emailVal = encodeURIComponent(document.getElementById('f-email').value);
-    window.location.href = 'aplicacao-enviada.html?nome=' + nomeVal + '&email=' + emailVal;
+    showMapaSection();
 
   } catch (err) {
     hideLoading();
@@ -1496,6 +1813,82 @@ document.getElementById('application-form').addEventListener('submit', async fun
     alert('Ops! Algo deu errado. Por favor, tente novamente.');
   }
 });
+
+// ══════════════════════════════════════════════════
+// MAPA DE IMPLEMENTAÇÃO — REVEAL
+// ══════════════════════════════════════════════════
+function showMapaSection() {
+  // Pega nome
+  const nome = document.getElementById('f-nome').value.split(' ')[0] || '';
+  const email = encodeURIComponent(document.getElementById('f-email').value || '');
+  const nomeEnc = encodeURIComponent(nome);
+
+  // Atualiza nome no headline
+  document.getElementById('mapa-nome').textContent = nome || 'você';
+
+  // Atualiza link do botão agendar com params
+  const btn = document.getElementById('btn-agendar');
+  btn.href = 'agendar.html?nome=' + nomeEnc + '&email=' + email;
+
+  // Esconde tudo exceto header e mostra seção do mapa
+  document.querySelector('.hero-section').style.display = 'none';
+  document.querySelector('.main-content').style.display = 'none';
+  document.querySelector('.site-footer').style.display = 'none';
+
+  const sec = document.getElementById('mapa-section');
+  sec.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Anima barra de progresso
+  setTimeout(() => {
+    document.getElementById('mapa-prog-fill').style.width = '100%';
+  }, 400);
+
+  // Confetti
+  launchMapaConfetti();
+}
+
+function launchMapaConfetti() {
+  const canvas = document.getElementById('mapa-confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#6aeb98','#6c62e4','#fc8132','#ffffff','#25d0c8'];
+  const pieces = [];
+  for (let i = 0; i < 100; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -Math.random() * canvas.height * 0.5,
+      w: 6 + Math.random() * 6, h: 3 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI * 2,
+      vx: (Math.random() - 0.5) * 2.5, vy: 2 + Math.random() * 3.5,
+      vr: (Math.random() - 0.5) * 0.12, alpha: 1
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if (p.y > canvas.height * 0.65) p.alpha -= 0.025;
+      if (p.alpha > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+    if (alive) requestAnimationFrame(draw);
+    else canvas.style.display = 'none';
+  }
+  setTimeout(() => requestAnimationFrame(draw), 200);
+}
 
 // ══════════════════════════════════════════════════
 // ENTER NA VALIDAÇÃO

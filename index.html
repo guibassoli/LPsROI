@@ -1260,6 +1260,188 @@
         var(--black);
     }
 
+    /* ── EXIT POPUP ──────────────────────────────────── */
+    #exit-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fadeInOverlay 0.25s ease both;
+    }
+
+    #exit-overlay.active { display: flex; }
+
+    @keyframes fadeInOverlay {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    #exit-box {
+      background: #0f0f0f;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      max-width: 520px;
+      width: 92%;
+      padding: 40px 36px;
+      position: relative;
+      animation: slideUpBox 0.3s cubic-bezier(0.34,1.4,0.64,1) both;
+    }
+
+    @keyframes slideUpBox {
+      from { transform: translateY(32px) scale(0.97); opacity: 0; }
+      to   { transform: translateY(0)    scale(1);    opacity: 1; }
+    }
+
+    #exit-close {
+      position: absolute;
+      top: 14px; right: 18px;
+      background: none; border: none;
+      color: rgba(255,255,255,0.35);
+      font-size: 24px; cursor: pointer;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    #exit-close:hover { color: rgba(255,255,255,0.7); }
+
+    .exit-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: rgba(252,129,50,0.1);
+      border: 1px solid rgba(252,129,50,0.3);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .exit-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 4vw, 26px);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .exit-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+
+    .exit-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .exit-benefit {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .exit-benefit-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+    }
+
+    .exit-benefit-text strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .exit-benefit-text span {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .exit-vagas-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 20px;
+    }
+
+    .exit-vagas-row strong {
+      color: var(--orange);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .exit-vagas-row .vaga-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: blink 1.2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .btn-exit-cta {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--green) 0%, #25d366 100%);
+      color: #000;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-exit-cta:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    .exit-dismiss {
+      display: block;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: color 0.15s;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .exit-dismiss:hover { color: rgba(255,255,255,0.5); }
+
     /* ── FOOTER ───────────────────────────────────── */
     footer {
       background: var(--black);
@@ -2249,6 +2431,52 @@
     </p>
   </footer>
 
+  <!-- ── EXIT-INTENT POPUP ──────────────────────────── -->
+  <div id="exit-overlay">
+    <div id="exit-box">
+      <button id="exit-close" onclick="closeExitPopup()" aria-label="Fechar">×</button>
+
+      <div class="exit-eyebrow">⚠️ Espera um segundo!</div>
+
+      <h2 class="exit-headline">Você está prestes a perder acesso a tudo isso:</h2>
+      <p class="exit-sub">Essas vagas são limitadas. Uma vez encerradas, não reabrimos inscrições.</p>
+
+      <div class="exit-benefits">
+        <div class="exit-benefit">
+          <div class="exit-benefit-icon">🧬</div>
+          <div class="exit-benefit-text">
+            <strong>Plataforma de DNA de Marca</strong>
+            <span>Relatório estratégico personalizado por IA — grátis para inscritos</span>
+          </div>
+        </div>
+        <div class="exit-benefit">
+          <div class="exit-benefit-icon">📘</div>
+          <div class="exit-benefit-text">
+            <strong>Workbook Exclusivo</strong>
+            <span>Material que vai te dar vantagem competitiva real no evento</span>
+          </div>
+        </div>
+        <div class="exit-benefit">
+          <div class="exit-benefit-icon">🚀</div>
+          <div class="exit-benefit-text">
+            <strong>Grande Imersão em IA</strong>
+            <span>Evento ao vivo, gratuito, com implementação prática do zero ao ROI</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exit-vagas-row">
+        <span class="vaga-dot"></span>
+        Apenas <strong id="exit-vagas-num">87</strong> vagas restantes agora
+      </div>
+
+      <button class="btn-exit-cta" onclick="closeExitPopup(); openPopup();">
+        → Quero Garantir Minha Vaga Gratuita
+      </button>
+      <span class="exit-dismiss" onclick="closeExitPopup()">Não, prefiro perder o acesso</span>
+    </div>
+  </div>
+
   <!-- POPUP MODAL (conteúdo será adicionado) -->
   <div id="popup-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(6px);">
     <div id="popup-box" style="background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:16px;max-width:540px;width:90%;padding:48px 40px;position:relative;">
@@ -2278,7 +2506,45 @@
       });
     }
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closePopup();
+      if (e.key === 'Escape') { closePopup(); closeExitPopup(); }
+    });
+
+    // ── EXIT-INTENT POPUP ─────────────────────────────
+    let exitShown = false;
+
+    function openExitPopup() {
+      if (exitShown) return;
+      exitShown = true;
+      // Sync vagas counter with main page counter
+      const mainCount = document.getElementById('nav-vagas-num');
+      if (mainCount) {
+        document.getElementById('exit-vagas-num').textContent = mainCount.textContent;
+      }
+      const overlay = document.getElementById('exit-overlay');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeExitPopup() {
+      document.getElementById('exit-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Click fora fecha
+    document.getElementById('exit-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeExitPopup();
+    });
+
+    // Exit-intent: mouse sai pelo topo da janela
+    document.addEventListener('mouseleave', function(e) {
+      if (e.clientY <= 10) openExitPopup();
+    });
+
+    // Mobile: botão voltar / pausa longa (visibilitychange)
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden') {
+        exitShown = false; // reseta para mostrar de novo quando voltar
+      }
     });
 
     // ── STICKY NAV ─────────────────────────────────────

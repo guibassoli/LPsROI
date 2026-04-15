@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicação Enviada — RoicomIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:   #000000;
+      --surface: #0d0d0d;
+      --card:    #111111;
+      --border:  rgba(255,255,255,0.07);
+      --green:   #6aeb98;
+      --cyan:    #25d0c8;
+      --purple:  #6c62e4;
+      --orange:  #fc8132;
+      --white:   #ffffff;
+      --muted:   rgba(255,255,255,0.55);
+      --muted2:  rgba(255,255,255,0.35);
+      --font-serif: 'Libre Baskerville', Georgia, serif;
+      --font-sans:  'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* NOISE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+    * { position: relative; z-index: 1; }
+
+    /* HEADER */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 24px;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .logo span { color: var(--green); }
+
+    /* HERO */
+    .hero {
+      padding: 72px 24px 56px;
+      text-align: center;
+    }
+    .hero-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* SUCCESS ICON */
+    .success-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: rgba(106, 235, 152, 0.08);
+      border: 2px solid rgba(106, 235, 152, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .success-ring svg {
+      width: 44px;
+      height: 44px;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .hero-sub strong {
+      color: var(--white);
+    }
+
+    /* EMAIL CONFIRM */
+    .email-confirm {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      padding: 10px 18px;
+      background: rgba(106,235,152,0.07);
+      border: 1px solid rgba(106,235,152,0.2);
+      border-radius: 100px;
+      font-size: 14px;
+      color: var(--green);
+    }
+    .email-confirm svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* DIVIDER */
+    .section-divider {
+      max-width: 680px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* PRÓXIMOS PASSOS */
+    .steps-section {
+      padding: 48px 24px 56px;
+    }
+    .steps-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .steps-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .step-item {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 0 16px;
+      padding: 0 0 32px;
+    }
+    .step-item:last-child { padding-bottom: 0; }
+
+    /* vertical line */
+    .step-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+    .step-dot.done    { background: rgba(106,235,152,0.1); border: 1.5px solid rgba(106,235,152,0.35); }
+    .step-dot.next    { background: rgba(108,98,228,0.1);  border: 1.5px solid rgba(108,98,228,0.35);  }
+    .step-dot.pending { background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1); }
+
+    .step-connector {
+      flex: 1;
+      width: 1.5px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      margin: 4px 0;
+      min-height: 24px;
+    }
+
+    .step-content {
+      padding-top: 8px;
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 2px;
+    }
+    .step-label.green  { color: var(--green); }
+    .step-label.purple { color: var(--purple); }
+    .step-content h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+    .step-content p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* WHAT TO EXPECT */
+    .expect-section {
+      padding: 0 24px 56px;
+    }
+    .expect-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .expect-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .expect-card h2 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+    .expect-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .expect-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .expect-list li .ico {
+      font-size: 18px;
+      line-height: 1.3;
+      flex-shrink: 0;
+    }
+    .expect-list li strong {
+      color: var(--white);
+    }
+
+    /* MENTORSHIP CARD */
+    .mentor-section {
+      padding: 0 24px 64px;
+    }
+    .mentor-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .mentor-card {
+      background: linear-gradient(135deg, rgba(108,98,228,0.12), rgba(106,235,152,0.06));
+      border: 1px solid rgba(108,98,228,0.25);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+    }
+    .mentor-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    .mentor-card h3 {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .mentor-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 440px;
+      margin: 0 auto 24px;
+    }
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: #25d366;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s;
+    }
+    .btn-whatsapp:hover { opacity: 0.9; }
+    .btn-whatsapp svg { width: 20px; height: 20px; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-logo {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .footer-logo span { color: var(--green); }
+    .footer-copy {
+      font-size: 13px;
+      color: var(--muted2);
+    }
+
+    /* CONFETTI CANVAS */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .expect-card, .mentor-card { padding: 24px 20px; }
+      .steps-section, .expect-section, .mentor-section { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">ROI<span>com</span>IA</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="success-ring">
+      <svg viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="22" r="20" stroke="#6aeb98" stroke-width="1.5" opacity="0.4"/>
+        <path d="M13 22.5l6 6 12-13" stroke="#6aeb98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <p class="eyebrow">Aplicação recebida</p>
+    <h1>Sua aplicação foi<br><em>enviada com sucesso,</em><br><span id="hero-name">candidato</span>!</h1>
+    <p class="hero-sub">
+      Nossa equipe analisará sua ficha com atenção.
+      <strong>Você receberá uma resposta em até 48 horas</strong> com o próximo passo — seja uma aprovação ou um convite para uma conversa rápida.
+    </p>
+
+    <div class="email-confirm" id="email-confirm-row">
+      <svg viewBox="0 0 16 16" fill="none">
+        <rect x="1" y="3" width="14" height="10" rx="2" stroke="#6aeb98" stroke-width="1.25"/>
+        <path d="M1 5.5l7 4.5 7-4.5" stroke="#6aeb98" stroke-width="1.25" stroke-linecap="round"/>
+      </svg>
+      <span>Confirmação enviada para <strong id="email-display">seu e-mail</strong></span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- PRÓXIMOS PASSOS -->
+<section class="steps-section">
+  <div class="steps-inner">
+    <p class="steps-title">O que acontece agora</p>
+    <div class="steps-list">
+
+      <div class="step-item">
+        <div class="step-line">
+          <div class="step-dot done">✅</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-content">
+          <p class="step-label green">Agora</p>
+          <h3>Ficha recebida</h3>
+          <p>Sua aplicação foi registrada no nosso sistema e você receberá um e-mail de confirmação em instantes.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line">
+          <div class="step-dot next">🔍</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-content">
+          <p class="step-label purple">Próximas 24–48h</p>
+          <h3>Análise da aplicação</h3>
+          <p>Henry e sua equipe revisarão sua ficha para entender o seu contexto e o fit com o programa.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line">
+          <div class="step-dot pending">📞</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-content">
+          <p class="step-label">Em breve</p>
+          <h3>Retorno via WhatsApp ou e-mail</h3>
+          <p>Você receberá uma resposta com o resultado da análise e, se aprovado, as instruções para garantir sua vaga.</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-line">
+          <div class="step-dot pending">🚀</div>
+        </div>
+        <div class="step-content">
+          <p class="step-label">Após aprovação</p>
+          <h3>Confirmação da vaga</h3>
+          <p>Com a vaga confirmada, você terá acesso ao material pré-evento e ao grupo exclusivo de participantes.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- O QUE VOCÊ VAI RECEBER -->
+<section class="expect-section" style="padding-top: 48px;">
+  <div class="expect-inner">
+    <div class="expect-card">
+      <h2>O que você receberá ao ser aprovado</h2>
+      <ul class="expect-list">
+        <li>
+          <span class="ico">🧬</span>
+          <span><strong>Relatório de DNA Estratégico</strong> — análise personalizada do seu negócio com recomendações de IA específicas para sua realidade.</span>
+        </li>
+        <li>
+          <span class="ico">📘</span>
+          <span><strong>Workbook exclusivo do evento</strong> — material que te prepara para extrair o máximo de cada sessão da imersão.</span>
+        </li>
+        <li>
+          <span class="ico">🎯</span>
+          <span><strong>Acesso à Grande Imersão IA — Do Zero ao ROI</strong> — evento presencial com Henry Risutti e convidados especiais.</span>
+        </li>
+        <li>
+          <span class="ico">💬</span>
+          <span><strong>Grupo exclusivo de participantes</strong> — networking com outros líderes e empresários que estão implementando IA nos seus negócios.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FALE COM A EQUIPE -->
+<section class="mentor-section" style="padding-top: 32px;">
+  <div class="mentor-inner">
+    <div class="mentor-card">
+      <div class="mentor-avatar">✉️</div>
+      <h3>Alguma dúvida sobre sua aplicação?</h3>
+      <p>Nossa equipe está disponível para tirar qualquer dúvida sobre o processo de seleção ou o evento. Fale com a gente pelo WhatsApp.</p>
+      <a href="https://wa.me/5511999999999" target="_blank" class="btn-whatsapp" id="whatsapp-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Falar com a equipe
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-logo">ROI<span>com</span>IA</p>
+    <p class="footer-copy">© 2026 Henry Risutti · Todos os direitos reservados</p>
+  </div>
+</footer>
+
+<script>
+  // ── URL PARAMS ───────────────────────────────────────
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const nome  = params.get('nome')  || '';
+    const email = params.get('email') || '';
+
+    // Name in hero
+    if (nome) {
+      const firstName = nome.split(' ')[0];
+      document.getElementById('hero-name').textContent = firstName;
+    }
+
+    // Email confirm row
+    if (email) {
+      document.getElementById('email-display').textContent = email;
+    } else {
+      document.getElementById('email-confirm-row').style.display = 'none';
+    }
+  })();
+
+  // ── CONFETTI ─────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx    = canvas.getContext('2d');
+
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#6aeb98','#6c62e4','#fc8132','#ffffff','#25d0c8'];
+    const pieces = [];
+    const TOTAL  = 120;
+
+    for (let i = 0; i < TOTAL; i++) {
+      pieces.push({
+        x:     Math.random() * canvas.width,
+        y:     -Math.random() * canvas.height * 0.6,
+        w:     6 + Math.random() * 6,
+        h:     3 + Math.random() * 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rot:   Math.random() * Math.PI * 2,
+        vx:    (Math.random() - 0.5) * 2.5,
+        vy:    2 + Math.random() * 3.5,
+        vr:    (Math.random() - 0.5) * 0.12,
+        alpha: 1
+      });
+    }
+
+    let frame;
+    let elapsed = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+
+      pieces.forEach(p => {
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.rot += p.vr;
+        if (p.y > canvas.height * 0.6) p.alpha -= 0.02;
+
+        if (p.alpha > 0) {
+          alive = true;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        }
+      });
+
+      if (alive) {
+        frame = requestAnimationFrame(draw);
+      } else {
+        canvas.style.display = 'none';
+      }
+    }
+
+    // Small delay so page is visible first
+    setTimeout(() => { frame = requestAnimationFrame(draw); }, 300);
+
+    window.addEventListener('resize', () => {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  })();
+</script>
+
+</body>
+</html>

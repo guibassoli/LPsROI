@@ -1407,7 +1407,7 @@ function updateProgress() {
   if (document.querySelectorAll('.q13-cb:checked').length >= 1) answered++;
   if (document.querySelectorAll('.q14-cb:checked').length >= 1) answered++;
 
-  const total = 21;
+  const total = 20;
   const pct   = Math.round(answered / total * 100);
 
   document.getElementById('progress-fill').style.width = pct + '%';

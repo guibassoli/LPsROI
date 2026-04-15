@@ -204,6 +204,68 @@
       background: rgba(108,98,228,0.2);
       border-color: rgba(108,98,228,0.6);
       box-shadow: 0 0 0 4px rgba(108,98,228,0.1);
+      animation: pulseActive 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseActive {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(108,98,228,0.1); }
+      50%       { box-shadow: 0 0 0 8px rgba(108,98,228,0.2), 0 0 16px rgba(108,98,228,0.3); }
+    }
+
+    .tl-dot.processing {
+      background: rgba(252,129,50,0.15);
+      border-color: rgba(252,129,50,0.5);
+    }
+
+    .tl-dot.processing .spin {
+      display: inline-block;
+      animation: spin 1.4s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .tl-agent-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(108,98,228,0.9);
+      background: rgba(108,98,228,0.1);
+      border: 1px solid rgba(108,98,228,0.25);
+      padding: 3px 9px;
+      border-radius: 100px;
+    }
+
+    .tl-agent-tag.orange {
+      color: rgba(252,129,50,0.9);
+      background: rgba(252,129,50,0.08);
+      border-color: rgba(252,129,50,0.25);
+    }
+
+    .tl-meta {
+      font-size: 12.5px;
+      color: var(--muted2);
+      margin-top: 5px;
+    }
+
+    .tl-badge-meta {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: rgba(106,235,152,0.12);
+      border: 1px solid rgba(106,235,152,0.3);
+      color: var(--green);
     }
 
     .tl-line {
@@ -455,9 +517,9 @@
       <section class="hero">
         <div class="hero-check">✅</div>
         <h1>Perfeito! Seu Relatório Está Sendo Gerado 🎉</h1>
-        <p class="hero-copy">Recebemos suas informações e nossa equipe já começou a analisar o DNA estratégico da sua empresa.</p>
+        <p class="hero-copy">Recebemos suas informações. Os agentes de IA já estão trabalhando no DNA estratégico da sua empresa.</p>
         <p class="hero-email-row" id="email-row" style="display:none;">
-          Você receberá seu relatório completo em até 24 horas no email:
+          Você receberá seu relatório completo um dia antes do evento no email:
           <span class="lead-email" id="display-email"></span>
         </p>
       </section>
@@ -465,20 +527,22 @@
 
       <!-- TIMELINE -->
       <div class="timeline-card">
-        <p class="timeline-title">⏰ Prazo de Entrega</p>
+        <p class="timeline-title">⏰ IA Trabalhando</p>
         <ul class="timeline-list">
 
+          <!-- Passo 1: Dados recebidos -->
           <li class="timeline-item">
             <div class="tl-left">
               <div class="tl-dot done">✔</div>
               <div class="tl-line"></div>
             </div>
             <div class="tl-body">
-              <div class="tl-label">Hoje — Dados enviados</div>
+              <div class="tl-label">Imediatamente — Dados enviados</div>
               <div class="tl-time">Suas respostas foram recebidas com sucesso</div>
             </div>
           </li>
 
+          <!-- Passo 2: Análise de marca -->
           <li class="timeline-item">
             <div class="tl-left">
               <div class="tl-dot active">⚙️</div>
@@ -486,10 +550,25 @@
             </div>
             <div class="tl-body">
               <div class="tl-label">Análise dos dados</div>
-              <div class="tl-time">2–6 horas • Mapeamento do DNA estratégico da sua empresa</div>
+              <span class="tl-agent-tag">🤖 Agente de Marca</span>
+              <div class="tl-meta">Mapeamento do DNA estratégico da sua empresa</div>
             </div>
           </li>
 
+          <!-- Passo 3: Estratégia -->
+          <li class="timeline-item">
+            <div class="tl-left">
+              <div class="tl-dot processing"><span class="spin">⚙️</span></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-label">Agente de Estratégia</div>
+              <span class="tl-agent-tag">🤖 Agente de Estratégia</span>
+              <div class="tl-meta">Mapeamento do modelo estratégico da sua empresa</div>
+            </div>
+          </li>
+
+          <!-- Passo 4: Geração -->
           <li class="timeline-item">
             <div class="tl-left">
               <div class="tl-dot">🤖</div>
@@ -497,10 +576,12 @@
             </div>
             <div class="tl-body">
               <div class="tl-label">Geração do relatório</div>
-              <div class="tl-time">6–12 horas • IA + especialistas constroem seu relatório personalizado</div>
+              <span class="tl-agent-tag orange">🧠 Orquestrador + Especialistas</span>
+              <div class="tl-meta">Alguns minutos • Agentes de IA constroem seu relatório personalizado</div>
             </div>
           </li>
 
+          <!-- Passo 5: Revisão -->
           <li class="timeline-item">
             <div class="tl-left">
               <div class="tl-dot">🔍</div>
@@ -508,18 +589,20 @@
             </div>
             <div class="tl-body">
               <div class="tl-label">Revisão e envio</div>
-              <div class="tl-time">2–4 horas • Validação final antes do envio</div>
+              <span class="tl-agent-tag orange">👔 Agente CEO</span>
+              <div class="tl-meta">Poucos segundos • Validação final antes do envio</div>
             </div>
           </li>
 
+          <!-- Passo 6: Entrega -->
           <li class="timeline-item">
             <div class="tl-left">
               <div class="tl-dot done">📧</div>
             </div>
             <div class="tl-body">
-              <div class="tl-label green">Amanhã — Relatório no seu email!</div>
-              <div class="tl-time">Em até 24 horas a partir do envio</div>
-              <span class="tl-badge">Meta: até 24h</span>
+              <div class="tl-label green">1 dia antes do evento — Relatório no seu email!</div>
+              <div class="tl-time">Assim garantimos informações frescas na sua mente.</div>
+              <span class="tl-badge-meta">⚡ Meta: relatório completo criado em 8 minutos</span>
             </div>
           </li>
 
@@ -563,8 +646,8 @@
         <div class="faq-list">
 
           <div class="faq-item">
-            <div class="faq-q">Quanto tempo leva para receber meu relatório?</div>
-            <div class="faq-a">O prazo máximo é de 24 horas a partir do envio do formulário. Em geral, os relatórios são entregues entre 12 e 18 horas após a submissão. Verifique sua caixa de entrada e a pasta de spam.</div>
+            <div class="faq-q">Quando vou receber meu relatório?</div>
+            <div class="faq-a">Seu relatório será entregue 1 dia antes do evento começar, diretamente no email cadastrado. Assim você chega ao evento com o material fresco na mente e extrai o máximo valor. Verifique sua caixa de entrada e a pasta de spam.</div>
           </div>
 
           <div class="faq-item">

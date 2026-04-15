@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha de Aplicação — Programa ROI com IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:   #000000;
+      --surface: #0d0d0d;
+      --card:    #111111;
+      --border:  rgba(255,255,255,0.07);
+      --green:   #6aeb98;
+      --purple:  #6c62e4;
+      --orange:  #fc8132;
+      --white:   #ffffff;
+      --muted:   rgba(255,255,255,0.5);
+      --muted2:  rgba(255,255,255,0.3);
+      --font-serif: 'Libre Baskerville', Georgia, serif;
+      --font-sans:  'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      /* Form light vars */
+      --f-bg:     #f9fafb;
+      --f-border: #e5e7eb;
+      --f-text:   #111827;
+      --f-muted:  #6b7280;
+      --f-card:   #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+    * { position: relative; z-index: 1; }
+
+    /* ── HEADER ───────────────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 24px;
+    }
+    .header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 52px;
+    }
+    .header-logo img { height: 32px; width: auto; display: block; }
+    .header-badge {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--orange), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── HERO ─────────────────────────────────────── */
+    .hero-section {
+      background: linear-gradient(160deg, #0a0a0a 0%, #0f0a1a 50%, #0a0f0a 100%);
+      padding: clamp(48px, 7vw, 80px) 24px clamp(40px, 5vw, 64px);
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .hero-section .page-wrap { max-width: 700px; margin: 0 auto; }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: rgba(252,129,50,0.1);
+      border: 1px solid rgba(252,129,50,0.3);
+      padding: 5px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--green), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .invest-card {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 20px 32px;
+      text-align: left;
+    }
+
+    .invest-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted2);
+    }
+
+    .invest-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .invest-opt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+
+    .invest-opt strong { color: var(--white); font-size: 18px; }
+    .invest-opt span { color: var(--muted); font-size: 13px; }
+    .invest-divider { color: rgba(255,255,255,0.15); font-size: 20px; }
+
+    /* ── MAIN CONTENT ─────────────────────────────── */
+    .main-content {
+      background: var(--f-bg);
+      min-height: 60vh;
+    }
+
+    .form-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vw, 56px) 24px;
+    }
+
+    /* ── STEP INDICATOR ───────────────────────────── */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+      background: #e5e7eb;
+      color: #9ca3af;
+    }
+
+    .step-num.active { background: var(--purple); color: #fff; }
+    .step-num.done   { background: #10b981; color: #fff; }
+
+    .step-label { font-size: 13px; font-weight: 600; color: #9ca3af; }
+    .step-label.active { color: var(--f-text); }
+    .step-label.done   { color: #10b981; }
+
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e7eb;
+      margin: 0 12px;
+    }
+    .step-line.done { background: #10b981; }
+
+    /* ── VALIDATION CARD ──────────────────────────── */
+    #step-validation {
+      background: var(--f-card);
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 40px);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      border: 1px solid var(--f-border);
+    }
+
+    .val-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .val-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(108,98,228,0.1);
+      border: 1px solid rgba(108,98,228,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .val-header h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(18px, 3vw, 22px);
+      font-weight: 700;
+      color: var(--f-text);
+      margin-bottom: 4px;
+    }
+
+    .val-header p { font-size: 14px; color: var(--f-muted); }
+
+    /* ── FORM FIELDS (light) ──────────────────────── */
+    .field-group { margin-bottom: 20px; }
+
+    .field-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 7px;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--f-border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: var(--font-sans);
+      color: var(--f-text);
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(108,98,228,0.12);
+    }
+
+    .field-group input.error,
+    .field-group select.error,
+    .field-group textarea.error {
+      border-color: #ef4444;
+    }
+
+    /* Pre-filled (readonly) */
+    .field-group input.pre-filled,
+    .field-group select.pre-filled {
+      background: #f0fdf4;
+      border-color: #10b981;
+      color: #065f46;
+      cursor: default;
+    }
+
+    .field-group input.pre-filled:focus,
+    .field-group select.pre-filled:focus {
+      box-shadow: none;
+      border-color: #10b981;
+    }
+
+    .field-status {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .badge-filled {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-editing {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .btn-edit-field {
+      padding: 3px 12px;
+      background: #fff;
+      border: 1.5px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-edit-field:hover { border-color: var(--purple); color: var(--purple); }
+
+    .field-hint {
+      font-size: 12.5px;
+      color: var(--f-muted);
+      margin-top: 5px;
+    }
+
+    /* ── BTN VALIDATE ─────────────────────────────── */
+    .btn-validate {
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      margin-top: 8px;
+    }
+    .btn-validate:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .val-helper {
+      font-size: 13px;
+      color: var(--f-muted);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* ── WELCOME BAR ──────────────────────────────── */
+    #welcome-bar {
+      display: none;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      animation: slideDown 0.4s ease both;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #welcome-bar h3 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    #welcome-bar p { font-size: 14px; opacity: 0.9; }
+
+    /* ── PROGRESS BAR ─────────────────────────────── */
+    .progress-wrap {
+      background: var(--f-card);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      border: 1px solid var(--f-border);
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple), var(--green));
+      border-radius: 999px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    /* ── FORM SECTIONS ────────────────────────────── */
+    #step-form { display: none; }
+
+    .form-section {
+      background: var(--f-card);
+      border-radius: 16px;
+      padding: clamp(20px, 3vw, 32px);
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--f-border);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--f-text);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--f-border);
+    }
+
+    .section-heading .section-icon {
+      font-size: 18px;
+    }
+
+    /* Auto-filled field card */
+    .form-field {
+      margin-bottom: 18px;
+    }
+
+    .form-field:last-child { margin-bottom: 0; }
+
+    .form-field.auto-filled .field-group input,
+    .form-field.auto-filled .field-group select {
+      background: #f0fdf4;
+      border-color: #10b981;
+      color: #065f46;
+    }
+
+    .form-field.auto-filled .field-status { display: flex; }
+
+    /* ── RADIO / CHECKBOX ─────────────────────────── */
+    .options-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+
+    .radio-opt, .cb-opt {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #f9fafb;
+      border: 2px solid var(--f-border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 14.5px;
+      color: var(--f-text);
+    }
+
+    .radio-opt:hover, .cb-opt:hover {
+      background: #f3f4f6;
+      border-color: var(--purple);
+    }
+
+    .radio-opt.selected, .cb-opt.selected {
+      background: rgba(108,98,228,0.06);
+      border-color: var(--purple);
+    }
+
+    .radio-opt input, .cb-opt input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--purple);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* ── CONDITIONAL FIELDS ───────────────────────── */
+    .conditional-field {
+      display: none;
+      margin-top: 14px;
+      padding: 16px;
+      background: #fafafa;
+      border-radius: 10px;
+      border: 1.5px dashed #d1d5db;
+    }
+
+    .conditional-field.visible { display: block; }
+
+    /* ── INVEST BOX ───────────────────────────────── */
+    .invest-box {
+      background: linear-gradient(135deg, rgba(108,98,228,0.06) 0%, rgba(106,235,152,0.06) 100%);
+      border: 1px solid rgba(108,98,228,0.2);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+    }
+
+    .invest-box p { font-size: 14px; color: #374151; margin-bottom: 8px; }
+    .invest-box ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .invest-box li { font-size: 14px; color: #374151; }
+    .invest-box li strong { color: #111827; }
+    .invest-box .note { font-size: 12.5px; color: var(--f-muted); margin-top: 10px; margin-bottom: 0; }
+
+    /* ── CHAR COUNTER ─────────────────────────────── */
+    .char-count {
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      color: var(--f-muted);
+      margin-top: 4px;
+    }
+
+    .char-count.warn { color: #ef4444; }
+
+    /* ── ERROR ────────────────────────────────────── */
+    .field-error {
+      font-size: 13px;
+      color: #dc2626;
+      font-weight: 600;
+      margin-top: 6px;
+      padding: 7px 12px;
+      background: #fee2e2;
+      border-radius: 6px;
+      border-left: 3px solid #dc2626;
+      display: none;
+    }
+
+    /* ── SUBMIT ───────────────────────────────────── */
+    .submit-area {
+      background: var(--f-card);
+      border-radius: 16px;
+      padding: clamp(24px, 4vw, 36px);
+      border: 1px solid var(--f-border);
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .btn-submit-ficha {
+      width: 100%;
+      max-width: 440px;
+      padding: 17px 32px;
+      background: linear-gradient(135deg, var(--orange) 0%, #e06010 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font-sans);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(252,129,50,0.3);
+    }
+
+    .btn-submit-ficha:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(252,129,50,0.4);
+    }
+
+    .btn-submit-ficha:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .submit-microcopy {
+      font-size: 13px;
+      color: var(--f-muted);
+      margin-top: 14px;
+    }
+
+    /* ── LOADING OVERLAY ──────────────────────────── */
+    #loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    #loading-overlay.active { display: flex; }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #loading-overlay p {
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    /* ── NOT FOUND STATE ──────────────────────────── */
+    #not-found-bar {
+      display: none;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #9a3412;
+    }
+
+    #not-found-bar strong { display: block; margin-bottom: 4px; font-size: 15px; }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    .site-footer {
+      background: #0a0a0a;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+    }
+
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 640px) {
+      .invest-options { flex-direction: column; gap: 8px; }
+      .invest-divider { display: none; }
+      .step-label { display: none; }
+      .step-indicator { gap: 0; }
+      .header-badge { font-size: 9px; letter-spacing: 0.07em; }
+    }
+
+    @media (max-width: 420px) {
+      .header-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ──────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="logo.png" alt="RoicomIA" height="32">
+      </a>
+      <div class="header-badge">🚀 Última Etapa — Ficha de Aplicação</div>
+    </div>
+  </header>
+
+
+  <!-- ── HERO ────────────────────────────────────── -->
+  <section class="hero-section">
+    <div class="page-wrap">
+      <div class="hero-eyebrow">⚡ Vagas Limitadas — Programa Exclusivo</div>
+      <h1 class="hero-title">
+        Aplique ao Programa de<br>
+        <span>Aceleração ROI com IA</span>
+      </h1>
+      <p class="hero-sub">
+        Preencha a ficha abaixo. Seus dados anteriores serão carregados automaticamente — leva menos de 2 minutos.
+      </p>
+
+      <div class="invest-card">
+        <div class="invest-label">💰 Investimento no Programa</div>
+        <div class="invest-options">
+          <div class="invest-opt">
+            <span>PIX à vista</span>
+            <strong>R$ 20.000</strong>
+          </div>
+          <span class="invest-divider">·</span>
+          <div class="invest-opt">
+            <span>Cartão</span>
+            <strong>12× R$ 2.000</strong>
+            <span style="font-size:12px;opacity:.6;">sem juros</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── MAIN CONTENT ─────────────────────────────── -->
+  <div class="main-content">
+    <div class="form-wrap">
+
+      <!-- Step indicator -->
+      <div class="step-indicator">
+        <div class="step-item">
+          <div class="step-num active" id="step-num-1">1</div>
+          <div class="step-label active" id="step-lbl-1">Validação</div>
+        </div>
+        <div class="step-line" id="step-line-1"></div>
+        <div class="step-item">
+          <div class="step-num" id="step-num-2">2</div>
+          <div class="step-label" id="step-lbl-2">Confirmação</div>
+        </div>
+        <div class="step-line" id="step-line-2"></div>
+        <div class="step-item">
+          <div class="step-num" id="step-num-3">3</div>
+          <div class="step-label" id="step-lbl-3">Envio</div>
+        </div>
+      </div>
+
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- STEP 1: VALIDAÇÃO                           -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="step-validation">
+        <div class="val-header">
+          <div class="val-icon">🔐</div>
+          <div>
+            <h2>Validação de Dados</h2>
+            <p>Vamos buscar as informações que você já nos forneceu anteriormente para agilizar seu preenchimento.</p>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="val-email">Email cadastrado *</label>
+          <input type="email" id="val-email" placeholder="seu@email.com" autocomplete="email">
+          <div class="field-error" id="err-val-email">Por favor, informe um email válido.</div>
+        </div>
+
+        <div class="field-group">
+          <label for="val-whatsapp">WhatsApp cadastrado *</label>
+          <input type="tel" id="val-whatsapp" placeholder="+55 (11) 99999-9999" autocomplete="tel">
+          <div class="field-error" id="err-val-wpp">Por favor, informe seu WhatsApp.</div>
+        </div>
+
+        <button class="btn-validate" id="btn-validate" onclick="validateAndLoad()">
+          🔍 Buscar Meus Dados
+        </button>
+        <p class="val-helper">💡 Use o mesmo email e WhatsApp que você cadastrou no evento</p>
+      </div>
+
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- STEP 2+3: FORM PRINCIPAL                    -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="step-form">
+
+        <!-- Welcome bar -->
+        <div id="welcome-bar">
+          <h3 id="welcome-title">👋 Olá!</h3>
+          <p id="welcome-sub">Encontramos suas informações. Confirme os dados abaixo e preencha o que está faltando.</p>
+        </div>
+
+        <!-- Not-found bar (fallback) -->
+        <div id="not-found-bar">
+          <strong>⚠️ Preenchimento manual</strong>
+          Não encontramos seus dados cadastrais. Por favor, preencha todos os campos abaixo.
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span id="progress-text">0 de 9 campos preenchidos</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <form id="application-form" novalidate>
+
+          <!-- ─────────────────────────────────────── -->
+          <!-- BLOCO 1: DADOS BÁSICOS                  -->
+          <!-- ─────────────────────────────────────── -->
+          <div class="form-section">
+            <div class="section-heading">
+              <span class="section-icon">📝</span>
+              Confirme Seus Dados
+            </div>
+
+            <!-- Campo 1: Nome -->
+            <div class="form-field" id="ff-nome">
+              <div class="field-group">
+                <label for="f-nome">1. Nome Completo *</label>
+                <input type="text" id="f-nome" name="nome" placeholder="Seu nome completo" required>
+                <div class="field-status" id="fs-nome">
+                  <span class="badge-filled">✅ Preenchido</span>
+                  <button type="button" class="btn-edit-field" onclick="enableEdit('nome')">Editar</button>
+                </div>
+                <div class="field-error" id="err-nome">Por favor, informe seu nome.</div>
+              </div>
+            </div>
+
+            <!-- Campo 2: Email -->
+            <div class="form-field" id="ff-email">
+              <div class="field-group">
+                <label for="f-email">2. Email *</label>
+                <input type="email" id="f-email" name="email" placeholder="seu@email.com" required>
+                <div class="field-status" id="fs-email">
+                  <span class="badge-filled">✅ Preenchido</span>
+                  <button type="button" class="btn-edit-field" onclick="enableEdit('email')">Editar</button>
+                </div>
+                <div class="field-error" id="err-email">Por favor, informe um email válido.</div>
+              </div>
+            </div>
+
+            <!-- Campo 3: WhatsApp -->
+            <div class="form-field" id="ff-whatsapp">
+              <div class="field-group">
+                <label for="f-whatsapp">3. WhatsApp *</label>
+                <input type="tel" id="f-whatsapp" name="whatsapp" placeholder="+55 (11) 99999-9999" required>
+                <div class="field-status" id="fs-whatsapp">
+                  <span class="badge-filled">✅ Preenchido</span>
+                  <button type="button" class="btn-edit-field" onclick="enableEdit('whatsapp')">Editar</button>
+                </div>
+                <div class="field-error" id="err-whatsapp">Por favor, informe seu WhatsApp.</div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ─────────────────────────────────────── -->
+          <!-- BLOCO 2: PERFIL DA EMPRESA              -->
+          <!-- ─────────────────────────────────────── -->
+          <div class="form-section">
+            <div class="section-heading">
+              <span class="section-icon">🏢</span>
+              Perfil da Empresa
+            </div>
+
+            <!-- Campo 4: Nome Empresa -->
+            <div class="form-field" id="ff-empresa">
+              <div class="field-group">
+                <label for="f-empresa">4. Nome da Empresa *</label>
+                <input type="text" id="f-empresa" name="nome_empresa" placeholder="Sua empresa..." required>
+                <div class="field-status" id="fs-empresa">
+                  <span class="badge-filled">✅ Preenchido</span>
+                  <button type="button" class="btn-edit-field" onclick="enableEdit('empresa')">Editar</button>
+                </div>
+                <div class="field-error" id="err-empresa">Por favor, informe o nome da empresa.</div>
+              </div>
+            </div>
+
+            <!-- Campo 5: Faturamento -->
+            <div class="form-field" id="ff-faturamento">
+              <div class="field-group">
+                <label for="f-faturamento">5. Faturamento Anual Aproximado *</label>
+                <select id="f-faturamento" name="faturamento" required>
+                  <option value="">Selecione...</option>
+                  <option value="pre_op">Pré-operação</option>
+                  <option value="menos_500k">Menos de R$ 500 mil/ano</option>
+                  <option value="500k_1m">R$ 500 mil – R$ 1 milhão/ano</option>
+                  <option value="1m_5m">R$ 1 milhão – R$ 5 milhões/ano</option>
+                  <option value="5m_10m">R$ 5 milhões – R$ 10 milhões/ano</option>
+                  <option value="10m_mais">Acima de R$ 10 milhões/ano</option>
+                </select>
+                <div class="field-status" id="fs-faturamento">
+                  <span class="badge-filled">✅ Preenchido</span>
+                  <button type="button" class="btn-edit-field" onclick="enableEdit('faturamento')">Editar</button>
+                </div>
+                <div class="field-error" id="err-faturamento">Por favor, selecione o faturamento.</div>
+              </div>
+            </div>
+
+            <!-- Campo 6: Cargo -->
+            <div class="form-field" id="ff-cargo">
+              <div class="field-group">
+                <label for="f-cargo">6. Seu Cargo / Função *</label>
+                <select id="f-cargo" name="cargo" required>
+                  <option value="">Selecione...</option>
+                  <option value="socio_ceo">Sócio / Founder / CEO</option>
+                  <option value="diretor">Diretor</option>
+                  <option value="gerente">Gerente</option>
+                  <option value="coordenador">Coordenador</option>
+                  <option value="analista">Analista / Assistente</option>
+                  <option value="autonomo">Autônomo / Freelancer</option>
+                  <option value="outro">Outro</option>
+                </select>
+                <div class="field-status" id="fs-cargo">
+                  <span class="badge-filled">✅ Preenchido</span>
+                  <button type="button" class="btn-edit-field" onclick="enableEdit('cargo')">Editar</button>
+                </div>
+                <div class="field-error" id="err-cargo">Por favor, selecione seu cargo.</div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ─────────────────────────────────────── -->
+          <!-- BLOCO 3: EXPERIÊNCIA COM IA             -->
+          <!-- ─────────────────────────────────────── -->
+          <div class="form-section">
+            <div class="section-heading">
+              <span class="section-icon">🤖</span>
+              Experiência com IA
+            </div>
+
+            <!-- Campo 7: Já testou IA? -->
+            <div class="form-field" id="ff-ia">
+              <div class="field-group">
+                <label>7. Você já testou IA na sua empresa? *</label>
+                <div class="options-list" id="ia-radio-group">
+                  <label class="radio-opt">
+                    <input type="radio" name="ja_testou_ia" value="sim">
+                    Sim, já testamos
+                  </label>
+                  <label class="radio-opt">
+                    <input type="radio" name="ja_testou_ia" value="nao">
+                    Não, ainda não testamos
+                  </label>
+                </div>
+                <div class="field-error" id="err-ia">Por favor, selecione uma opção.</div>
+              </div>
+
+              <!-- 7A: O que testou (condicional SIM) -->
+              <div class="conditional-field" id="cond-ia-sim">
+                <div class="field-group">
+                  <label for="f-ia-testada">7a. O que você testou e como foi?</label>
+                  <textarea id="f-ia-testada" name="ia_testada" rows="4" maxlength="500"
+                    placeholder="Ex: Testamos ChatGPT para atendimento, mas a equipe teve dificuldade de adotar no dia a dia..."></textarea>
+                  <span class="char-count" id="cc-ia-testada">0/500</span>
+                </div>
+              </div>
+
+              <!-- 7B: O que falta (condicional NÃO) -->
+              <div class="conditional-field" id="cond-ia-nao">
+                <div class="field-group">
+                  <label for="f-ia-bloqueios">7b. O que falta para você começar com IA?</label>
+                  <textarea id="f-ia-bloqueios" name="ia_bloqueios" rows="4" maxlength="500"
+                    placeholder="Ex: Não sei por onde começar, processos não documentados, falta de budget..."></textarea>
+                  <span class="char-count" id="cc-ia-bloqueios">0/500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ─────────────────────────────────────── -->
+          <!-- BLOCO 4: DESAFIO ATUAL                  -->
+          <!-- ─────────────────────────────────────── -->
+          <div class="form-section">
+            <div class="section-heading">
+              <span class="section-icon">🎯</span>
+              Desafio Atual
+            </div>
+
+            <div class="form-field" id="ff-desafio">
+              <div class="field-group">
+                <label for="f-desafio">8. Qual o maior desafio da sua empresa HOJE? *</label>
+                <p class="field-hint" style="margin-bottom:10px;">💡 Se você preencheu o Extrator de DNA, pré-preenchemos com base no seu perfil — fique à vontade para atualizar.</p>
+                <textarea id="f-desafio" name="desafio_atual" rows="5" maxlength="800"
+                  placeholder="Seja específico. Ex: Equipe sobrecarregada com tarefas repetitivas, dificuldade em escalar atendimento..." required></textarea>
+                <span class="char-count" id="cc-desafio">0/800</span>
+                <div class="field-error" id="err-desafio">Por favor, descreva seu maior desafio.</div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ─────────────────────────────────────── -->
+          <!-- BLOCO 5: INVESTIMENTO                   -->
+          <!-- ─────────────────────────────────────── -->
+          <div class="form-section">
+            <div class="section-heading">
+              <span class="section-icon">💰</span>
+              Investimento e Pagamento
+            </div>
+
+            <div class="invest-box">
+              <p><strong>Investimento no Programa de Aceleração:</strong></p>
+              <ul>
+                <li>💳 <strong>R$ 20.000</strong> à vista no PIX (desconto incluído)</li>
+                <li>💳 <strong>12× de R$ 2.000</strong> no cartão (sem juros)</li>
+              </ul>
+              <p class="note">📌 Após o envio, você poderá pagar diretamente ou agendar uma call com nossa equipe.</p>
+            </div>
+
+            <div class="form-field" id="ff-pagamento">
+              <div class="field-group">
+                <label>9. Como você prefere pagar? * <span style="font-weight:400;color:#6b7280;">(pode marcar mais de uma)</span></label>
+                <div class="options-list">
+                  <label class="cb-opt">
+                    <input type="checkbox" name="forma_pagamento" value="pix">
+                    PIX à vista — R$ 20.000
+                  </label>
+                  <label class="cb-opt">
+                    <input type="checkbox" name="forma_pagamento" value="cartao">
+                    Cartão de crédito — 12× R$ 2.000 sem juros
+                  </label>
+                  <label class="cb-opt">
+                    <input type="checkbox" name="forma_pagamento" value="boleto">
+                    Boleto parcelado
+                  </label>
+                  <label class="cb-opt">
+                    <input type="checkbox" name="forma_pagamento" value="call">
+                    Quero conversar com a equipe antes de decidir
+                  </label>
+                </div>
+                <div class="field-error" id="err-pagamento">Por favor, selecione pelo menos uma opção.</div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ─────────────────────────────────────── -->
+          <!-- SUBMIT                                   -->
+          <!-- ─────────────────────────────────────── -->
+          <div class="submit-area">
+            <button type="submit" class="btn-submit-ficha" id="btn-submit">
+              ENVIAR APLICAÇÃO →
+            </button>
+            <p class="submit-microcopy">🔒 Seus dados são 100% seguros e confidenciais.</p>
+          </div>
+
+        </form>
+      </div><!-- /#step-form -->
+
+    </div><!-- /.form-wrap -->
+  </div><!-- /.main-content -->
+
+
+  <!-- ── FOOTER ────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="#">Política de Privacidade</a>
+      <span style="color:rgba(255,255,255,0.15)">|</span>
+      <a href="#">Termos de Uso</a>
+    </div>
+    <p class="footer-copy">©2026 RoicomIA. Todos os direitos reservados.</p>
+  </footer>
+
+
+  <!-- ── LOADING OVERLAY ───────────────────────────── -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <p id="loading-msg">Buscando seus dados...</p>
+  </div>
+
+
+<script>
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg || 'Carregando...';
+  document.getElementById('loading-overlay').classList.add('active');
+}
+
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.remove('active');
+}
+
+function setStepDone(n) {
+  document.getElementById('step-num-' + n).className = 'step-num done';
+  document.getElementById('step-num-' + n).textContent = '✓';
+  document.getElementById('step-lbl-' + n).className = 'step-label done';
+}
+
+function setStepActive(n) {
+  document.getElementById('step-num-' + n).className = 'step-num active';
+  document.getElementById('step-lbl-' + n).className = 'step-label active';
+  if (document.getElementById('step-line-' + (n-1))) {
+    document.getElementById('step-line-' + (n-1)).className = 'step-line done';
+  }
+}
+
+// ══════════════════════════════════════════════════
+// PROGRESSO
+// ══════════════════════════════════════════════════
+let filledFields = 0;
+const TOTAL_FIELDS = 9;
+
+function updateProgress(filled) {
+  filledFields = filled;
+  const pct = Math.round(filled / TOTAL_FIELDS * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = filled + ' de ' + TOTAL_FIELDS + ' campos preenchidos';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ══════════════════════════════════════════════════
+// AUTO-FILL
+// ══════════════════════════════════════════════════
+
+function markAutoFilled(id, inputId, selectEl) {
+  const ff = document.getElementById('ff-' + id);
+  const inp = document.getElementById(inputId || 'f-' + id);
+  const fs = document.getElementById('fs-' + id);
+  if (!ff || !inp) return;
+  ff.classList.add('auto-filled');
+  inp.classList.add('pre-filled');
+  inp.readOnly = true;
+  if (inp.tagName === 'SELECT') inp.disabled = true;
+  if (fs) fs.style.display = 'flex';
+}
+
+function enableEdit(id) {
+  const ff = document.getElementById('ff-' + id);
+  const inp = document.getElementById('f-' + id);
+  const fs = document.getElementById('fs-' + id);
+  if (!inp) return;
+  ff.classList.remove('auto-filled');
+  inp.classList.remove('pre-filled');
+  inp.readOnly = false;
+  if (inp.tagName === 'SELECT') inp.disabled = false;
+  inp.focus();
+  // Change badge to editing
+  if (fs) {
+    const badge = fs.querySelector('.badge-filled');
+    if (badge) { badge.className = 'badge-editing'; badge.textContent = '✏️ Editando'; }
+    const btn = fs.querySelector('.btn-edit-field');
+    if (btn) {
+      btn.textContent = 'Salvar';
+      btn.onclick = () => saveEdit(id);
+    }
+  }
+}
+
+function saveEdit(id) {
+  const inp = document.getElementById('f-' + id);
+  const fs = document.getElementById('fs-' + id);
+  if (!inp || !inp.value.trim()) { inp && inp.focus(); return; }
+  const ff = document.getElementById('ff-' + id);
+  ff.classList.add('auto-filled');
+  inp.classList.add('pre-filled');
+  inp.readOnly = true;
+  if (inp.tagName === 'SELECT') inp.disabled = true;
+  if (fs) {
+    const badge = fs.querySelector('.badge-editing') || fs.querySelector('.badge-filled');
+    if (badge) { badge.className = 'badge-filled'; badge.textContent = '✅ Preenchido'; }
+    const btn = fs.querySelector('.btn-edit-field');
+    if (btn) { btn.textContent = 'Editar'; btn.onclick = () => enableEdit(id); }
+  }
+}
+
+function fillForm(data) {
+  let filled = 0;
+
+  // Mapa campo → fieldId
+  const textFields = {
+    nome:        { key: 'nome' },
+    email:       { key: 'email' },
+    whatsapp:    { key: 'whatsapp' },
+    empresa:     { key: 'nome_empresa' },
+    faturamento: { key: 'faturamento_anual' },
+    cargo:       { key: 'cargo' }
+  };
+
+  Object.entries(textFields).forEach(([id, { key }]) => {
+    const val = data[key];
+    const inp = document.getElementById('f-' + id);
+    if (val && inp) {
+      inp.value = val;
+      markAutoFilled(id);
+      filled++;
+    }
+  });
+
+  // Campo 7: inferir de estagio_ia
+  const estagioMap = {
+    'nunca_testei': 'nao',
+    'ja_testei_sem_resultado': 'sim',
+    'uso_pontualmente': 'sim',
+    'tenho_processos': 'sim',
+    'concorrente_usa': 'nao'
+  };
+
+  if (data.estagio_ia && estagioMap[data.estagio_ia]) {
+    const val = estagioMap[data.estagio_ia];
+    const radio = document.querySelector(`input[name="ja_testou_ia"][value="${val}"]`);
+    if (radio) {
+      radio.checked = true;
+      radio.closest('.radio-opt').classList.add('selected');
+      triggerIAConditional(val);
+    }
+  }
+
+  // Campo 8: pré-preencher desafio com gargalo
+  if (data.gargalo_operacional) {
+    const ta = document.getElementById('f-desafio');
+    if (ta && !ta.value) {
+      ta.value = data.gargalo_operacional;
+      updateCharCount('desafio', ta.value.length, 800);
+    }
+  }
+
+  updateProgress(filled);
+  return filled;
+}
+
+// ══════════════════════════════════════════════════
+// STEP 1 — VALIDAÇÃO
+// ══════════════════════════════════════════════════
+
+async function validateAndLoad() {
+  const emailEl = document.getElementById('val-email');
+  const wppEl   = document.getElementById('val-whatsapp');
+  const email   = emailEl.value.trim();
+  const wpp     = wppEl.value.trim();
+
+  // Clear errors
+  document.getElementById('err-val-email').style.display = 'none';
+  document.getElementById('err-val-wpp').style.display = 'none';
+  emailEl.classList.remove('error');
+  wppEl.classList.remove('error');
+
+  let ok = true;
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    document.getElementById('err-val-email').style.display = 'block';
+    emailEl.classList.add('error');
+    ok = false;
+  }
+  if (!wpp || wpp.replace(/\D/g,'').length < 10) {
+    document.getElementById('err-val-wpp').style.display = 'block';
+    wppEl.classList.add('error');
+    ok = false;
+  }
+  if (!ok) return;
+
+  showLoading('Buscando seus dados...');
+
+  try {
+    // ────────────────────────────────────────────────
+    // TODO: Substituir por chamada real à API GHL
+    // const res = await fetch('/api/get-lead-data', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email, whatsapp: wpp })
+    // });
+    // if (!res.ok) throw new Error('not_found');
+    // const leadData = await res.json();
+    // ────────────────────────────────────────────────
+
+    // MOCK para demonstração — simula dados encontrados
+    await new Promise(r => setTimeout(r, 1400));
+    const leadData = {
+      nome: 'Guilherme Bassoli',
+      email: email,
+      whatsapp: wpp,
+      nome_empresa: '',
+      faturamento_anual: '1m_5m',
+      cargo: 'socio_ceo',
+      estagio_ia: 'uso_pontualmente',
+      gargalo_operacional: ''
+    };
+
+    hideLoading();
+    showForm(leadData, true);
+
+  } catch (e) {
+    hideLoading();
+    // Dados não encontrados — mostrar formulário vazio
+    showForm(null, false);
+  }
+}
+
+function showForm(leadData, found) {
+  // Esconder step 1
+  document.getElementById('step-validation').style.display = 'none';
+  // Mostrar step 2
+  document.getElementById('step-form').style.display = 'block';
+
+  // Atualizar step indicator
+  setStepDone(1);
+  setStepActive(2);
+
+  if (found && leadData) {
+    // Preencher form e mostrar welcome
+    const filled = fillForm(leadData);
+    const nome = leadData.nome ? leadData.nome.split(' ')[0] : '';
+    const bar = document.getElementById('welcome-bar');
+    const pct = Math.round(filled / TOTAL_FIELDS * 100);
+    document.getElementById('welcome-title').textContent = `✅ Olá, ${nome}! Dados encontrados.`;
+    document.getElementById('welcome-sub').textContent =
+      `Pré-preenchemos ${filled} de ${TOTAL_FIELDS} campos (${pct}%). Confirme os dados abaixo e preencha o que está faltando.`;
+    bar.style.display = 'block';
+  } else {
+    document.getElementById('not-found-bar').style.display = 'block';
+  }
+
+  // Scroll suave
+  window.scrollTo({ top: document.getElementById('step-form').offsetTop - 80, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════
+// CAMPO 7 — CONDICIONAL IA
+// ══════════════════════════════════════════════════
+
+function triggerIAConditional(val) {
+  const condSim = document.getElementById('cond-ia-sim');
+  const condNao = document.getElementById('cond-ia-nao');
+  const taSim   = document.getElementById('f-ia-testada');
+  const taNao   = document.getElementById('f-ia-bloqueios');
+
+  if (val === 'sim') {
+    condSim.classList.add('visible');
+    condNao.classList.remove('visible');
+    taSim.required = true;
+    taNao.required = false;
+    taNao.value = '';
+  } else {
+    condSim.classList.remove('visible');
+    condNao.classList.add('visible');
+    taNao.required = true;
+    taSim.required = false;
+    taSim.value = '';
+  }
+}
+
+document.querySelectorAll('input[name="ja_testou_ia"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    document.querySelectorAll('#ia-radio-group .radio-opt').forEach(o => o.classList.remove('selected'));
+    this.closest('.radio-opt').classList.add('selected');
+    triggerIAConditional(this.value);
+  });
+});
+
+// ══════════════════════════════════════════════════
+// CHECKBOX VISUAL SYNC (pagamento)
+// ══════════════════════════════════════════════════
+document.querySelectorAll('input[name="forma_pagamento"]').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('.cb-opt').classList.toggle('selected', this.checked);
+    document.getElementById('err-pagamento').style.display = 'none';
+  });
+});
+
+// ══════════════════════════════════════════════════
+// CHAR COUNTERS
+// ══════════════════════════════════════════════════
+function updateCharCount(id, len, max) {
+  const el = document.getElementById('cc-' + id);
+  if (!el) return;
+  el.textContent = len + '/' + max;
+  el.className = 'char-count' + (len > max * 0.9 ? ' warn' : '');
+}
+
+[
+  { id: 'ia-testada', max: 500 },
+  { id: 'ia-bloqueios', max: 500 },
+  { id: 'desafio', max: 800 }
+].forEach(({ id, max }) => {
+  const ta = document.getElementById('f-' + id);
+  if (ta) ta.addEventListener('input', () => updateCharCount(id, ta.value.length, max));
+});
+
+// ══════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════
+document.getElementById('application-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Limpar erros anteriores
+  document.querySelectorAll('.field-error').forEach(el => el.style.display = 'none');
+
+  let firstError = null;
+  function flagErr(id, msg) {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'block'; el.textContent = msg; }
+    if (!firstError) firstError = el;
+  }
+
+  // Validações
+  const nome = document.getElementById('f-nome');
+  if (!nome.value.trim()) flagErr('err-nome', 'Por favor, informe seu nome completo.');
+
+  const email = document.getElementById('f-email');
+  if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value)) flagErr('err-email', 'Por favor, informe um email válido.');
+
+  const wpp = document.getElementById('f-whatsapp');
+  if (!wpp.value.trim() || wpp.value.replace(/\D/g,'').length < 10) flagErr('err-whatsapp', 'Por favor, informe seu WhatsApp com DDD.');
+
+  const empresa = document.getElementById('f-empresa');
+  if (!empresa.value.trim()) flagErr('err-empresa', 'Por favor, informe o nome da empresa.');
+
+  const fat = document.getElementById('f-faturamento');
+  if (!fat.value) flagErr('err-faturamento', 'Por favor, selecione o faturamento.');
+
+  const cargo = document.getElementById('f-cargo');
+  if (!cargo.value) flagErr('err-cargo', 'Por favor, selecione seu cargo.');
+
+  const iaChecked = document.querySelector('input[name="ja_testou_ia"]:checked');
+  if (!iaChecked) flagErr('err-ia', 'Por favor, selecione uma opção.');
+
+  const desafio = document.getElementById('f-desafio');
+  if (!desafio.value.trim()) flagErr('err-desafio', 'Por favor, descreva seu maior desafio atual.');
+
+  const pgtos = document.querySelectorAll('input[name="forma_pagamento"]:checked');
+  if (pgtos.length === 0) flagErr('err-pagamento', 'Por favor, selecione pelo menos uma forma de pagamento.');
+
+  if (firstError) {
+    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Submit
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'ENVIANDO...';
+
+  showLoading('Enviando sua aplicação...');
+
+  try {
+    // ────────────────────────────────────────────────
+    // TODO: Substituir por chamada real à API GHL
+    // const res = await fetch('/api/submit-application', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(payload)
+    // });
+    // ────────────────────────────────────────────────
+
+    // MOCK — simula envio bem-sucedido
+    await new Promise(r => setTimeout(r, 1800));
+
+    hideLoading();
+    const nomeVal = encodeURIComponent(document.getElementById('f-nome').value.split(' ')[0]);
+    const emailVal = encodeURIComponent(document.getElementById('f-email').value);
+    window.location.href = 'aplicacao-enviada.html?nome=' + nomeVal + '&email=' + emailVal;
+
+  } catch (err) {
+    hideLoading();
+    btn.disabled = false;
+    btn.textContent = 'ENVIAR APLICAÇÃO →';
+    alert('Ops! Algo deu errado. Por favor, tente novamente.');
+  }
+});
+
+// ══════════════════════════════════════════════════
+// ENTER NA VALIDAÇÃO
+// ══════════════════════════════════════════════════
+['val-email','val-whatsapp'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') validateAndLoad(); });
+});
+</script>
+
+</body>
+</html>

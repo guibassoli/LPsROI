@@ -585,12 +585,14 @@
       background: #fff;
     }
 
-    .cb-opt.checked .custom-checkbox {
+    .cb-opt.checked .custom-checkbox,
+    .accept-row.checked .custom-checkbox {
       border-color: var(--purple);
       background: var(--purple);
     }
 
-    .cb-opt.checked .custom-checkbox::after {
+    .cb-opt.checked .custom-checkbox::after,
+    .accept-row.checked .custom-checkbox::after {
       content: '';
       width: 10px;
       height: 6px;

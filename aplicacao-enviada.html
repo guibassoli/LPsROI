@@ -481,7 +481,7 @@
         <div class="step-content">
           <p class="step-label">Após aprovação</p>
           <h3>Confirmação da vaga</h3>
-          <p>Com a vaga confirmada, você terá acesso ao material pré-evento e ao grupo exclusivo de participantes.</p>
+          <p>Com a vaga confirmada, você terá acesso ao nosso programa completo e à plataforma ROI com IA.</p>
         </div>
       </div>
 
@@ -491,29 +491,17 @@
 
 <hr class="section-divider">
 
-<!-- O QUE VOCÊ VAI RECEBER -->
+<!-- CTA AGENDAMENTO -->
 <section class="expect-section" style="padding-top: 48px;">
   <div class="expect-inner">
-    <div class="expect-card">
-      <h2>O que você receberá ao ser aprovado</h2>
-      <ul class="expect-list">
-        <li>
-          <span class="ico">🧬</span>
-          <span><strong>Relatório de DNA Estratégico</strong> — análise personalizada do seu negócio com recomendações de IA específicas para sua realidade.</span>
-        </li>
-        <li>
-          <span class="ico">📘</span>
-          <span><strong>Workbook exclusivo do evento</strong> — material que te prepara para extrair o máximo de cada sessão da imersão.</span>
-        </li>
-        <li>
-          <span class="ico">🎯</span>
-          <span><strong>Acesso à Grande Imersão IA — Do Zero ao ROI</strong> — evento presencial com Henry Risutti e convidados especiais.</span>
-        </li>
-        <li>
-          <span class="ico">💬</span>
-          <span><strong>Grupo exclusivo de participantes</strong> — networking com outros líderes e empresários que estão implementando IA nos seus negócios.</span>
-        </li>
-      </ul>
+    <div class="expect-card" style="text-align:center; padding: 40px 32px;">
+      <div style="font-size:40px; margin-bottom:16px;">🗺️</div>
+      <h2 style="font-family:var(--font-serif);font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px;">Seu Mapa de Implementação<br>já está sendo gerado</h2>
+      <p style="font-size:15px;color:var(--muted);line-height:1.65;max-width:440px;margin:0 auto 28px;">Enquanto nossa equipe analisa sua ficha, você já pode adiantar e agendar sua sessão estratégica de 30 minutos para apresentação do mapa completo.</p>
+      <a id="cta-agendar" href="agendar.html" style="display:inline-flex;align-items:center;gap:8px;padding:16px 36px;background:var(--green);color:var(--black);font-family:var(--font-sans);font-size:16px;font-weight:800;letter-spacing:-0.01em;border-radius:100px;text-decoration:none;box-shadow:0 0 32px rgba(106,235,152,0.2);transition:transform 0.2s,box-shadow 0.2s;">
+        🗓️ Agendar minha sessão estratégica
+      </a>
+      <p style="margin-top:12px;font-size:12px;color:var(--muted2);">Gratuito · 30 minutos · Sem compromisso</p>
     </div>
   </div>
 </section>
@@ -561,6 +549,12 @@
       document.getElementById('email-display').textContent = email;
     } else {
       document.getElementById('email-confirm-row').style.display = 'none';
+    }
+
+    // Pass params to agendar CTA
+    const agendarBtn = document.getElementById('cta-agendar');
+    if (agendarBtn && (nome || email)) {
+      agendarBtn.href = 'agendar.html?nome=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email);
     }
   })();
 

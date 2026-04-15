@@ -710,6 +710,92 @@
       .header-badge { display: none; }
     }
 
+    /* ── BLOCK NAVIGATION ─────────────────────────── */
+    /* Hide all blocks by default, show only active */
+    .form-section { display: none; }
+    .form-section.block-active { display: block; animation: blockIn 0.3s ease both; }
+    @keyframes blockIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Block indicator */
+    .block-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--f-border);
+      border-radius: 12px;
+    }
+    .block-dots {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+    .block-dot {
+      height: 4px;
+      flex: 1;
+      border-radius: 100px;
+      background: var(--f-border);
+      transition: background 0.3s;
+    }
+    .block-dot.done    { background: var(--green); }
+    .block-dot.active  { background: var(--purple); }
+    .block-indicator-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--f-muted);
+      white-space: nowrap;
+    }
+    .block-indicator-label strong { color: var(--f-text); }
+
+    /* Next / Back block buttons */
+    .block-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      gap: 12px;
+    }
+    .btn-block-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: transparent;
+      border: 1px solid var(--f-border);
+      border-radius: 100px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--f-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-block-back:hover { background: rgba(0,0,0,0.04); color: var(--f-text); }
+    .btn-block-next {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      letter-spacing: -0.01em;
+    }
+    .btn-block-next:hover { background: #1a1a1a; }
+
     /* ── MAPA DE IMPLEMENTAÇÃO ─────────────────────── */
     #mapa-section {
       background: var(--black);
@@ -1055,12 +1141,24 @@
           </div>
         </div>
 
+        <!-- Block indicator -->
+        <div class="block-indicator" id="block-indicator">
+          <div class="block-dots" id="block-dots">
+            <div class="block-dot active" id="bdot-1"></div>
+            <div class="block-dot" id="bdot-2"></div>
+            <div class="block-dot" id="bdot-3"></div>
+            <div class="block-dot" id="bdot-4"></div>
+            <div class="block-dot" id="bdot-5"></div>
+          </div>
+          <span class="block-indicator-label">Bloco <strong id="block-current-num">1</strong> de 5</span>
+        </div>
+
         <form id="application-form" novalidate>
 
           <!-- ─────────────────────────────────────── -->
           <!-- BLOCO 1: DADOS BÁSICOS                  -->
           <!-- ─────────────────────────────────────── -->
-          <div class="form-section">
+          <div class="form-section block-active" id="block-1">
             <div class="section-heading">
               <span class="section-icon">📝</span>
               Confirme Seus Dados
@@ -1107,10 +1205,16 @@
           </div>
 
 
+            <!-- Nav bloco 1 -->
+            <div class="block-nav">
+              <button type="button" class="btn-block-next" onclick="goToBlock(2)">Próximo → Empresa</button>
+            </div>
+          </div>
+
           <!-- ─────────────────────────────────────── -->
           <!-- BLOCO 2: PERFIL DA EMPRESA              -->
           <!-- ─────────────────────────────────────── -->
-          <div class="form-section">
+          <div class="form-section" id="block-2">
             <div class="section-heading">
               <span class="section-icon">🏢</span>
               Perfil da Empresa
@@ -1171,13 +1275,19 @@
                 <div class="field-error" id="err-cargo">Por favor, selecione seu cargo.</div>
               </div>
             </div>
+
+            <!-- Nav bloco 2 -->
+            <div class="block-nav">
+              <button type="button" class="btn-block-back" onclick="goToBlock(1)">‹ Dados</button>
+              <button type="button" class="btn-block-next" onclick="goToBlock(3)">Próximo → Experiência com IA</button>
+            </div>
           </div>
 
 
           <!-- ─────────────────────────────────────── -->
           <!-- BLOCO 3: EXPERIÊNCIA COM IA             -->
           <!-- ─────────────────────────────────────── -->
-          <div class="form-section">
+          <div class="form-section" id="block-3">
             <div class="section-heading">
               <span class="section-icon">🤖</span>
               Experiência com IA
@@ -1220,13 +1330,19 @@
                 </div>
               </div>
             </div>
+
+            <!-- Nav bloco 3 -->
+            <div class="block-nav">
+              <button type="button" class="btn-block-back" onclick="goToBlock(2)">‹ Empresa</button>
+              <button type="button" class="btn-block-next" onclick="goToBlock(4)">Próximo → Desafio</button>
+            </div>
           </div>
 
 
           <!-- ─────────────────────────────────────── -->
           <!-- BLOCO 4: DESAFIO ATUAL                  -->
           <!-- ─────────────────────────────────────── -->
-          <div class="form-section">
+          <div class="form-section" id="block-4">
             <div class="section-heading">
               <span class="section-icon">🎯</span>
               Desafio Atual
@@ -1242,25 +1358,22 @@
                 <div class="field-error" id="err-desafio">Por favor, descreva seu maior desafio.</div>
               </div>
             </div>
+
+            <!-- Nav bloco 4 -->
+            <div class="block-nav">
+              <button type="button" class="btn-block-back" onclick="goToBlock(3)">‹ IA</button>
+              <button type="button" class="btn-block-next" onclick="goToBlock(5)">Próximo → Pagamento</button>
+            </div>
           </div>
 
 
           <!-- ─────────────────────────────────────── -->
           <!-- BLOCO 5: INVESTIMENTO                   -->
           <!-- ─────────────────────────────────────── -->
-          <div class="form-section">
+          <div class="form-section" id="block-5">
             <div class="section-heading">
               <span class="section-icon">💰</span>
               Investimento e Pagamento
-            </div>
-
-            <div class="invest-box">
-              <p><strong>Investimento no Programa de Aceleração:</strong></p>
-              <ul>
-                <li>💳 <strong>R$ 20.000</strong> à vista no PIX (desconto incluído)</li>
-                <li>💳 <strong>12× de R$ 2.000</strong> no cartão (sem juros)</li>
-              </ul>
-              <p class="note">📌 Após o envio, você poderá pagar diretamente ou agendar uma call com nossa equipe.</p>
             </div>
 
             <div class="form-field" id="ff-pagamento">
@@ -1287,18 +1400,19 @@
                 <div class="field-error" id="err-pagamento">Por favor, selecione pelo menos uma opção.</div>
               </div>
             </div>
-          </div>
 
+            <!-- Nav bloco 5: back + submit -->
+            <div class="block-nav" style="margin-top:24px;">
+              <button type="button" class="btn-block-back" onclick="goToBlock(4)">‹ Desafio</button>
+              <div style="flex:1;">
+                <button type="submit" class="btn-submit-ficha" id="btn-submit" style="width:100%;border-radius:100px;">
+                  ENVIAR APLICAÇÃO →
+                </button>
+                <p class="submit-microcopy" style="text-align:center;margin-top:10px;">🔒 Seus dados são 100% seguros e confidenciais.</p>
+              </div>
+            </div>
 
-          <!-- ─────────────────────────────────────── -->
-          <!-- SUBMIT                                   -->
-          <!-- ─────────────────────────────────────── -->
-          <div class="submit-area">
-            <button type="submit" class="btn-submit-ficha" id="btn-submit">
-              ENVIAR APLICAÇÃO →
-            </button>
-            <p class="submit-microcopy">🔒 Seus dados são 100% seguros e confidenciais.</p>
-          </div>
+          </div><!-- /#block-5 -->
 
         </form>
       </div><!-- /#step-form -->
@@ -1813,6 +1927,87 @@ document.getElementById('application-form').addEventListener('submit', async fun
     alert('Ops! Algo deu errado. Por favor, tente novamente.');
   }
 });
+
+// ══════════════════════════════════════════════════
+// BLOCK NAVIGATION
+// ══════════════════════════════════════════════════
+let currentBlock = 1;
+const BLOCK_TOTAL = 5;
+
+// Fields to validate per block
+const BLOCK_FIELDS = {
+  1: [
+    { id: 'f-nome',      err: 'err-nome',      check: v => v.trim().length > 0 },
+    { id: 'f-email',     err: 'err-email',     check: v => /\S+@\S+\.\S+/.test(v) },
+    { id: 'f-whatsapp',  err: 'err-whatsapp',  check: v => v.replace(/\D/g,'').length >= 10 }
+  ],
+  2: [
+    { id: 'f-empresa',     err: 'err-empresa',     check: v => v.trim().length > 0 },
+    { id: 'f-faturamento', err: 'err-faturamento', check: v => v.length > 0 },
+    { id: 'f-cargo',       err: 'err-cargo',       check: v => v.length > 0 }
+  ],
+  3: [
+    { id: null, err: 'err-ia', radio: 'ja_testou_ia' }
+  ],
+  4: [
+    { id: 'f-desafio', err: 'err-desafio', check: v => v.trim().length > 0 }
+  ],
+  5: [
+    { id: null, err: 'err-pagamento', checkbox: 'forma_pagamento' }
+  ]
+};
+
+function validateBlock(n) {
+  const fields = BLOCK_FIELDS[n] || [];
+  let ok = true;
+  document.querySelectorAll('#block-' + n + ' .field-error').forEach(e => e.style.display = 'none');
+
+  fields.forEach(f => {
+    let valid = true;
+    if (f.radio) {
+      valid = !!document.querySelector('input[name="' + f.radio + '"]:checked');
+    } else if (f.checkbox) {
+      valid = document.querySelectorAll('input[name="' + f.checkbox + '"]:checked').length > 0;
+    } else {
+      const el = document.getElementById(f.id);
+      valid = el && f.check(el.value);
+    }
+    if (!valid) {
+      const errEl = document.getElementById(f.err);
+      if (errEl) errEl.style.display = 'block';
+      ok = false;
+    }
+  });
+  return ok;
+}
+
+function goToBlock(n) {
+  // Validate current before advancing
+  if (n > currentBlock && !validateBlock(currentBlock)) return;
+
+  // Deactivate all blocks
+  document.querySelectorAll('.form-section').forEach(el => el.classList.remove('block-active'));
+
+  // Activate target
+  const target = document.getElementById('block-' + n);
+  if (target) {
+    target.classList.add('block-active');
+    // Scroll to block indicator
+    document.getElementById('block-indicator').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  currentBlock = n;
+
+  // Update dots
+  for (let i = 1; i <= BLOCK_TOTAL; i++) {
+    const dot = document.getElementById('bdot-' + i);
+    if (!dot) continue;
+    dot.className = 'block-dot';
+    if (i < n)  dot.classList.add('done');
+    if (i === n) dot.classList.add('active');
+  }
+  document.getElementById('block-current-num').textContent = n;
+}
 
 // ══════════════════════════════════════════════════
 // MAPA DE IMPLEMENTAÇÃO — REVEAL

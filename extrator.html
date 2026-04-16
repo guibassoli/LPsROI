@@ -50,8 +50,8 @@
     }
     * { position: relative; z-index: 1; }
 
-    /* ── ACCESS DENIED ──────────────────────────────── */
-    #access-denied {
+    /* ── EMAIL GATE ─────────────────────────────────── */
+    #email-gate {
       display: none;
       min-height: 100vh;
       align-items: center;
@@ -62,97 +62,187 @@
                   var(--black);
     }
 
-    .denied-box {
-      max-width: 520px;
+    .gate-box {
+      max-width: 480px;
       width: 100%;
       text-align: center;
     }
 
-    .denied-icon {
-      font-size: 64px;
-      margin-bottom: 24px;
+    /* Logo topo */
+    .gate-logo {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 40px;
       display: block;
     }
+    .gate-logo span { color: var(--green); }
 
-    .denied-box h1 {
+    /* Badge */
+    .gate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(106,235,152,0.08);
+      border: 1px solid rgba(106,235,152,0.2);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 24px;
+    }
+
+    /* States */
+    .gate-state { display: none; }
+    .gate-state.active {
+      display: block;
+      animation: gateIn 0.3s ease both;
+    }
+    @keyframes gateIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Titles */
+    .gate-title {
       font-family: var(--font-serif);
-      font-size: clamp(28px, 6vw, 36px);
-      color: var(--white);
-      margin-bottom: 16px;
+      font-size: clamp(26px, 5vw, 34px);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
     }
-
-    .denied-box p {
-      color: rgba(255,255,255,0.6);
-      font-size: 17px;
-      margin-bottom: 40px;
-      line-height: 1.7;
-    }
-
-    .denied-steps {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 24px;
+    .gate-title em { font-style: italic; color: var(--green); }
+    .gate-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.65;
       margin-bottom: 32px;
+    }
+
+    /* Email input */
+    .gate-input-wrap {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 480px) {
+      .gate-input-wrap { flex-direction: column; }
+    }
+    .gate-input {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 15px 18px;
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .gate-input::placeholder { color: rgba(255,255,255,0.3); }
+    .gate-input:focus { border-color: rgba(106,235,152,0.5); }
+    .gate-input.error { border-color: #f87171; }
+
+    .btn-gate-check {
+      padding: 15px 24px;
+      background: var(--green);
+      color: var(--black);
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .btn-gate-check:hover  { opacity: 0.9; transform: translateY(-1px); }
+    .btn-gate-check:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .gate-error-msg {
+      font-size: 13px;
+      color: #f87171;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .gate-helper {
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.55;
+    }
+
+    /* Loading spinner */
+    .gate-spinner {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--green);
+      animation: gateSpin 0.7s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes gateSpin { to { transform: rotate(360deg); } }
+
+    /* Not found state */
+    .not-found-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .not-found-card {
+      background: rgba(252,129,50,0.06);
+      border: 1px solid rgba(252,129,50,0.2);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
       text-align: left;
     }
-
-    .denied-steps h3 {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 20px;
+    .not-found-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      margin: 0;
     }
+    .not-found-card strong { color: var(--orange); }
 
-    .denied-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .denied-step:last-child { margin-bottom: 0; }
-
-    .step-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--purple), var(--green));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .step-text {
-      color: rgba(255,255,255,0.75);
-      font-size: 15px;
-      padding-top: 3px;
-    }
-
-    .btn-denied {
+    .btn-register {
       display: inline-block;
       background: linear-gradient(135deg, var(--green) 0%, var(--purple) 100%);
       color: #fff;
       font-family: var(--font-sans);
       font-weight: 800;
       font-size: 15px;
-      letter-spacing: 0.06em;
+      letter-spacing: -0.01em;
       text-decoration: none;
       padding: 16px 36px;
-      border-radius: 8px;
+      border-radius: 100px;
       transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 0 28px rgba(106,235,152,0.15);
+      margin-bottom: 16px;
+      display: block;
     }
+    .btn-register:hover { opacity: 0.9; transform: translateY(-2px); }
 
-    .btn-denied:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
+    .btn-gate-retry {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 8px;
+      transition: color 0.15s;
+      display: block;
+      margin: 0 auto;
     }
+    .btn-gate-retry:hover { color: var(--white); }
 
     /* ── MAIN CONTENT ───────────────────────────────── */
     #main-content { display: none; }
@@ -774,32 +864,51 @@
      STATE 1 — ACCESS DENIED
      Shown when ?token= is NOT present in URL
      ════════════════════════════════════════════════════════ -->
-<div id="access-denied">
-  <div class="denied-box">
-    <span class="denied-icon">⚠️</span>
-    <h1>Acesso Restrito</h1>
-    <p>Esta página é exclusiva para participantes confirmados do evento <strong style="color:#fff;">IA do Zero ao ROI</strong>.</p>
+<div id="email-gate">
+  <div class="gate-box">
 
-    <div class="denied-steps">
-      <h3>Como obter acesso:</h3>
+    <a href="index.html" class="gate-logo">ROI<span>com</span>IA</a>
+    <div class="gate-badge">🧬 Ferramenta Exclusiva</div>
 
-      <div class="denied-step">
-        <div class="step-num">1</div>
-        <div class="step-text">Confirme sua inscrição no evento gratuito</div>
+    <!-- ── ESTADO 1: Input de email ── -->
+    <div class="gate-state active" id="gate-input">
+      <h1 class="gate-title">Acesse seu<br><em>Extrator de DNA</em></h1>
+      <p class="gate-sub">Informe o e-mail com que você se inscreveu no evento para acessar a ferramenta.</p>
+
+      <div class="gate-input-wrap">
+        <input type="email" id="gate-email" class="gate-input"
+          placeholder="seu@email.com" autocomplete="email"
+          onkeydown="if(event.key==='Enter') checkGateEmail()">
+        <button class="btn-gate-check" id="btn-gate-check" onclick="checkGateEmail()">
+          Acessar →
+        </button>
       </div>
-
-      <div class="denied-step">
-        <div class="step-num">2</div>
-        <div class="step-text">Entre no grupo de WhatsApp exclusivo dos participantes</div>
-      </div>
-
-      <div class="denied-step">
-        <div class="step-num">3</div>
-        <div class="step-text">Você receberá o link de acesso personalizado com seu token</div>
-      </div>
+      <div class="gate-error-msg" id="gate-err">Por favor, informe um e-mail válido.</div>
+      <p class="gate-helper">🔒 Acesso exclusivo para participantes inscritos no evento <strong style="color:rgba(255,255,255,0.5)">IA do Zero ao ROI</strong>.</p>
     </div>
 
-    <a href="index.html" class="btn-denied">FAZER MINHA INSCRIÇÃO</a>
+    <!-- ── ESTADO 2: Verificando ── -->
+    <div class="gate-state" id="gate-loading">
+      <div class="gate-spinner"></div>
+      <h2 class="gate-title" style="font-size:22px;">Verificando inscrição...</h2>
+      <p class="gate-sub" style="margin-bottom:0;">Consultando sua inscrição no evento.</p>
+    </div>
+
+    <!-- ── ESTADO 3: Não encontrado ── -->
+    <div class="gate-state" id="gate-not-found">
+      <span class="not-found-icon">😔</span>
+      <h1 class="gate-title" style="font-size:clamp(22px,4vw,28px);">E-mail não encontrado</h1>
+      <p class="gate-sub">Não encontramos uma inscrição com este e-mail no evento <strong style="color:#fff;">IA do Zero ao ROI</strong>.</p>
+
+      <div class="not-found-card">
+        <p><strong>E-mail verificado:</strong> <span id="gate-email-display">—</span><br><br>
+        Para acessar o Extrator de DNA, você precisa estar inscrito no evento. A inscrição é gratuita e leva menos de 1 minuto.</p>
+      </div>
+
+      <a href="index.html" class="btn-register">→ Fazer minha inscrição gratuita</a>
+      <button class="btn-gate-retry" onclick="gateReset()">← Tentar com outro e-mail</button>
+    </div>
+
   </div>
 </div>
 
@@ -1299,9 +1408,90 @@
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// TOKEN CHECK — executado ao carregar a página
-// TODO: Para validar o token no servidor, substitua a lógica
-//       abaixo por uma chamada à sua API/GHL webhook de validação.
+// EMAIL GATE — verificação de inscrição antes de abrir o extrator
+// ══════════════════════════════════════════════════════════════
+
+function gateShowState(id) {
+  document.querySelectorAll('.gate-state').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function gateReset() {
+  document.getElementById('gate-email').value = '';
+  document.getElementById('gate-err').style.display = 'none';
+  document.getElementById('gate-email').classList.remove('error');
+  gateShowState('gate-input');
+  setTimeout(() => document.getElementById('gate-email').focus(), 100);
+}
+
+async function checkGateEmail() {
+  const emailEl = document.getElementById('gate-email');
+  const email   = emailEl.value.trim();
+  const errEl   = document.getElementById('gate-err');
+
+  // Valida formato
+  errEl.style.display = 'none';
+  emailEl.classList.remove('error');
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    errEl.style.display = 'block';
+    errEl.textContent   = 'Por favor, informe um e-mail válido.';
+    emailEl.classList.add('error');
+    emailEl.focus();
+    return;
+  }
+
+  // Mostra loading
+  document.getElementById('btn-gate-check').disabled = true;
+  gateShowState('gate-loading');
+
+  try {
+    // ─────────────────────────────────────────────────
+    // TODO: Substituir por chamada real à API GHL/webhook
+    // const res = await fetch('/api/check-registration', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email })
+    // });
+    // const { found, nome } = await res.json();
+    // ─────────────────────────────────────────────────
+
+    // MOCK — simula busca (1.2s delay)
+    await new Promise(r => setTimeout(r, 1200));
+    const found = email.toLowerCase() !== 'teste@naoexiste.com'; // mock: qualquer email exceto esse é "encontrado"
+    const nome  = found ? email.split('@')[0] : '';
+
+    if (found) {
+      // ✅ Inscrito — libera o extrator
+      document.getElementById('email-gate').style.display = 'none';
+      grantAccess(email, nome);
+    } else {
+      // ❌ Não encontrado
+      document.getElementById('gate-email-display').textContent = email;
+      gateShowState('gate-not-found');
+      document.getElementById('btn-gate-check').disabled = false;
+    }
+
+  } catch (err) {
+    gateShowState('gate-input');
+    errEl.style.display = 'block';
+    errEl.textContent   = 'Erro ao verificar. Tente novamente.';
+    document.getElementById('btn-gate-check').disabled = false;
+  }
+}
+
+function grantAccess(email, nome) {
+  document.getElementById('main-content').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Pré-preenche dados do lead no formulário se disponível
+  if (nome) {
+    const q1 = document.getElementById('q1');
+    if (q1 && !q1.value) q1.value = nome;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT — verifica URL params ao carregar
+// Se vier ?token= ou ?email= na URL, pula o gate
 // ══════════════════════════════════════════════════════════════
 (function() {
   const urlP      = new URLSearchParams(window.location.search);
@@ -1309,13 +1499,14 @@
   const leadEmail = urlP.get('email') || '';
   const leadNome  = urlP.get('nome')  || '';
 
-  if (!token) {
-    document.getElementById('access-denied').style.display = 'flex';
+  if (token || leadEmail) {
+    // Acesso via link personalizado — pula o gate
+    document.getElementById('main-content').style.display = 'block';
     return;
   }
 
-  // Token presente — mostra conteúdo principal
-  document.getElementById('main-content').style.display = 'block';
+  // Sem token nem email — mostra gate
+  document.getElementById('email-gate').style.display = 'flex';
 
   // Pré-preenche campos com dados do lead vindos da survey
   if (leadNome) {

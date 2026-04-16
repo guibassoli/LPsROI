@@ -718,7 +718,15 @@
     const emailRow = document.getElementById('email-row');
     if (emailRow) emailRow.style.display = 'block';
   }
+
+  // Tracking
+  if (window.__tracker) {
+    window.__tracker.setLeadInfo({ name: nome, email: email });
+  }
 })();
 </script>
+
+  <script src="tracker.js" defer></script>
+
 </body>
 </html>

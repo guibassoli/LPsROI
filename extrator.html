@@ -1547,6 +1547,11 @@ function grantAccess(email, nome) {
   // Expõe para uso posterior no submit
   window._leadEmail = leadEmail;
   window._leadNome  = leadNome;
+
+  // Tracking
+  if (window.__tracker) {
+    window.__tracker.setLeadInfo({ name: leadNome, email: leadEmail });
+  }
 })();
 
 
@@ -1934,7 +1939,30 @@ function handleSubmit() {
   //
   // ══════════════════════════════════════════════════
 
-  console.log('[Extrator] Form data:', formData);
+  // Tracking: conta campos preenchidos e envia pro Nucleo
+  if (window.__tracker) {
+    const fields = [
+      formData.q1_empresa, formData.q2_setor, formData.q3_produto,
+      formData.q4_estagio, formData.q5_icp, formData.q6_diferencial,
+      formData.q8_ticket, formData.q9_equipe, formData.q10_processo,
+      formData.q12_maturidade, formData.q13_objetivo, formData.q14_roi,
+      formData.q15_prazo, formData.q16_responsavel,
+      formData.q_instagram, formData.q_site, formData.q_concorrentes,
+      formData.q_tonvoz,
+    ];
+    // Arrays (checkboxes) contam como preenchidos se tem ao menos 1 selecionado
+    const arrayFields = [formData.q7_canais, formData.q11_ferramentas];
+    const filledCount = fields.filter(v => v && String(v).trim()).length
+      + arrayFields.filter(a => Array.isArray(a) && a.length > 0).length;
+    const totalFields = fields.length + arrayFields.length; // 20
+
+    window.__tracker.trackNow('extrator_submitted', {
+      filled: filledCount,
+      total: totalFields,
+      percent: Math.round((filledCount / totalFields) * 100),
+      answers: formData,
+    });
+  }
 
   showSuccess(formData);
 }
@@ -1956,9 +1984,14 @@ function showSuccess(formData) {
   });
 
   setTimeout(() => {
-    window.location.href = 'extrator-confirmacao.html?' + redirectParams.toString();
+    let url = 'extrator-confirmacao.html?' + redirectParams.toString();
+    if (window.__tracker) url = window.__tracker.injectLeadId(url);
+    window.location.href = url;
   }, 2000);
 }
 </script>
+
+  <script src="tracker.js" defer></script>
+
 </body>
 </html>

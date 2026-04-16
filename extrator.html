@@ -1895,35 +1895,44 @@ function handleSubmit() {
   }
 
   // ── All valid — collect data ─────────────────────────────
+  const radioVal = name => (document.querySelector('[name="' + name + '"]:checked') || {}).value || '';
+  const textVal  = id   => (document.getElementById(id) || {}).value ? document.getElementById(id).value.trim() : '';
+  const checkboxVals = (selector, outroId) => {
+    const vals = Array.from(document.querySelectorAll(selector + ':checked')).map(c => c.value);
+    if (outroId && vals.includes('Outro')) {
+      const outroText = textVal(outroId);
+      return vals.map(v => v === 'Outro' ? (outroText || 'Outro') : v);
+    }
+    return vals;
+  };
+
   const formData = {
-    token:         new URLSearchParams(window.location.search).get('token'),
-    q1_empresa:    document.getElementById('q1').value.trim(),
-    q2_setor:      document.getElementById('q2').value === 'Outro'
-                     ? document.getElementById('q2-outro').value.trim()
-                     : document.getElementById('q2').value,
-    q3_produto:    document.getElementById('q3').value.trim(),
-    q4_estagio:    document.querySelector('[name="q4"]:checked').value,
-    q5_icp:        document.getElementById('q5').value.trim(),
-    q6_diferencial: document.getElementById('q6').value.trim(),
-    q7_canais:     Array.from(document.querySelectorAll('.q7-cb:checked')).map(c => c.value),
-    q8_ticket:     document.querySelector('[name="q8"]:checked').value,
-    q9_equipe:     document.querySelector('[name="q9"]:checked').value,
-    q10_processo:  document.querySelector('[name="q10"]:checked').value === 'Outro'
-                     ? document.getElementById('q10-outro').value.trim()
-                     : document.querySelector('[name="q10"]:checked').value,
-    q11_ferramentas: Array.from(document.querySelectorAll('.q11-cb:checked')).map(c => c.value),
-    q12_maturidade: document.querySelector('[name="q12"]:checked').value,
-    q13_objetivo:  document.querySelector('[name="q13"]:checked').value === 'Outro'
-                     ? document.getElementById('q13-outro').value.trim()
-                     : document.querySelector('[name="q13"]:checked').value,
-    q14_roi:       document.querySelector('[name="q14"]:checked').value === 'Outro'
-                     ? document.getElementById('q14-outro').value.trim()
-                     : document.querySelector('[name="q14"]:checked').value,
-    q15_prazo:     document.querySelector('[name="q15"]:checked').value,
-    q16_responsavel: document.querySelector('[name="q16"]:checked').value,
-    email:         window._leadEmail || '',
-    nome:          window._leadNome  || '',
-    submitted_at:  new Date().toISOString(),
+    token:           new URLSearchParams(window.location.search).get('token'),
+    q1_empresa:      textVal('q1'),
+    q2_setor:        document.getElementById('q2').value === 'Outro'
+                       ? textVal('q2-outro')
+                       : document.getElementById('q2').value,
+    q3_produto:      textVal('q3'),
+    q4_estagio:      radioVal('q4'),
+    q5_icp:          textVal('q5'),
+    q6_diferencial:  textVal('q6'),
+    q7_canais:       checkboxVals('.q7-cb'),
+    q8_ticket:       textVal('q8_valor'),
+    q9_equipe:       radioVal('q9'),
+    q10_processo:    checkboxVals('.q10-cb', 'q10-outro'),
+    q11_ferramentas: checkboxVals('.q11-cb'),
+    q12_maturidade:  radioVal('q12'),
+    q13_objetivo:    checkboxVals('.q13-cb', 'q13-outro'),
+    q14_roi:         checkboxVals('.q14-cb', 'q14-outro'),
+    q15_prazo:       radioVal('q15'),
+    q16_responsavel: radioVal('q16'),
+    q_instagram:     textVal('q_instagram'),
+    q_site:          textVal('q_site'),
+    q_concorrentes:  textVal('q_concorrentes'),
+    q_tonvoz:        radioVal('q_tonvoz'),
+    email:           window._leadEmail || '',
+    nome:            window._leadNome  || '',
+    submitted_at:    new Date().toISOString(),
   };
 
   // ══════════════════════════════════════════════════

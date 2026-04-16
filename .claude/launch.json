@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "roi-landing",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "/Users/guibassoli/Documents/Claude/Projects/ROI com IA/Claude Code"],
+      "port": 8765
+    }
+  ]
+}

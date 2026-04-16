@@ -56,7 +56,8 @@
       min-height: 100vh;
       align-items: center;
       justify-content: center;
-      padding: 32px 16px;
+      padding: 96px 16px 32px;
+      position: relative;
       background: radial-gradient(ellipse at 50% 0%, rgba(108,98,228,0.18) 0%, transparent 60%),
                   radial-gradient(ellipse at 80% 80%, rgba(106,235,152,0.08) 0%, transparent 50%),
                   var(--black);
@@ -886,9 +887,15 @@
      Shown when ?token= is NOT present in URL
      ════════════════════════════════════════════════════════ -->
 <div id="email-gate">
-  <div class="gate-box">
 
-    <a href="index.html" class="gate-logo"><img src="logo.png" alt="RoicomIA" style="height:36px;width:auto;display:block;margin:0 auto;mix-blend-mode:screen;"></a>
+  <!-- Header com logo fixo no topo esquerdo -->
+  <div style="position:absolute;top:0;left:0;right:0;padding:20px 28px;z-index:10;">
+    <a href="index.html">
+      <img src="logo.png" alt="RoicomIA" style="height:32px;width:auto;display:block;mix-blend-mode:screen;">
+    </a>
+  </div>
+
+  <div class="gate-box">
     <div class="gate-badge">🧬 Ferramenta Exclusiva</div>
 
     <!-- ── ESTADO 1: Input de email ── -->

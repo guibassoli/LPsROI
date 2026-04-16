@@ -151,21 +151,42 @@
     .gate-input.error { border-color: #f87171; }
 
     .btn-gate-check {
-      padding: 15px 24px;
-      background: var(--green);
-      color: var(--black);
+      padding: 15px 28px;
+      background: #fc8132;
+      color: #000000;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
       font-family: var(--font-sans);
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       cursor: pointer;
       white-space: nowrap;
-      transition: opacity 0.2s, transform 0.2s;
-      letter-spacing: -0.01em;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 24px rgba(252,129,50,0.45);
     }
-    .btn-gate-check:hover  { opacity: 0.9; transform: translateY(-1px); }
-    .btn-gate-check:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-gate-check::after {
+      content: '';
+      position: absolute;
+      top: -30%; left: -80%;
+      width: 55%; height: 160%;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+      transform: skewX(-15deg);
+      animation: btn-shine 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes btn-shine {
+      0%   { left: -80%; opacity: 0; }
+      10%  { opacity: 1; }
+      60%  { left: 130%; opacity: 1; }
+      61%  { opacity: 0; }
+      100% { left: 130%; opacity: 0; }
+    }
+    .btn-gate-check:hover  { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(252,129,50,0.55); }
+    .btn-gate-check:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .gate-error-msg {
       font-size: 13px;

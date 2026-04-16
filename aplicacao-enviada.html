@@ -1122,10 +1122,39 @@
     const p = new URLSearchParams(window.location.search);
     const nome  = p.get('nome')  || '';
     const email = p.get('email') || '';
+    const phone = p.get('phone') || '';
     if (nome)  { const el = document.getElementById('icf-nome');  if(el){ el.value=nome;  el.classList.add('ic-prefilled'); } }
     if (email) { const el = document.getElementById('icf-email'); if(el){ el.value=email; el.classList.add('ic-prefilled'); } }
+
+    if (window.__tracker) {
+      window.__tracker.setLeadInfo({ name: nome, email, phone });
+    }
   })();
+
+  // Tracking: agendamento confirmado
+  const _origIcConfirm = icConfirm;
+  icConfirm = async function() {
+    await _origIcConfirm();
+    if (window.__tracker && icSelDate && icSelSlot) {
+      window.__tracker.trackNow('schedule_confirmed', {
+        date: icSelDate.toISOString().split('T')[0],
+        time: icSelSlot,
+        nome: document.getElementById('icf-nome')?.value,
+        email: document.getElementById('icf-email')?.value
+      });
+    }
+  };
+
+  // Tracking: clique no suporte WhatsApp
+  const wppBtn = document.getElementById('whatsapp-btn');
+  if (wppBtn && window.__tracker) {
+    wppBtn.addEventListener('click', () => {
+      window.__tracker.trackNow('whatsapp_support_clicked', {});
+    });
+  }
 </script>
+
+  <script src="tracker.js" defer></script>
 
 </body>
 </html>

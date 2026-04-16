@@ -769,6 +769,11 @@
     const leadEmail  = urlParams.get('email') || '';
     const leadPhone  = urlParams.get('phone') || '';
 
+    // ── TRACKER: enriquece com dados do lead vindos da URL ──
+    if (window.__tracker) {
+      window.__tracker.setLeadInfo({ name: leadNome, email: leadEmail, phone: leadPhone });
+    }
+
     // ── SURVEY ENGINE ──────────────────────────────
     const answers = { nome: leadNome, email: leadEmail, phone: leadPhone };
     let currentQ = 1;
@@ -814,10 +819,29 @@
       setProgress(PROGRESS_STEPS.done);
       currentQ = totalQuestions + 1;
       renderDots();
-      console.log('Survey answers:', answers);
+
+      if (selected && window.__tracker) {
+        window.__tracker.track('survey_q' + lastQ + '_answered', {
+          question: QUESTION_LABELS[lastQ] || 'q' + lastQ,
+          value: selected.dataset.value
+        });
+      }
+      if (window.__tracker) {
+        window.__tracker.trackNow('survey_completed', {
+          q1_faturamento: answers.q1,
+          q2_cargo: answers.q2,
+          q3_desafio: answers.q3,
+          q4_experiencia_ia: answers.q4,
+          phone_confirmed: answers.phone
+        });
+      }
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
-      setTimeout(() => { window.location.href = NEXT_PAGE + '?' + p.toString(); }, 2000);
+      setTimeout(() => {
+        let url = NEXT_PAGE + '?' + p.toString();
+        if (window.__tracker) url = window.__tracker.injectLeadId(url);
+        window.location.href = url;
+      }, 2000);
     }
 
     function finishSurvey() {
@@ -827,16 +851,42 @@
       setProgress(PROGRESS_STEPS.done);
       currentQ = totalQuestions + 1;
       renderDots();
-      console.log('Survey answers:', answers);
+
+      if (window.__tracker) {
+        window.__tracker.trackNow('survey_completed', {
+          q1_faturamento: answers.q1,
+          q2_cargo: answers.q2,
+          q3_desafio: answers.q3,
+          q4_experiencia_ia: answers.q4,
+          phone_confirmed: answers.phone
+        });
+      }
+
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
-      setTimeout(() => { window.location.href = NEXT_PAGE + '?' + p.toString(); }, 2000);
+      setTimeout(() => {
+        let url = NEXT_PAGE + '?' + p.toString();
+        if (window.__tracker) url = window.__tracker.injectLeadId(url);
+        window.location.href = url;
+      }, 2000);
     }
+
+    const QUESTION_LABELS = {
+      1: 'faturamento', 2: 'cargo', 3: 'maior_desafio',
+      4: 'experiencia_ia', 5: 'confirmacao_whatsapp'
+    };
 
     function goToQuestion(from, to) {
       const fromEl = document.getElementById('q' + from);
       const selected = fromEl.querySelector('.mc-option.selected');
       if (selected) answers['q' + from] = selected.dataset.value;
       fromEl.classList.remove('active');
+
+      if (selected && window.__tracker) {
+        window.__tracker.track('survey_q' + from + '_answered', {
+          question: QUESTION_LABELS[from] || 'q' + from,
+          value: selected.dataset.value
+        });
+      }
 
       if (to <= totalQuestions) {
         const toEl = document.getElementById('q' + to);
@@ -935,6 +985,8 @@
       document.getElementById('pesquisa').scrollIntoView({ behavior: 'smooth' });
     });
   </script>
+
+  <script src="tracker.js" defer></script>
 
 </body>
 </html>

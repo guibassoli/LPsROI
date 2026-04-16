@@ -477,7 +477,22 @@
       const btn = document.getElementById('btn-join');
       btn.textContent = '✅  ENTRAR AGORA, ' + leadNome.split(' ')[0].toUpperCase();
     }
+
+    // ── TRACKING ───────────────────────────────────
+    if (window.__tracker) {
+      const leadEmail = urlParams.get('email') || '';
+      const leadPhone = urlParams.get('phone') || '';
+      window.__tracker.setLeadInfo({ name: leadNome, email: leadEmail, phone: leadPhone });
+
+      document.getElementById('btn-join').addEventListener('click', () => {
+        window.__tracker.trackNow('whatsapp_join_clicked', {
+          waLink: document.getElementById('btn-join').href
+        });
+      });
+    }
   </script>
+
+  <script src="tracker.js" defer></script>
 
 </body>
 </html>

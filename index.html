@@ -2644,6 +2644,32 @@
             v = `(${v.slice(0,2)}) ${v.slice(2)}`;
           }
           tel.value = v;
+          if (window.__tracker) window.__tracker.trackField('whatsapp', v);
+        });
+      }
+
+      // Field tracking (nome e email)
+      const nomeInput = form.querySelector('[type="text"]');
+      const emailInput = form.querySelector('[type="email"]');
+      if (nomeInput) {
+        nomeInput.addEventListener('input', () => {
+          if (window.__tracker) window.__tracker.trackField('nome', nomeInput.value);
+        });
+        nomeInput.addEventListener('blur', () => {
+          if (window.__tracker) window.__tracker.trackFieldCompleted('nome', nomeInput.value);
+        });
+      }
+      if (emailInput) {
+        emailInput.addEventListener('input', () => {
+          if (window.__tracker) window.__tracker.trackField('email', emailInput.value);
+        });
+        emailInput.addEventListener('blur', () => {
+          if (window.__tracker) window.__tracker.trackFieldCompleted('email', emailInput.value);
+        });
+      }
+      if (tel) {
+        tel.addEventListener('blur', () => {
+          if (window.__tracker) window.__tracker.trackFieldCompleted('whatsapp', tel.value);
         });
       }
 
@@ -2692,9 +2718,17 @@
         const email = form.querySelector('[type="email"]').value.trim();
         const phone = form.querySelector('[type="tel"]').value.trim();
 
+        // Tracking: envia form_submitted com dados de contato pro Nucleo
+        if (window.__tracker) {
+          window.__tracker.setLeadInfo({ name: nome, email, phone });
+          window.__tracker.trackNow('form_submitted', { nome, email, phone });
+        }
+
         const goToSurvey = () => {
           const params = new URLSearchParams({ nome, email, phone });
-          window.location.href = 'survey.html?' + params.toString();
+          let url = 'survey.html?' + params.toString();
+          if (window.__tracker) url = window.__tracker.injectLeadId(url);
+          window.location.href = url;
         };
 
         bridgeToWebinarKit({ nome, email, phone })
@@ -2918,6 +2952,9 @@
       setTimeout(showNotification, 4000 + Math.random() * 3000);
     })();
   </script>
+
+  <!-- Tracker: tracking progressivo de leads para o Nucleo -->
+  <script src="tracker.js" defer></script>
 
   <!-- WebinarKit bridge: iframe oculto que processa o registro em background -->
   <iframe id="wk-bridge" src="_wk-embed.html" title="webinarkit-bridge"

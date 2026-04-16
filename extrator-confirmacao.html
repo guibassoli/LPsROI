@@ -633,7 +633,7 @@
             <div class="action-icon">📅</div>
             <h3>Salve a Data</h3>
             <p>Evento ao vivo: <strong style="color:#fff;">Terça-feira às 20h BRT</strong>. Adicione ao seu calendário para não perder nenhuma parte.</p>
-            <a href="#" class="btn-action-outline">Adicionar ao Calendário</a>
+            <a href="calendario.html" target="_blank" rel="noopener" class="btn-action-outline">Adicionar ao Calendário</a>
           </div>
 
         </div>
@@ -693,6 +693,7 @@
   const urlP  = new URLSearchParams(window.location.search);
   const nome  = urlP.get('nome')  || '';
   const email = urlP.get('email') || '';
+  const phone = urlP.get('phone') || '';
 
   // Inject first name where .lead-nome appears
   if (nome) {
@@ -719,9 +720,20 @@
     if (emailRow) emailRow.style.display = 'block';
   }
 
+  // Propaga nome/email/phone pro link do calendário
+  const calLink = document.querySelector('a[href="calendario.html"]');
+  if (calLink) {
+    const p = new URLSearchParams();
+    if (nome)  p.set('nome', nome);
+    if (email) p.set('email', email);
+    if (phone) p.set('phone', phone);
+    const qs = p.toString();
+    if (qs) calLink.href = 'calendario.html?' + qs;
+  }
+
   // Tracking
   if (window.__tracker) {
-    window.__tracker.setLeadInfo({ name: nome, email: email });
+    window.__tracker.setLeadInfo({ name: nome, email: email, phone: phone });
   }
 })();
 </script>

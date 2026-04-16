@@ -1526,6 +1526,7 @@ function grantAccess(email, nome) {
   const token     = urlP.get('token');
   const leadEmail = urlP.get('email') || '';
   const leadNome  = urlP.get('nome')  || '';
+  const leadPhone = urlP.get('phone') || '';
 
   if (token || leadEmail) {
     // Acesso via link personalizado — pula o gate
@@ -1547,10 +1548,11 @@ function grantAccess(email, nome) {
   // Expõe para uso posterior no submit
   window._leadEmail = leadEmail;
   window._leadNome  = leadNome;
+  window._leadPhone = leadPhone;
 
   // Tracking
   if (window.__tracker) {
-    window.__tracker.setLeadInfo({ name: leadNome, email: leadEmail });
+    window.__tracker.setLeadInfo({ name: leadNome, email: leadEmail, phone: leadPhone });
   }
 })();
 
@@ -1973,11 +1975,12 @@ function handleSubmit() {
     });
   }
 
-  // Persiste dados relevantes pro workbook (pré-preenchimento)
+  // Persiste dados relevantes pro workbook e calendário (pré-preenchimento)
   try {
     localStorage.setItem('roi_extrator_data', JSON.stringify({
       nome: formData.nome,
       email: formData.email,
+      phone: window._leadPhone || '',
       q9_equipe: formData.q9_equipe,
       q10_processo: formData.q10_processo,
       saved_at: new Date().toISOString(),
@@ -2001,6 +2004,7 @@ function showSuccess(formData) {
   const redirectParams = new URLSearchParams({
     nome:  formData.nome  || formData.q1_empresa,
     email: formData.email || '',
+    phone: window._leadPhone || '',
   });
 
   setTimeout(() => {

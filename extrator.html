@@ -56,7 +56,8 @@
       min-height: 100vh;
       align-items: center;
       justify-content: center;
-      padding: 32px 16px;
+      padding: 96px 16px 32px;
+      position: relative;
       background: radial-gradient(ellipse at 50% 0%, rgba(108,98,228,0.18) 0%, transparent 60%),
                   radial-gradient(ellipse at 80% 80%, rgba(106,235,152,0.08) 0%, transparent 50%),
                   var(--black);
@@ -886,9 +887,15 @@
      Shown when ?token= is NOT present in URL
      ════════════════════════════════════════════════════════ -->
 <div id="email-gate">
-  <div class="gate-box">
 
-    <a href="index.html" class="gate-logo"><img src="logo.png" alt="RoicomIA" style="height:36px;width:auto;display:block;margin:0 auto;mix-blend-mode:screen;"></a>
+  <!-- Header com logo fixo no topo esquerdo -->
+  <div style="position:absolute;top:0;left:0;right:0;padding:20px 28px;z-index:10;">
+    <a href="index.html">
+      <img src="logo.png" alt="RoicomIA" style="height:32px;width:auto;display:block;mix-blend-mode:screen;">
+    </a>
+  </div>
+
+  <div class="gate-box">
     <div class="gate-badge">🧬 Ferramenta Exclusiva</div>
 
     <!-- ── ESTADO 1: Input de email ── -->
@@ -1519,6 +1526,7 @@ function grantAccess(email, nome) {
   const token     = urlP.get('token');
   const leadEmail = urlP.get('email') || '';
   const leadNome  = urlP.get('nome')  || '';
+  const leadPhone = urlP.get('phone') || '';
 
   if (token || leadEmail) {
     // Acesso via link personalizado — pula o gate
@@ -1540,6 +1548,12 @@ function grantAccess(email, nome) {
   // Expõe para uso posterior no submit
   window._leadEmail = leadEmail;
   window._leadNome  = leadNome;
+  window._leadPhone = leadPhone;
+
+  // Tracking
+  if (window.__tracker) {
+    window.__tracker.setLeadInfo({ name: leadNome, email: leadEmail, phone: leadPhone });
+  }
 })();
 
 
@@ -1883,35 +1897,44 @@ function handleSubmit() {
   }
 
   // ── All valid — collect data ─────────────────────────────
+  const radioVal = name => (document.querySelector('[name="' + name + '"]:checked') || {}).value || '';
+  const textVal  = id   => (document.getElementById(id) || {}).value ? document.getElementById(id).value.trim() : '';
+  const checkboxVals = (selector, outroId) => {
+    const vals = Array.from(document.querySelectorAll(selector + ':checked')).map(c => c.value);
+    if (outroId && vals.includes('Outro')) {
+      const outroText = textVal(outroId);
+      return vals.map(v => v === 'Outro' ? (outroText || 'Outro') : v);
+    }
+    return vals;
+  };
+
   const formData = {
-    token:         new URLSearchParams(window.location.search).get('token'),
-    q1_empresa:    document.getElementById('q1').value.trim(),
-    q2_setor:      document.getElementById('q2').value === 'Outro'
-                     ? document.getElementById('q2-outro').value.trim()
-                     : document.getElementById('q2').value,
-    q3_produto:    document.getElementById('q3').value.trim(),
-    q4_estagio:    document.querySelector('[name="q4"]:checked').value,
-    q5_icp:        document.getElementById('q5').value.trim(),
-    q6_diferencial: document.getElementById('q6').value.trim(),
-    q7_canais:     Array.from(document.querySelectorAll('.q7-cb:checked')).map(c => c.value),
-    q8_ticket:     document.querySelector('[name="q8"]:checked').value,
-    q9_equipe:     document.querySelector('[name="q9"]:checked').value,
-    q10_processo:  document.querySelector('[name="q10"]:checked').value === 'Outro'
-                     ? document.getElementById('q10-outro').value.trim()
-                     : document.querySelector('[name="q10"]:checked').value,
-    q11_ferramentas: Array.from(document.querySelectorAll('.q11-cb:checked')).map(c => c.value),
-    q12_maturidade: document.querySelector('[name="q12"]:checked').value,
-    q13_objetivo:  document.querySelector('[name="q13"]:checked').value === 'Outro'
-                     ? document.getElementById('q13-outro').value.trim()
-                     : document.querySelector('[name="q13"]:checked').value,
-    q14_roi:       document.querySelector('[name="q14"]:checked').value === 'Outro'
-                     ? document.getElementById('q14-outro').value.trim()
-                     : document.querySelector('[name="q14"]:checked').value,
-    q15_prazo:     document.querySelector('[name="q15"]:checked').value,
-    q16_responsavel: document.querySelector('[name="q16"]:checked').value,
-    email:         window._leadEmail || '',
-    nome:          window._leadNome  || '',
-    submitted_at:  new Date().toISOString(),
+    token:           new URLSearchParams(window.location.search).get('token'),
+    q1_empresa:      textVal('q1'),
+    q2_setor:        document.getElementById('q2').value === 'Outro'
+                       ? textVal('q2-outro')
+                       : document.getElementById('q2').value,
+    q3_produto:      textVal('q3'),
+    q4_estagio:      radioVal('q4'),
+    q5_icp:          textVal('q5'),
+    q6_diferencial:  textVal('q6'),
+    q7_canais:       checkboxVals('.q7-cb'),
+    q8_ticket:       textVal('q8_valor'),
+    q9_equipe:       radioVal('q9'),
+    q10_processo:    checkboxVals('.q10-cb', 'q10-outro'),
+    q11_ferramentas: checkboxVals('.q11-cb'),
+    q12_maturidade:  radioVal('q12'),
+    q13_objetivo:    checkboxVals('.q13-cb', 'q13-outro'),
+    q14_roi:         checkboxVals('.q14-cb', 'q14-outro'),
+    q15_prazo:       radioVal('q15'),
+    q16_responsavel: radioVal('q16'),
+    q_instagram:     textVal('q_instagram'),
+    q_site:          textVal('q_site'),
+    q_concorrentes:  textVal('q_concorrentes'),
+    q_tonvoz:        radioVal('q_tonvoz'),
+    email:           window._leadEmail || '',
+    nome:            window._leadNome  || '',
+    submitted_at:    new Date().toISOString(),
   };
 
   // ══════════════════════════════════════════════════
@@ -1927,7 +1950,42 @@ function handleSubmit() {
   //
   // ══════════════════════════════════════════════════
 
-  console.log('[Extrator] Form data:', formData);
+  // Tracking: conta campos preenchidos e envia pro Nucleo
+  if (window.__tracker) {
+    const fields = [
+      formData.q1_empresa, formData.q2_setor, formData.q3_produto,
+      formData.q4_estagio, formData.q5_icp, formData.q6_diferencial,
+      formData.q8_ticket, formData.q9_equipe, formData.q10_processo,
+      formData.q12_maturidade, formData.q13_objetivo, formData.q14_roi,
+      formData.q15_prazo, formData.q16_responsavel,
+      formData.q_instagram, formData.q_site, formData.q_concorrentes,
+      formData.q_tonvoz,
+    ];
+    // Arrays (checkboxes) contam como preenchidos se tem ao menos 1 selecionado
+    const arrayFields = [formData.q7_canais, formData.q11_ferramentas];
+    const filledCount = fields.filter(v => v && String(v).trim()).length
+      + arrayFields.filter(a => Array.isArray(a) && a.length > 0).length;
+    const totalFields = fields.length + arrayFields.length; // 20
+
+    window.__tracker.trackNow('extrator_submitted', {
+      filled: filledCount,
+      total: totalFields,
+      percent: Math.round((filledCount / totalFields) * 100),
+      answers: formData,
+    });
+  }
+
+  // Persiste dados relevantes pro workbook e calendário (pré-preenchimento)
+  try {
+    localStorage.setItem('roi_extrator_data', JSON.stringify({
+      nome: formData.nome,
+      email: formData.email,
+      phone: window._leadPhone || '',
+      q9_equipe: formData.q9_equipe,
+      q10_processo: formData.q10_processo,
+      saved_at: new Date().toISOString(),
+    }));
+  } catch (e) { /* storage indisponível, segue sem persistir */ }
 
   showSuccess(formData);
 }
@@ -1946,12 +2004,18 @@ function showSuccess(formData) {
   const redirectParams = new URLSearchParams({
     nome:  formData.nome  || formData.q1_empresa,
     email: formData.email || '',
+    phone: window._leadPhone || '',
   });
 
   setTimeout(() => {
-    window.location.href = 'extrator-confirmacao.html?' + redirectParams.toString();
+    let url = 'extrator-confirmacao.html?' + redirectParams.toString();
+    if (window.__tracker) url = window.__tracker.injectLeadId(url);
+    window.location.href = url;
   }, 2000);
 }
 </script>
+
+  <script src="tracker.js" defer></script>
+
 </body>
 </html>

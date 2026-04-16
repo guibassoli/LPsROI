@@ -2644,6 +2644,32 @@
             v = `(${v.slice(0,2)}) ${v.slice(2)}`;
           }
           tel.value = v;
+          if (window.__tracker) window.__tracker.trackField('whatsapp', v);
+        });
+      }
+
+      // Field tracking (nome e email)
+      const nomeInput = form.querySelector('[type="text"]');
+      const emailInput = form.querySelector('[type="email"]');
+      if (nomeInput) {
+        nomeInput.addEventListener('input', () => {
+          if (window.__tracker) window.__tracker.trackField('nome', nomeInput.value);
+        });
+        nomeInput.addEventListener('blur', () => {
+          if (window.__tracker) window.__tracker.trackFieldCompleted('nome', nomeInput.value);
+        });
+      }
+      if (emailInput) {
+        emailInput.addEventListener('input', () => {
+          if (window.__tracker) window.__tracker.trackField('email', emailInput.value);
+        });
+        emailInput.addEventListener('blur', () => {
+          if (window.__tracker) window.__tracker.trackFieldCompleted('email', emailInput.value);
+        });
+      }
+      if (tel) {
+        tel.addEventListener('blur', () => {
+          if (window.__tracker) window.__tracker.trackFieldCompleted('whatsapp', tel.value);
         });
       }
 
@@ -2688,14 +2714,184 @@
         btn.disabled = true;
         btn.textContent = 'Confirmando...';
 
-        setTimeout(() => {
-          // Passa os dados do lead via URL para a página de pesquisa
-          const nome  = form.querySelector('[type="text"]').value.trim();
-          const email = form.querySelector('[type="email"]').value.trim();
-          const phone = form.querySelector('[type="tel"]').value.trim();
+        const nome  = form.querySelector('[type="text"]').value.trim();
+        const email = form.querySelector('[type="email"]').value.trim();
+        const phone = form.querySelector('[type="tel"]').value.trim();
+
+        // Tracking: envia form_submitted com dados de contato pro Nucleo
+        if (window.__tracker) {
+          window.__tracker.setLeadInfo({ name: nome, email, phone });
+          window.__tracker.trackNow('form_submitted', { nome, email, phone });
+        }
+
+        const goToSurvey = () => {
           const params = new URLSearchParams({ nome, email, phone });
-          window.location.href = 'survey.html?' + params.toString();
-        }, 800);
+          let url = 'survey.html?' + params.toString();
+          if (window.__tracker) url = window.__tracker.injectLeadId(url);
+          window.location.href = url;
+        };
+
+        bridgeToWebinarKit({ nome, email, phone })
+          .catch((err) => console.warn('[wk-bridge] falhou silenciosamente:', err))
+          .finally(goToSurvey);
+      });
+    }
+
+    // ── WEBINARKIT BRIDGE (iframe oculto) ──────────────
+    // Envia o lead pro WebinarKit via iframe e aguarda confirmacao por load event.
+    // Falha silenciosa (sem bloquear UX) — monitorar reconciliacao no painel do Funil.AI.
+    const wkBridgeState = { ready: false, submitted: false };
+    function initWkBridge() {
+      const iframe = document.getElementById('wk-bridge');
+      if (!iframe) {
+        console.warn('[wk-bridge] iframe nao encontrado no DOM');
+        return;
+      }
+      console.log('[wk-bridge] iframe encontrado, registrando listeners');
+      // Se o iframe ja carregou antes do listener (possivel em conexoes rapidas)
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        wkBridgeState.ready = true;
+        console.log('[wk-bridge] iframe ja estava carregado');
+      }
+      iframe.addEventListener('load', () => {
+        if (!wkBridgeState.ready) {
+          wkBridgeState.ready = true;
+          console.log('[wk-bridge] iframe carregou (ready)');
+        } else {
+          wkBridgeState.submitted = true;
+          console.log('[wk-bridge] iframe recarregou (submitted)');
+        }
+      });
+      // Detecta bloqueio (ad-blocker, CSP) — iframe nao carrega em 4s
+      setTimeout(() => {
+        if (!wkBridgeState.ready) {
+          console.warn('[wk-bridge] iframe nao carregou em 4s (provavel ad-blocker ou bloqueio de rede)');
+        }
+      }, 4000);
+    }
+    // Aguarda DOM completo pra garantir que o iframe existe
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initWkBridge);
+    } else {
+      initWkBridge();
+    }
+
+    function bridgeToWebinarKit({ nome, email, phone }) {
+      return new Promise((resolve, reject) => {
+        const iframe = document.getElementById('wk-bridge');
+        if (!iframe) return reject(new Error('iframe nao encontrado'));
+
+        const READY_TIMEOUT_MS = 3000;
+        const SUBMIT_TIMEOUT_MS = 5000;
+        const start = Date.now();
+
+        const waitReady = () => {
+          if (wkBridgeState.ready) return fireSubmit();
+          if (Date.now() - start > READY_TIMEOUT_MS) {
+            return reject(new Error('iframe nao ficou pronto a tempo'));
+          }
+          setTimeout(waitReady, 50);
+        };
+
+        const fireSubmit = () => {
+          let doc, win;
+          try {
+            doc = iframe.contentDocument;
+            win = iframe.contentWindow;
+          } catch (err) {
+            console.error('[wk-bridge] cross-origin:', err.message);
+            return reject(new Error('cross-origin: ' + err.message));
+          }
+          if (!doc || !win) {
+            console.error('[wk-bridge] iframe sem documento');
+            return reject(new Error('iframe sem documento'));
+          }
+
+          // Seleciona a primeira data disponivel (obrigatorio pro WK)
+          const dateSelect = doc.querySelector('.wk_registration_form_date');
+          if (dateSelect && dateSelect.options.length > 0) {
+            const idx = dateSelect.options[0].value ? 0 : Math.min(1, dateSelect.options.length - 1);
+            dateSelect.selectedIndex = idx;
+            // Atualiza campo hidden de data diretamente (sem disparar onchange que chama set_date_text)
+            const dateText = doc.querySelector('.wk_registration_form_date_text');
+            if (dateText) dateText.value = dateSelect.options[idx].text || dateSelect.value;
+            // Chama set_date_text se disponivel no contexto do iframe
+            try {
+              if (typeof win.set_date_text === 'function') {
+                win.set_date_text(new Event('change'), dateSelect.value);
+              }
+            } catch (e) {
+              console.warn('[wk-bridge] set_date_text falhou (nao critico):', e.message);
+            }
+            console.log('[wk-bridge] data selecionada:', dateSelect.value);
+          } else {
+            console.warn('[wk-bridge] select de data nao encontrado ou vazio');
+          }
+
+          const firstNameEl = doc.querySelector('.wk_registration_form_first_name');
+          const lastNameEl  = doc.querySelector('.wk_registration_form_last_name');
+          const emailEl     = doc.querySelector('.wk_registration_form_email');
+          const phoneEl     = doc.querySelector('.wk_registration_form_phone');
+
+          console.log('[wk-bridge] campos encontrados:', {
+            firstName: !!firstNameEl, lastName: !!lastNameEl,
+            email: !!emailEl, phone: !!phoneEl
+          });
+
+          if (!firstNameEl || !emailEl || !phoneEl) {
+            console.error('[wk-bridge] campos do WK nao encontrados');
+            return reject(new Error('campos do WK nao encontrados'));
+          }
+
+          // Split do nome: primeira palavra = first_name, resto = last_name
+          const partes = nome.split(/\s+/);
+          const firstName = partes.shift() || '';
+          const lastName = partes.join(' ');
+
+          const setVal = (el, value) => {
+            el.value = value;
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+          };
+          setVal(firstNameEl, firstName);
+          if (lastNameEl) setVal(lastNameEl, lastName);
+          setVal(emailEl, email);
+          setVal(phoneEl, phone);
+
+          console.log('[wk-bridge] valores preenchidos:', { firstName, lastName, email, phone });
+
+          // Reseta submitted pra detectar o load real do registro (nao o da inicializacao)
+          wkBridgeState.submitted = false;
+
+          // Dispara o submit via click no botao do WK (precisa de event.target real pro .closest())
+          const submitBtn = doc.querySelector('[onclick*="webinar_registration_submit"]');
+          if (submitBtn) {
+            console.log('[wk-bridge] clicando botao de submit do WK');
+            submitBtn.click();
+          } else if (typeof win.webinar_registration_submit === 'function') {
+            // Fallback: cria evento com target apontando pro form
+            const form = doc.querySelector('.wk_registration_form_element');
+            console.log('[wk-bridge] chamando webinar_registration_submit() via form');
+            const evt = new MouseEvent('click', { bubbles: true });
+            Object.defineProperty(evt, 'target', { value: form });
+            win.webinar_registration_submit(evt);
+          } else {
+            console.error('[wk-bridge] funcao de submit do WK nao encontrada');
+            return reject(new Error('funcao de submit do WK nao encontrada'));
+          }
+
+          // Aguarda load event (redirect interno do iframe = sucesso)
+          const waitSubmit = () => {
+            if (wkBridgeState.submitted) return resolve();
+            if (Date.now() - start > SUBMIT_TIMEOUT_MS) {
+              return reject(new Error('timeout aguardando confirmacao do WK'));
+            }
+            setTimeout(waitSubmit, 100);
+          };
+          waitSubmit();
+        };
+
+        waitReady();
       });
     }
 
@@ -2815,6 +3011,17 @@
       setTimeout(showNotification, 4000 + Math.random() * 3000);
     })();
   </script>
+
+  <!-- WebinarKit bridge: iframe oculto que processa o registro em background -->
+  <!-- IMPORTANTE: deve ficar ANTES do script principal pra initWkBridge encontrar o elemento -->
+  <iframe id="wk-bridge" src="_wk-embed.html" title="webinarkit-bridge"
+          aria-hidden="true" tabindex="-1"
+          sandbox="allow-scripts allow-same-origin allow-forms"
+          style="position:absolute;width:0;height:0;border:0;left:-9999px;top:-9999px;pointer-events:none;"
+          loading="eager"></iframe>
+
+  <!-- Tracker: tracking progressivo de leads para o Nucleo -->
+  <script src="tracker.js" defer></script>
 
 </body>
 </html>

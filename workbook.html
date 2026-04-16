@@ -1,0 +1,4599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de Preparação — IA do Zero ao ROI</title>
+  <meta name="description" content="Material de preparação para o evento ao vivo 'IA do Zero ao ROI' com Henry Risutti.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
+    :root {
+      --black:#000; --surface:#0d0d0d; --card:#111; --card2:#161616;
+      --border:rgba(255,255,255,0.07);
+      --green:#6aeb98; --cyan:#25d0c8; --purple:#6c62e4; --orange:#fc8132;
+      --red:#ef4444;
+      --white:#fff; --muted:#888; --muted2:#555;
+      --font-serif:'Libre Baskerville',Georgia,serif;
+      --font-sans:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+      --font-mono:'JetBrains Mono',ui-monospace,monospace;
+      --header-h: 60px;
+      --nav-h: 66px;
+    }
+
+    /* ============================================================
+       RESET + BASE
+       ============================================================ */
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--black); color:var(--white);
+      font-family:var(--font-sans); font-size:16px; line-height:1.7;
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
+    }
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:0; opacity:0.4;
+    }
+    main, header, nav, footer, section { position:relative; z-index:1; }
+
+    /* ============================================================
+       DOC HEADER (sticky, único)
+       ============================================================ */
+    .doc-header {
+      position:sticky; top:0; z-index:100;
+      background:rgba(0,0,0,0.92);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+    }
+    .doc-header-inner {
+      max-width:1080px; margin:0 auto;
+      padding:14px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px;
+    }
+    .doc-logo {
+      display:flex; align-items:center;
+      text-decoration:none;
+    }
+    .doc-logo-img {
+      height:28px; width:auto;
+      mix-blend-mode:screen;
+      display:block;
+    }
+    .doc-header-right {
+      display:flex; align-items:center; gap:18px;
+    }
+    .doc-progress {
+      font-size:11px; font-weight:600;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .doc-progress strong {
+      color:var(--green); font-weight:700;
+    }
+    .btn-download {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(106,235,152,0.08);
+      border:1px solid rgba(106,235,152,0.25);
+      color:var(--green);
+      padding:8px 14px;
+      border-radius:100px;
+      font-family:var(--font-sans);
+      font-size:11px; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      cursor:pointer;
+      transition:background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .btn-download:hover {
+      background:rgba(106,235,152,0.14);
+      border-color:rgba(106,235,152,0.45);
+      transform:translateY(-1px);
+    }
+    .btn-download svg {
+      width:13px; height:13px;
+      stroke:var(--green);
+      fill:none;
+      stroke-width:2.2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .btn-download .label-full { display:inline; }
+    @media (max-width:600px) {
+      .btn-download { padding:8px 10px; }
+      .btn-download .label-full { display:none; }
+    }
+
+    /* ============================================================
+       PAGE BREAK (divisor visual entre páginas)
+       ============================================================ */
+    .page-break {
+      max-width:820px;
+      margin:0 auto;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      height:100px;
+    }
+    .page-break-line {
+      flex:1; height:1px;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.12) 30%,
+        rgba(255,255,255,0.12) 70%,
+        transparent 100%);
+    }
+    .page-break-mark {
+      display:inline-flex; align-items:center; gap:10px;
+      font-family:var(--font-sans);
+      font-size:10px; font-weight:700;
+      letter-spacing:0.22em; text-transform:uppercase;
+      color:var(--muted2);
+      padding:8px 18px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:100px;
+      white-space:nowrap;
+    }
+    .page-break-mark .dot {
+      width:4px; height:4px;
+      border-radius:50%;
+      background:var(--green);
+      opacity:0.5;
+    }
+    .page-break-mark strong {
+      color:rgba(255,255,255,0.7);
+      font-weight:700;
+    }
+
+    /* ============================================================
+       PAGE SECTIONS (8x)
+       ============================================================ */
+    main { display:block; }
+    .page {
+      padding:64px 24px 96px;
+      scroll-margin-top:calc(var(--header-h) + 8px);
+    }
+    .page-inner {
+      max-width:820px; margin:0 auto;
+    }
+
+    .section-label {
+      font-size:11px; font-weight:600;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--green);
+      margin-bottom:20px; display:block;
+    }
+    h1.page-title {
+      font-family:var(--font-serif);
+      font-size:clamp(34px,5vw,52px);
+      font-weight:700; line-height:1.15;
+      letter-spacing:-0.02em;
+      margin-bottom:20px;
+    }
+    h1.page-title em {
+      font-style:italic; font-weight:400;
+      color:rgba(255,255,255,0.55);
+    }
+    .page-divider {
+      width:48px; height:2px;
+      background:linear-gradient(90deg,var(--green),var(--purple));
+      border-radius:2px; margin:0 0 36px;
+    }
+    .page-lead {
+      font-size:18px;
+      color:rgba(255,255,255,0.7);
+      line-height:1.65;
+      margin-bottom:64px;
+      max-width:680px;
+    }
+    .page-lead strong { color:var(--white); }
+
+    /* ============================================================
+       PAGE 1 — CAPA
+       ============================================================ */
+    #p1.page {
+      min-height:calc(100vh - var(--nav-h));
+      display:flex; align-items:center; justify-content:center;
+      padding:64px 24px;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,98,228,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(106,235,152,0.08) 0%, transparent 60%);
+    }
+    .cover-inner { max-width:720px; width:100%; text-align:center; }
+    .cover-eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:11px; font-weight:600;
+      letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--green); margin-bottom:36px;
+      padding:8px 18px;
+      background:rgba(106,235,152,0.06);
+      border:1px solid rgba(106,235,152,0.2);
+      border-radius:100px;
+    }
+    .cover-eyebrow .dot {
+      width:6px; height:6px; background:var(--green);
+      border-radius:50%;
+      box-shadow:0 0 8px rgba(106,235,152,0.6);
+    }
+    .cover-title {
+      font-family:var(--font-serif);
+      font-size:clamp(40px,7vw,72px);
+      font-weight:700; line-height:1.05;
+      letter-spacing:-0.02em;
+      margin-bottom:24px;
+    }
+    .cover-title .accent {
+      background:linear-gradient(135deg, #6aeb98 0%, #5ad4ff 45%, #6c62e4 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .cover-subtitle {
+      font-family:var(--font-serif);
+      font-style:italic; font-weight:400;
+      font-size:clamp(18px,2.6vw,24px);
+      color:rgba(255,255,255,0.55);
+      line-height:1.4;
+      margin:0 auto 48px;
+      max-width:600px;
+    }
+    .cover-divider {
+      width:48px; height:2px;
+      background:linear-gradient(90deg,var(--green),var(--purple));
+      border-radius:2px; margin:0 auto 40px;
+    }
+    .cover-meta-block {
+      font-size:14px; color:var(--muted);
+      margin-bottom:56px; letter-spacing:0.02em;
+    }
+    .cover-meta-block strong { color:var(--white); font-weight:600; }
+    .cover-contents {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:36px 40px;
+      margin-bottom:48px;
+      text-align:left;
+    }
+    .cover-contents-title {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--green); margin-bottom:22px;
+    }
+    .cover-contents ul {
+      list-style:none;
+      display:flex; flex-direction:column;
+      gap:14px;
+    }
+    .cover-contents li {
+      display:flex; align-items:flex-start; gap:14px;
+      font-size:15.5px; color:rgba(255,255,255,0.78);
+      line-height:1.55;
+    }
+    .cover-contents .icon {
+      flex-shrink:0; width:22px; height:22px;
+      background:rgba(106,235,152,0.12);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      margin-top:2px;
+    }
+    .cover-info-row {
+      display:flex; gap:24px; justify-content:center;
+      flex-wrap:wrap; margin-bottom:48px;
+      padding:24px 28px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:12px;
+    }
+    .cover-info-item { text-align:center; }
+    .cover-info-label {
+      font-size:10px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted2); margin-bottom:6px;
+    }
+    .cover-info-value {
+      font-size:14px; font-weight:600;
+      color:rgba(255,255,255,0.85);
+    }
+
+    .cover-scroll-hint {
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-top:12px;
+    }
+    .cover-scroll-hint .scroll-arrow {
+      display:inline-block;
+      color:var(--green);
+      font-size:14px;
+      margin-right:4px;
+      animation:scroll-bounce 2s ease-in-out infinite;
+    }
+    @keyframes scroll-bounce {
+      0%,100% { transform:translateY(0); }
+      50% { transform:translateY(4px); }
+    }
+
+    /* Botão CTA principal (laranja) */
+    .btn-cta, .btn-event {
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px;
+      background:var(--orange); color:#000;
+      border:none;
+      padding:18px 40px;
+      border-radius:8px;
+      font-family:var(--font-sans);
+      font-size:15px; font-weight:900;
+      letter-spacing:0.06em; text-transform:uppercase;
+      cursor:pointer; text-decoration:none;
+      position:relative; overflow:hidden;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow:0 4px 24px rgba(252,129,50,0.45);
+    }
+    .btn-cta::after, .btn-event::after {
+      content:''; position:absolute;
+      top:-30%; left:-80%;
+      width:55%; height:160%;
+      background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+      transform:skewX(-15deg);
+      animation:btn-shine 2.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes btn-shine {
+      0% { left:-80%; opacity:0; } 10% { opacity:1; }
+      60% { left:130%; opacity:1; } 61% { opacity:0; } 100% { left:130%; opacity:0; }
+    }
+    .btn-cta:hover, .btn-event:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 36px rgba(252,129,50,0.55);
+    }
+
+    /* ============================================================
+       PAGE 2 — REVOLUÇÕES
+       ============================================================ */
+    .era-timeline {
+      display:flex; flex-direction:column; gap:28px;
+      margin-bottom:80px;
+    }
+    .era {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:36px 40px;
+      position:relative; overflow:hidden;
+      transition:border-color 0.3s, transform 0.3s;
+    }
+    .era::before {
+      content:''; position:absolute;
+      top:0; left:0; bottom:0;
+      width:3px;
+    }
+    .era.era-1::before { background:rgba(108,98,228,0.35); }
+    .era.era-2::before { background:var(--purple); }
+    .era.era-3::before { background:var(--green); }
+    .era.era-4::before { background:linear-gradient(180deg, var(--orange), #ff9d5c); }
+    .era.era-4 {
+      border-color:rgba(252,129,50,0.25);
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(252,129,50,0.06) 0%, transparent 60%),
+        var(--card);
+      box-shadow:0 0 60px rgba(252,129,50,0.08);
+    }
+    .era-header {
+      display:flex; align-items:flex-start;
+      justify-content:space-between;
+      gap:24px; flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .era-header-left {
+      display:flex; align-items:flex-start; gap:22px;
+    }
+    .era-icon {
+      flex-shrink:0;
+      width:54px; height:54px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      transition:border-color 0.3s;
+    }
+    .era-icon svg {
+      width:28px; height:28px;
+      stroke-width:1.6;
+      fill:none;
+      stroke:rgba(255,255,255,0.7);
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .era-1 .era-icon svg { stroke:rgba(108,98,228,0.8); }
+    .era-2 .era-icon svg { stroke:var(--purple); }
+    .era-3 .era-icon svg { stroke:var(--green); }
+    .era-4 .era-icon {
+      background:rgba(252,129,50,0.08);
+      border-color:rgba(252,129,50,0.3);
+    }
+    .era-4 .era-icon svg { stroke:var(--orange); }
+    .era-meta {}
+    .era-num {
+      font-family:var(--font-serif);
+      font-size:13px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .era.era-4 .era-num { color:var(--orange); }
+    .era-date {
+      font-family:var(--font-serif);
+      font-size:clamp(28px,3.8vw,38px);
+      font-weight:700;
+      letter-spacing:-0.02em;
+      line-height:1.1;
+      margin-bottom:6px;
+    }
+    .era-title {
+      font-size:18px; font-weight:700;
+      color:rgba(255,255,255,0.85);
+      margin-bottom:24px;
+    }
+    .era-now-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(252,129,50,0.12);
+      border:1px solid rgba(252,129,50,0.4);
+      border-radius:100px;
+      padding:6px 14px;
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--orange);
+      align-self:flex-start;
+    }
+    .era-now-badge .dot {
+      width:6px; height:6px;
+      background:var(--orange);
+      border-radius:50%;
+      animation:pulse-orange 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-orange {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(0.7); }
+    }
+    .era-blocks {
+      display:flex; flex-direction:column;
+      gap:18px; margin-bottom:24px;
+    }
+    .era-block-row {
+      display:grid;
+      grid-template-columns:160px 1fr;
+      gap:20px; align-items:flex-start;
+    }
+    .era-block-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--muted);
+      padding-top:3px;
+    }
+    .era-block-text {
+      font-size:15.5px; color:rgba(255,255,255,0.78);
+      line-height:1.6;
+    }
+    .era-block-text strong { color:var(--white); font-weight:600; }
+    .era-footer {
+      padding-top:20px;
+      border-top:1px solid var(--border);
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .era-consolidation {
+      font-size:12px; font-weight:600;
+      letter-spacing:0.06em; color:var(--muted);
+      padding:5px 14px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:100px;
+    }
+    .era.era-4 .era-consolidation {
+      color:var(--orange);
+      background:rgba(252,129,50,0.08);
+      border-color:rgba(252,129,50,0.25);
+    }
+
+    .diff-section { margin-bottom:64px; }
+    .diff-title {
+      font-family:var(--font-serif);
+      font-size:clamp(24px,3.5vw,34px);
+      font-weight:700; line-height:1.2;
+      letter-spacing:-0.02em;
+      margin-bottom:32px; max-width:680px;
+    }
+    .diff-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .diff-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+    .diff-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:24px 26px;
+      transition:border-color 0.3s;
+    }
+    .diff-card:hover { border-color:rgba(106,235,152,0.25); }
+    .diff-card-num {
+      font-family:var(--font-serif);
+      font-size:34px; font-weight:700;
+      color:var(--orange);
+      line-height:1; margin-bottom:12px;
+      letter-spacing:-0.02em;
+    }
+    .diff-card-title {
+      font-size:15px; font-weight:700;
+      color:var(--white); margin-bottom:8px;
+    }
+    .diff-card-text {
+      font-size:14px; color:var(--muted);
+      line-height:1.6;
+    }
+
+    .bridge {
+      text-align:center; padding:48px 32px;
+      background:rgba(106,235,152,0.04);
+      border:1px solid rgba(106,235,152,0.15);
+      border-radius:14px;
+    }
+    .bridge p {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:clamp(18px,2.4vw,22px);
+      color:rgba(255,255,255,0.85);
+      line-height:1.5;
+      max-width:560px; margin:0 auto;
+    }
+
+    /* ============================================================
+       PAGE 3 — FASES
+       ============================================================ */
+    #p3.page {
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(108,98,228,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 100% 60%, rgba(106,235,152,0.05) 0%, transparent 60%);
+    }
+
+    /* Staircase diagram */
+    .staircase-wrap {
+      margin:0 auto 64px;
+      max-width:680px;
+      padding:32px 24px;
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-radius:16px;
+      position:relative;
+    }
+    .staircase-title {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted);
+      text-align:center;
+      margin-bottom:24px;
+    }
+    .staircase {
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      gap:14px;
+      height:240px;
+      position:relative;
+    }
+    .step {
+      flex:1; max-width:180px;
+      border-radius:10px 10px 0 0;
+      padding:14px 12px;
+      position:relative;
+      transition:transform 0.3s;
+      display:flex; flex-direction:column;
+      justify-content:flex-start;
+      text-align:center;
+    }
+    .step:hover { transform:translateY(-4px); }
+    .step-1 {
+      height:45%;
+      background:linear-gradient(180deg, rgba(106,235,152,0.2) 0%, rgba(106,235,152,0.04) 100%);
+      border:1px solid rgba(106,235,152,0.35);
+      border-bottom:none;
+    }
+    .step-2 {
+      height:72%;
+      background:linear-gradient(180deg, rgba(108,98,228,0.22) 0%, rgba(108,98,228,0.05) 100%);
+      border:1px solid rgba(108,98,228,0.4);
+      border-bottom:none;
+    }
+    .step-3 {
+      height:100%;
+      background:linear-gradient(180deg, rgba(252,129,50,0.22) 0%, rgba(252,129,50,0.05) 100%);
+      border:1px solid rgba(252,129,50,0.4);
+      border-bottom:none;
+    }
+    .step-num {
+      font-family:var(--font-serif);
+      font-size:28px; font-weight:700;
+      line-height:1;
+      letter-spacing:-0.02em;
+      margin-bottom:6px;
+    }
+    .step-1 .step-num { color:var(--green); }
+    .step-2 .step-num { color:var(--purple); }
+    .step-3 .step-num { color:var(--orange); }
+    .step-name {
+      font-size:12px; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      color:rgba(255,255,255,0.85);
+      margin-bottom:4px;
+    }
+    .step-hint {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:11px;
+      color:rgba(255,255,255,0.5);
+      line-height:1.3;
+    }
+    .start-here {
+      position:absolute;
+      top:-6px;
+      left:calc(16.6% + 12px);
+      display:flex; flex-direction:column; align-items:center;
+      pointer-events:none;
+      animation:bounce-start 2s ease-in-out infinite;
+    }
+    @keyframes bounce-start {
+      0%,100% { transform:translateY(0); }
+      50% { transform:translateY(-4px); }
+    }
+    .start-here-label {
+      font-size:10px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--green);
+      padding:5px 11px;
+      background:rgba(106,235,152,0.1);
+      border:1px solid rgba(106,235,152,0.4);
+      border-radius:100px;
+      white-space:nowrap;
+      margin-bottom:4px;
+    }
+    .start-here svg {
+      width:18px; height:18px;
+      stroke:var(--green);
+      fill:none;
+      stroke-width:2.2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .staircase-base {
+      height:1px;
+      background:var(--border);
+      margin-top:4px;
+    }
+    .staircase-caption {
+      text-align:center;
+      margin-top:18px;
+      font-size:13px;
+      color:var(--muted);
+      font-style:italic;
+    }
+
+    .phase {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:48px 52px;
+      margin-bottom:32px;
+      position:relative;
+      overflow:hidden;
+    }
+    .phase::before {
+      content:''; position:absolute;
+      top:0; left:0; right:0;
+      height:2px;
+    }
+    .phase-1::before { background:var(--green); }
+    .phase-2::before { background:var(--purple); }
+    .phase-3::before { background:linear-gradient(90deg, var(--green), var(--cyan), var(--purple)); }
+
+    .phase-header {
+      display:flex; align-items:flex-start; gap:32px;
+      margin-bottom:36px;
+    }
+    .phase-num {
+      font-family:var(--font-serif);
+      font-size:clamp(64px,10vw,96px);
+      font-weight:700; line-height:0.85;
+      letter-spacing:-0.04em;
+      flex-shrink:0;
+    }
+    .phase-1 .phase-num { color:var(--green); }
+    .phase-2 .phase-num { color:var(--purple); }
+    .phase-3 .phase-num {
+      background:linear-gradient(135deg, var(--green), var(--cyan), var(--purple));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .phase-meta { padding-top:8px; }
+    .phase-tag {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .phase-1 .phase-tag { color:var(--green); }
+    .phase-2 .phase-tag { color:var(--purple); }
+    .phase-3 .phase-tag { color:var(--orange); }
+    .phase-title {
+      font-family:var(--font-serif);
+      font-size:clamp(26px,3.5vw,34px);
+      font-weight:700; line-height:1.15;
+      letter-spacing:-0.02em;
+      margin-bottom:8px;
+    }
+    .phase-subtitle {
+      font-style:italic;
+      font-family:var(--font-serif);
+      font-size:16px;
+      color:rgba(255,255,255,0.55);
+      line-height:1.4;
+    }
+    .phase-block { margin-bottom:24px; }
+    .phase-block-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .phase-block-text {
+      font-size:16px; color:rgba(255,255,255,0.78);
+      line-height:1.65;
+    }
+    .phase-block-text strong { color:var(--white); }
+    .phase-list {
+      list-style:none;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .phase-list li {
+      display:flex; align-items:flex-start; gap:10px;
+      font-size:15px; color:rgba(255,255,255,0.75);
+      line-height:1.55;
+    }
+    .phase-list li::before {
+      content:'›'; color:var(--green);
+      font-weight:700; flex-shrink:0; padding-top:1px;
+    }
+    .phase-2 .phase-list li::before { color:var(--purple); }
+    .phase-3 .phase-list li::before { color:var(--orange); }
+    .phase-roi {
+      display:flex; align-items:center; gap:12px;
+      padding:16px 22px;
+      background:rgba(106,235,152,0.06);
+      border:1px solid rgba(106,235,152,0.18);
+      border-radius:10px;
+      margin-top:24px;
+    }
+    .phase-2 .phase-roi { background:rgba(108,98,228,0.06); border-color:rgba(108,98,228,0.18); }
+    .phase-3 .phase-roi { background:rgba(252,129,50,0.06); border-color:rgba(252,129,50,0.18); }
+    .phase-roi-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--green);
+    }
+    .phase-2 .phase-roi-label { color:var(--purple); }
+    .phase-3 .phase-roi-label { color:var(--orange); }
+    .phase-roi-text {
+      font-size:14.5px; color:rgba(255,255,255,0.78); flex:1;
+    }
+    .phase-roi-text strong { color:var(--white); }
+    .phase-anchor {
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      border-left:3px solid var(--green);
+      border-radius:0 10px 10px 0;
+      padding:24px 28px;
+      margin-top:28px;
+    }
+    .phase-2 .phase-anchor { border-left-color:var(--purple); }
+    .phase-3 .phase-anchor { border-left-color:var(--orange); }
+    .phase-anchor-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .phase-anchor-text {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:17px;
+      color:rgba(255,255,255,0.85);
+      line-height:1.55;
+    }
+    .phase-anchor-text strong {
+      font-style:normal;
+      color:var(--white);
+      font-family:var(--font-sans);
+    }
+
+    .start-section { margin-top:80px; margin-bottom:64px; }
+    .start-title {
+      font-family:var(--font-serif);
+      font-size:clamp(26px,3.8vw,36px);
+      font-weight:700; line-height:1.2;
+      letter-spacing:-0.02em;
+      margin-bottom:32px;
+    }
+    .start-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .start-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+    }
+    .start-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:28px 24px;
+      transition:border-color 0.3s, transform 0.3s;
+    }
+    .start-card:hover { transform:translateY(-2px); }
+    .start-card.s1 { border-top:2px solid var(--green); }
+    .start-card.s2 { border-top:2px solid var(--purple); }
+    .start-card.s3 { border-top:2px solid var(--orange); }
+    .start-card-tier {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    .start-card.s1 .start-card-tier { color:var(--green); }
+    .start-card.s2 .start-card-tier { color:var(--purple); }
+    .start-card.s3 .start-card-tier { color:var(--orange); }
+    .start-card-faixa {
+      font-family:var(--font-serif);
+      font-size:18px; font-weight:700;
+      color:var(--white);
+      margin-bottom:14px; line-height:1.25;
+    }
+    .start-card-rota {
+      font-size:12px; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .start-card-recommendation {
+      font-size:14.5px;
+      color:rgba(255,255,255,0.78);
+      line-height:1.6;
+    }
+    .start-card-recommendation strong { color:var(--white); }
+
+    .rule-final {
+      background:rgba(252,129,50,0.05);
+      border:1px solid rgba(252,129,50,0.2);
+      border-radius:14px;
+      padding:48px 40px;
+      text-align:center;
+      margin-bottom:48px;
+    }
+    .rule-final-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--orange); margin-bottom:16px;
+    }
+    .rule-final-text {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:clamp(20px,2.6vw,26px);
+      color:var(--white);
+      line-height:1.45;
+      max-width:600px; margin:0 auto;
+    }
+    .rule-final-text strong {
+      font-style:normal;
+      font-family:var(--font-sans);
+      font-weight:700;
+    }
+
+    /* ============================================================
+       PAGE 4 — MÉTODO
+       ============================================================ */
+    .honest-block {
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:32px 36px;
+      margin-bottom:48px;
+    }
+    .honest-block-title {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:20px;
+      color:var(--white);
+      margin-bottom:20px;
+      line-height:1.4;
+    }
+    .honest-list {
+      list-style:none;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    .honest-list li {
+      display:flex; align-items:flex-start; gap:12px;
+      font-size:15px; color:rgba(255,255,255,0.7);
+      line-height:1.55;
+    }
+    .honest-list .x {
+      flex-shrink:0; width:18px; height:18px;
+      background:rgba(239,68,68,0.12);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--red);
+      font-size:10px; font-weight:700;
+      margin-top:3px;
+    }
+    .honest-block-aside {
+      margin-top:20px;
+      padding-top:20px;
+      border-top:1px solid var(--border);
+      font-size:13px;
+      color:var(--muted2);
+      font-style:italic;
+    }
+
+    .method-intro {
+      font-size:13px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:24px;
+    }
+    .method-intro-text {
+      font-family:var(--font-serif);
+      font-size:clamp(22px,3vw,28px);
+      font-weight:700; line-height:1.3;
+      letter-spacing:-0.01em;
+      margin-bottom:36px;
+      max-width:680px;
+    }
+
+    .locked-list {
+      display:flex; flex-direction:column;
+      gap:14px; margin-bottom:48px;
+    }
+    .locked-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:26px 30px;
+      transition:border-color 0.3s, transform 0.2s;
+    }
+    .locked-card:hover { border-color:rgba(106,235,152,0.2); }
+    .locked-card-header {
+      display:flex; align-items:center; gap:14px;
+      margin-bottom:10px;
+    }
+    .locked-card-tag {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--green);
+    }
+    .locked-card-title {
+      font-size:18px; font-weight:700;
+      color:var(--white);
+      margin-bottom:14px;
+    }
+    .locked-card-desc {
+      font-size:14.5px; color:rgba(255,255,255,0.7);
+      line-height:1.6;
+      margin-bottom:18px;
+    }
+    .locked-card-footer {
+      display:flex; align-items:center; gap:8px;
+      padding-top:16px;
+      border-top:1px solid var(--border);
+      font-size:12px; color:var(--muted2);
+      letter-spacing:0.04em;
+    }
+    .locked-card-footer svg {
+      width:14px; height:14px;
+      flex-shrink:0;
+      stroke:var(--muted2);
+      fill:none; stroke-width:1.8;
+    }
+
+    .why-block {
+      background:rgba(108,98,228,0.05);
+      border:1px solid rgba(108,98,228,0.18);
+      border-radius:12px;
+      padding:32px 36px;
+      margin-bottom:64px;
+    }
+    .why-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--purple);
+      margin-bottom:16px;
+    }
+    .why-text {
+      font-size:16px; color:rgba(255,255,255,0.75);
+      line-height:1.7;
+    }
+    .why-text strong { color:var(--white); }
+    .why-list {
+      list-style:none;
+      display:flex; flex-direction:column; gap:10px;
+      margin-top:18px;
+    }
+    .why-list li {
+      display:flex; align-items:flex-start; gap:10px;
+      font-size:14.5px; color:rgba(255,255,255,0.7);
+      line-height:1.55;
+    }
+    .why-list li::before {
+      content:'→'; color:var(--purple);
+      flex-shrink:0; font-weight:700;
+    }
+
+    .systems-section { margin-top:80px; margin-bottom:48px; }
+    .systems-title {
+      font-family:var(--font-serif);
+      font-size:clamp(26px,3.8vw,36px);
+      font-weight:700; line-height:1.2;
+      letter-spacing:-0.02em;
+      margin-bottom:14px;
+    }
+    .systems-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .systems-sub {
+      font-size:15px; color:var(--muted);
+      margin-bottom:36px;
+    }
+    .systems-sub strong { color:var(--white); }
+    .systems-list {
+      display:flex; flex-direction:column;
+      gap:10px; margin-bottom:48px;
+    }
+    .system-row {
+      display:flex; align-items:center; gap:18px;
+      padding:18px 22px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:10px;
+      transition:border-color 0.3s;
+    }
+    .system-row:hover { border-color:rgba(106,235,152,0.25); }
+    .system-num {
+      font-family:var(--font-serif);
+      font-size:24px; font-weight:700;
+      color:var(--green);
+      letter-spacing:-0.02em;
+      min-width:36px;
+      flex-shrink:0;
+    }
+    .system-row:nth-child(2) .system-num { color:var(--cyan); }
+    .system-row:nth-child(3) .system-num { color:var(--purple); }
+    .system-row:nth-child(4) .system-num { color:var(--orange); }
+    .system-name {
+      font-size:16px; font-weight:600;
+      color:rgba(255,255,255,0.85);
+    }
+
+    .depende-block {
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:48px 44px;
+      margin-bottom:48px;
+      text-align:center;
+    }
+    .depende-question {
+      font-family:var(--font-sans);
+      font-size:18px;
+      color:rgba(255,255,255,0.7);
+      margin-bottom:16px;
+    }
+    .depende-answer {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:clamp(56px,9vw,88px);
+      font-weight:700;
+      letter-spacing:-0.02em;
+      line-height:1;
+      background:linear-gradient(135deg, var(--green), var(--cyan), var(--purple));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:32px;
+    }
+    .depende-vars-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:16px;
+    }
+    .depende-vars {
+      display:flex; flex-wrap:wrap; justify-content:center;
+      gap:10px;
+    }
+    .depende-var {
+      padding:8px 16px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:100px;
+      font-size:13.5px;
+      color:rgba(255,255,255,0.78);
+      font-weight:500;
+    }
+
+    .order-note {
+      background:rgba(252,129,50,0.06);
+      border:1px solid rgba(252,129,50,0.2);
+      border-radius:12px;
+      padding:28px 32px;
+      margin-bottom:48px;
+      text-align:center;
+    }
+    .order-note p {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:clamp(17px,2.4vw,22px);
+      color:var(--white);
+      line-height:1.5;
+    }
+    .order-note strong {
+      font-style:normal;
+      font-family:var(--font-sans);
+      font-weight:700;
+      color:var(--orange);
+    }
+    .nivelar-note {
+      text-align:center;
+      font-size:14px;
+      color:var(--muted);
+      font-style:italic;
+      max-width:520px;
+      margin:0 auto;
+    }
+    .nivelar-note strong { color:var(--white); font-style:normal; }
+
+    /* ============================================================
+       PAGE 5 — CALCULADORA
+       ============================================================ */
+    .prep-callout {
+      background:rgba(252,129,50,0.06);
+      border:1px solid rgba(252,129,50,0.2);
+      border-radius:12px;
+      padding:24px 28px;
+      margin-bottom:56px;
+      display:flex; align-items:flex-start; gap:16px;
+    }
+    .prep-callout-icon {
+      flex-shrink:0;
+      width:40px; height:40px;
+      background:rgba(252,129,50,0.15);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .prep-callout-text {
+      font-size:15px;
+      color:rgba(255,255,255,0.78);
+      line-height:1.6;
+    }
+    .prep-callout-text strong { color:var(--orange); }
+
+    .data-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:36px 40px;
+      margin-bottom:24px;
+      transition:border-color 0.3s;
+    }
+    .data-card:focus-within { border-color:rgba(106,235,152,0.3); }
+    .data-card-tag {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--green); margin-bottom:14px;
+    }
+    .data-card-question {
+      font-family:var(--font-sans);
+      font-size:20px; font-weight:700;
+      color:var(--white);
+      line-height:1.3;
+      margin-bottom:8px;
+    }
+    .data-card-example {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:14.5px;
+      color:rgba(255,255,255,0.5);
+      margin-bottom:24px;
+    }
+    .data-input-label {
+      display:block;
+      font-size:11px; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      color:rgba(255,255,255,0.5);
+      margin-bottom:8px;
+    }
+    .data-input {
+      width:100%;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:14px 18px;
+      font-family:var(--font-sans);
+      font-size:16px;
+      color:var(--white);
+      outline:none;
+      transition:border-color 0.2s, box-shadow 0.2s;
+    }
+    .data-input::placeholder { color:var(--muted2); }
+    .data-input:focus {
+      border-color:var(--green);
+      box-shadow:0 0 0 3px rgba(106,235,152,0.1);
+    }
+    .data-meta {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:16px; margin-top:24px;
+    }
+    .data-meta-block {
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:16px 18px;
+    }
+    .data-meta-block.green { background:rgba(106,235,152,0.05); border-color:rgba(106,235,152,0.18); }
+    .data-meta-label {
+      font-size:10px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:6px;
+    }
+    .data-meta-block.green .data-meta-label { color:var(--green); }
+    .data-meta-text {
+      font-size:13.5px;
+      color:rgba(255,255,255,0.7);
+      line-height:1.55;
+    }
+
+    .radio-list { display:flex; flex-direction:column; gap:8px; }
+    .radio-opt {
+      display:flex; align-items:center; gap:12px;
+      padding:14px 18px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:8px;
+      cursor:pointer;
+      transition:border-color 0.15s, background 0.15s;
+      user-select:none;
+    }
+    .radio-opt:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.15); }
+    .radio-opt.checked {
+      border-color:var(--green);
+      background:rgba(106,235,152,0.06);
+    }
+    .radio-opt input[type="radio"] {
+      position:absolute; opacity:0; width:0; height:0; pointer-events:none;
+    }
+    .custom-radio {
+      width:18px; height:18px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,0.2);
+      flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      transition:border-color 0.15s, background 0.15s;
+    }
+    .radio-opt.checked .custom-radio {
+      border-color:var(--green);
+      background:var(--green);
+    }
+    .radio-opt.checked .custom-radio::after {
+      content:'';
+      width:7px; height:7px;
+      border-radius:50%;
+      background:#000;
+    }
+    .radio-label {
+      font-size:14.5px;
+      color:rgba(255,255,255,0.85);
+      flex:1;
+    }
+    .other-input-wrap { display:none; margin-top:12px; }
+    .other-input-wrap.visible { display:block; }
+
+    .calc-section { margin-top:64px; margin-bottom:48px; }
+    .calc-title {
+      font-family:var(--font-serif);
+      font-size:clamp(24px,3.4vw,32px);
+      font-weight:700; line-height:1.2;
+      letter-spacing:-0.02em;
+      margin-bottom:32px;
+    }
+    .calc-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .calc-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    }
+    .calc-item {
+      background:rgba(108,98,228,0.05);
+      border:1px solid rgba(108,98,228,0.18);
+      border-radius:10px;
+      padding:20px 22px;
+    }
+    .calc-item-num {
+      font-family:var(--font-serif);
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--purple); margin-bottom:8px;
+    }
+    .calc-item-text {
+      font-size:15px;
+      color:rgba(255,255,255,0.85);
+      font-weight:500;
+      line-height:1.5;
+    }
+
+    .save-row {
+      margin-top:48px;
+      padding:32px;
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-radius:14px;
+      text-align:center;
+    }
+    .save-info {
+      font-size:14px; color:var(--muted);
+      margin-bottom:20px;
+    }
+    .save-info strong { color:var(--white); }
+    .btn-save {
+      display:inline-flex; align-items:center; gap:10px;
+      background:linear-gradient(135deg, var(--green) 0%, #25d366 100%);
+      color:#000;
+      border:none;
+      padding:16px 32px;
+      border-radius:8px;
+      font-family:var(--font-sans);
+      font-size:14px; font-weight:900;
+      letter-spacing:0.06em; text-transform:uppercase;
+      cursor:pointer;
+      position:relative; overflow:hidden;
+      transition:transform 0.2s, box-shadow 0.2s;
+      box-shadow:0 4px 24px rgba(106,235,152,0.25);
+    }
+    .btn-save::after {
+      content:''; position:absolute;
+      top:-30%; left:-80%;
+      width:55%; height:160%;
+      background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%);
+      transform:skewX(-15deg);
+      animation:btn-shine 2.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .btn-save:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(106,235,152,0.4); }
+    .save-status {
+      display:none;
+      margin-top:20px;
+      padding:14px 22px;
+      background:rgba(106,235,152,0.08);
+      border:1px solid rgba(106,235,152,0.3);
+      border-radius:8px;
+      font-size:14px;
+      color:var(--green);
+      font-weight:600;
+    }
+    .save-status.visible { display:inline-block; }
+    .save-status::before { content:'✓ '; }
+
+    /* ============================================================
+       PAGE 6 — CHECKLIST
+       ============================================================ */
+    .check-block {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:32px 36px;
+      margin-bottom:24px;
+    }
+    .check-block-header {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; margin-bottom:24px;
+      padding-bottom:20px;
+      border-bottom:1px solid var(--border);
+    }
+    .check-block-meta { display:flex; flex-direction:column; }
+    .check-block-num {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--green); margin-bottom:6px;
+    }
+    .check-block-title {
+      font-family:var(--font-serif);
+      font-size:22px; font-weight:700;
+      letter-spacing:-0.01em;
+      color:var(--white);
+    }
+    .check-block-score {
+      font-size:13px; font-weight:600;
+      color:var(--muted);
+      padding:8px 14px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:100px;
+      letter-spacing:0.04em;
+      white-space:nowrap;
+      transition:color 0.3s, background 0.3s, border-color 0.3s;
+    }
+    .check-block-score.pass {
+      color:var(--green);
+      background:rgba(106,235,152,0.08);
+      border-color:rgba(106,235,152,0.3);
+    }
+    .check-block-score.warn {
+      color:var(--orange);
+      background:rgba(252,129,50,0.06);
+      border-color:rgba(252,129,50,0.25);
+    }
+
+    .check-list { display:flex; flex-direction:column; gap:6px; }
+    .check-item {
+      display:flex; align-items:flex-start; gap:14px;
+      padding:14px 16px;
+      border-radius:8px;
+      cursor:pointer;
+      transition:background 0.15s;
+      user-select:none;
+    }
+    .check-item:hover { background:rgba(255,255,255,0.03); }
+    .check-item input[type="checkbox"] {
+      position:absolute; opacity:0; width:0; height:0; pointer-events:none;
+    }
+    .custom-check {
+      flex-shrink:0;
+      width:20px; height:20px;
+      border-radius:5px;
+      border:2px solid rgba(255,255,255,0.18);
+      display:flex; align-items:center; justify-content:center;
+      transition:border-color 0.15s, background 0.15s;
+      margin-top:1px;
+    }
+    .check-item.checked .custom-check {
+      border-color:var(--green);
+      background:var(--green);
+    }
+    .check-item.checked .custom-check::after {
+      content:'';
+      width:10px; height:6px;
+      border-left:2px solid #000;
+      border-bottom:2px solid #000;
+      transform:rotate(-45deg) translate(1px,-1px);
+    }
+    .check-text { flex:1; }
+    .check-text-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:3px;
+    }
+    .check-text-question {
+      font-size:15px;
+      color:rgba(255,255,255,0.85);
+      line-height:1.5;
+    }
+    .check-item.checked .check-text-question { color:var(--white); }
+
+    .result-block {
+      margin-top:64px;
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:48px 44px;
+      text-align:center;
+      transition:border-color 0.4s, box-shadow 0.4s;
+    }
+    .result-block.tier-pronto {
+      border-color:rgba(106,235,152,0.3);
+      box-shadow:0 0 60px rgba(106,235,152,0.08);
+    }
+    .result-block.tier-quase {
+      border-color:rgba(108,98,228,0.3);
+      box-shadow:0 0 60px rgba(108,98,228,0.08);
+    }
+    .result-block.tier-estrutura {
+      border-color:rgba(252,129,50,0.3);
+      box-shadow:0 0 60px rgba(252,129,50,0.06);
+    }
+    .result-block.tier-fundamentar {
+      border-color:rgba(239,68,68,0.3);
+      box-shadow:0 0 60px rgba(239,68,68,0.06);
+    }
+    .result-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:24px;
+    }
+    .result-score {
+      font-family:var(--font-serif);
+      font-size:clamp(80px,14vw,128px);
+      font-weight:700;
+      line-height:0.9;
+      letter-spacing:-0.04em;
+      margin-bottom:8px;
+      color:var(--muted);
+      transition:color 0.4s;
+    }
+    .result-block.tier-pronto .result-score { color:var(--green); }
+    .result-block.tier-quase .result-score { color:var(--purple); }
+    .result-block.tier-estrutura .result-score { color:var(--orange); }
+    .result-block.tier-fundamentar .result-score { color:var(--red); }
+    .result-score-total {
+      font-family:var(--font-serif);
+      font-size:24px;
+      color:rgba(255,255,255,0.4);
+      font-weight:400;
+    }
+    .result-tier-name {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:clamp(22px,3vw,28px);
+      font-weight:400;
+      color:rgba(255,255,255,0.85);
+      margin:24px 0 16px;
+      line-height:1.3;
+    }
+    .result-tier-desc {
+      font-size:15.5px;
+      color:rgba(255,255,255,0.7);
+      line-height:1.6;
+      max-width:480px; margin:0 auto;
+    }
+    .result-tier-desc strong { color:var(--white); }
+    .range-guide {
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:36px;
+      padding-top:32px;
+      border-top:1px solid var(--border);
+    }
+    .range-tile {
+      padding:12px 10px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      border-radius:8px;
+      text-align:center;
+      opacity:0.5;
+      transition:opacity 0.3s, border-color 0.3s, background 0.3s;
+    }
+    .range-tile.active { opacity:1; }
+    .range-tile.r1.active { border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.06); }
+    .range-tile.r2.active { border-color:rgba(252,129,50,0.4); background:rgba(252,129,50,0.06); }
+    .range-tile.r3.active { border-color:rgba(108,98,228,0.4); background:rgba(108,98,228,0.06); }
+    .range-tile.r4.active { border-color:rgba(106,235,152,0.4); background:rgba(106,235,152,0.06); }
+    .range-tile-num {
+      font-family:var(--font-serif);
+      font-size:13px; font-weight:700;
+      letter-spacing:0.04em;
+      color:var(--muted); margin-bottom:4px;
+    }
+    .range-tile.r1.active .range-tile-num { color:var(--red); }
+    .range-tile.r2.active .range-tile-num { color:var(--orange); }
+    .range-tile.r3.active .range-tile-num { color:var(--purple); }
+    .range-tile.r4.active .range-tile-num { color:var(--green); }
+    .range-tile-name {
+      font-size:10.5px; font-weight:600;
+      letter-spacing:0.06em; text-transform:uppercase;
+      color:var(--muted2);
+    }
+    .range-tile.active .range-tile-name { color:rgba(255,255,255,0.85); }
+    .reset-row { margin-top:24px; text-align:center; }
+    .btn-reset {
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--muted);
+      padding:10px 20px;
+      border-radius:6px;
+      font-size:12px; font-weight:600;
+      letter-spacing:0.06em; text-transform:uppercase;
+      cursor:pointer;
+      transition:color 0.2s, border-color 0.2s;
+    }
+    .btn-reset:hover { color:var(--white); border-color:rgba(255,255,255,0.3); }
+
+    /* ============================================================
+       PAGE 7 — Q&A
+       ============================================================ */
+    .compare-section { margin-bottom:64px; }
+    .compare-title {
+      font-family:var(--font-serif);
+      font-size:clamp(24px,3.4vw,30px);
+      font-weight:700; line-height:1.25;
+      letter-spacing:-0.02em;
+      margin-bottom:28px;
+    }
+    .compare-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .compare-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    }
+    .compare-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:28px 30px;
+    }
+    .compare-card.bad {
+      border-color:rgba(239,68,68,0.2);
+      background:linear-gradient(180deg, rgba(239,68,68,0.04) 0%, var(--card) 60%);
+    }
+    .compare-card.good {
+      border-color:rgba(106,235,152,0.2);
+      background:linear-gradient(180deg, rgba(106,235,152,0.04) 0%, var(--card) 60%);
+    }
+    .compare-card-header {
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:18px;
+      padding-bottom:14px;
+      border-bottom:1px solid var(--border);
+    }
+    .compare-mark {
+      width:24px; height:24px;
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; font-weight:700;
+    }
+    .bad .compare-mark { background:rgba(239,68,68,0.15); color:var(--red); }
+    .good .compare-mark { background:rgba(106,235,152,0.15); color:var(--green); }
+    .compare-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+    }
+    .bad .compare-label { color:var(--red); }
+    .good .compare-label { color:var(--green); }
+    .compare-list {
+      list-style:none;
+      display:flex; flex-direction:column; gap:14px;
+    }
+    .compare-list li {
+      font-size:14px;
+      color:rgba(255,255,255,0.78);
+      line-height:1.5;
+      padding-left:14px;
+      border-left:2px solid var(--border);
+      font-style:italic;
+    }
+    .bad .compare-list li { border-left-color:rgba(239,68,68,0.25); }
+    .good .compare-list li { border-left-color:rgba(106,235,152,0.25); }
+
+    .template-section { margin-bottom:64px; }
+    .template-title {
+      font-family:var(--font-serif);
+      font-size:clamp(24px,3.4vw,30px);
+      font-weight:700; line-height:1.25;
+      letter-spacing:-0.02em;
+      margin-bottom:14px;
+    }
+    .template-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .template-sub {
+      font-size:15px; color:var(--muted);
+      margin-bottom:28px;
+    }
+    .template-block {
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-left:3px solid var(--green);
+      border-radius:0 12px 12px 0;
+      padding:32px 36px;
+      font-size:16.5px;
+      line-height:1.85;
+      color:rgba(255,255,255,0.85);
+    }
+    .template-block .var {
+      display:inline-block;
+      padding:2px 8px;
+      background:rgba(37,208,200,0.1);
+      border:1px solid rgba(37,208,200,0.3);
+      border-radius:4px;
+      color:var(--cyan);
+      font-family:var(--font-mono);
+      font-size:13.5px;
+      font-weight:500;
+      letter-spacing:0.02em;
+      vertical-align:baseline;
+    }
+    .template-block .var.q {
+      background:rgba(252,129,50,0.08);
+      border-color:rgba(252,129,50,0.3);
+      color:var(--orange);
+    }
+    .template-aside {
+      margin-top:20px;
+      font-size:13.5px;
+      color:var(--muted);
+      font-style:italic;
+      padding-left:16px;
+      border-left:2px solid var(--border);
+    }
+
+    .questions-section { margin-bottom:64px; }
+    .questions-title {
+      font-family:var(--font-serif);
+      font-size:clamp(26px,3.8vw,34px);
+      font-weight:700; line-height:1.2;
+      letter-spacing:-0.02em;
+      margin-bottom:14px;
+    }
+    .questions-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .questions-sub {
+      font-size:15px; color:var(--muted);
+      margin-bottom:32px;
+    }
+    .question-item {
+      display:flex; gap:20px;
+      padding:24px 26px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-left:3px solid var(--green);
+      border-radius:0 10px 10px 0;
+      margin-bottom:12px;
+      transition:border-left-color 0.3s, background 0.3s;
+    }
+    .question-item:hover {
+      border-left-color:var(--purple);
+      background:rgba(255,255,255,0.015);
+    }
+    .question-num {
+      flex-shrink:0;
+      font-family:var(--font-serif);
+      font-size:24px; font-weight:700;
+      color:var(--green);
+      letter-spacing:-0.02em;
+      min-width:36px; line-height:1;
+      padding-top:4px;
+    }
+    .question-cat {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .question-text {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:16.5px;
+      color:rgba(255,255,255,0.88);
+      line-height:1.55;
+    }
+    .question-text strong {
+      font-style:normal;
+      font-family:var(--font-sans);
+      color:var(--white);
+      font-weight:700;
+    }
+
+    .personal-section { margin-bottom:48px; }
+    .personal-title {
+      font-family:var(--font-serif);
+      font-size:clamp(24px,3.4vw,30px);
+      font-weight:700; line-height:1.25;
+      letter-spacing:-0.02em;
+      margin-bottom:14px;
+    }
+    .personal-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .personal-sub {
+      font-size:15px; color:var(--muted);
+      margin-bottom:28px;
+    }
+    .personal-sub strong { color:var(--white); }
+    .personal-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:24px 28px;
+      margin-bottom:14px;
+      transition:border-color 0.3s;
+    }
+    .personal-card:focus-within { border-color:rgba(106,235,152,0.3); }
+    .personal-label {
+      display:block;
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--green); margin-bottom:10px;
+    }
+    .personal-textarea {
+      width:100%;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:14px 16px;
+      font-family:var(--font-sans);
+      font-size:15px; line-height:1.6;
+      color:var(--white);
+      resize:vertical;
+      min-height:90px;
+      outline:none;
+      transition:border-color 0.2s, box-shadow 0.2s;
+    }
+    .personal-textarea::placeholder { color:var(--muted2); font-style:italic; }
+    .personal-textarea:focus {
+      border-color:var(--green);
+      box-shadow:0 0 0 3px rgba(106,235,152,0.08);
+    }
+    .save-hint {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      margin-top:24px;
+      padding:14px 20px;
+      background:rgba(106,235,152,0.04);
+      border:1px solid rgba(106,235,152,0.15);
+      border-radius:8px;
+      font-size:13px;
+      color:rgba(255,255,255,0.7);
+    }
+    .save-hint .pulse-dot {
+      width:6px; height:6px;
+      border-radius:50%;
+      background:var(--green);
+      animation:pulse-green 2s ease-in-out infinite;
+    }
+    @keyframes pulse-green {
+      0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(106,235,152,0.5); }
+      50% { opacity:0.7; box-shadow:0 0 0 6px rgba(106,235,152,0); }
+    }
+
+    /* ============================================================
+       PAGE 8 — PRÓXIMOS PASSOS
+       ============================================================ */
+    #p8.page {
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(106,235,152,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(108,98,228,0.05) 0%, transparent 60%);
+    }
+    .recap-block {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:32px 36px;
+      margin-bottom:64px;
+    }
+    .recap-label {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--green); margin-bottom:16px;
+    }
+    .recap-title {
+      font-family:var(--font-serif);
+      font-size:24px; font-weight:700;
+      line-height:1.25;
+      margin-bottom:24px;
+      letter-spacing:-0.01em;
+    }
+    .recap-list {
+      list-style:none;
+      display:flex; flex-direction:column; gap:14px;
+    }
+    .recap-list li {
+      display:flex; align-items:flex-start; gap:14px;
+      font-size:15px;
+      color:rgba(255,255,255,0.8);
+      line-height:1.55;
+    }
+    .recap-list .icon {
+      flex-shrink:0; width:22px; height:22px;
+      background:rgba(106,235,152,0.12);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      margin-top:2px;
+    }
+
+    .actions-section { margin-bottom:64px; }
+    .actions-title {
+      font-family:var(--font-serif);
+      font-size:clamp(26px,3.8vw,34px);
+      font-weight:700; line-height:1.2;
+      letter-spacing:-0.02em;
+      margin-bottom:14px;
+    }
+    .actions-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .actions-sub {
+      font-size:15px; color:var(--muted);
+      margin-bottom:32px;
+    }
+    .action-card {
+      display:flex; gap:24px;
+      padding:26px 30px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      margin-bottom:14px;
+      transition:border-color 0.3s, transform 0.2s;
+    }
+    .action-card:hover { border-color:rgba(106,235,152,0.2); }
+    .action-num {
+      flex-shrink:0;
+      font-family:var(--font-serif);
+      font-size:32px; font-weight:700;
+      color:var(--green);
+      letter-spacing:-0.02em;
+      line-height:1;
+      min-width:42px;
+      padding-top:4px;
+    }
+    .action-tag {
+      font-size:11px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:8px;
+    }
+    .action-title-text {
+      font-size:17px; font-weight:700;
+      color:var(--white);
+      margin-bottom:8px;
+      line-height:1.35;
+    }
+    .action-desc {
+      font-size:14.5px;
+      color:rgba(255,255,255,0.72);
+      line-height:1.6;
+      margin-bottom:10px;
+    }
+    .action-desc strong { color:var(--white); }
+    .action-link {
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:13px; font-weight:600;
+      color:var(--green);
+      text-decoration:none;
+      letter-spacing:0.02em;
+      transition:gap 0.2s;
+    }
+    .action-link:hover { gap:10px; }
+
+    .event-card {
+      position:relative;
+      background:var(--card2);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:48px 44px;
+      margin-bottom:64px;
+      text-align:center;
+      overflow:hidden;
+    }
+    .event-card::before {
+      content:''; position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(106,235,152,0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(108,98,228,0.08) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .event-card > * { position:relative; }
+    .event-eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:11px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--green);
+      padding:8px 18px;
+      background:rgba(106,235,152,0.08);
+      border:1px solid rgba(106,235,152,0.25);
+      border-radius:100px;
+      margin-bottom:28px;
+    }
+    .event-eyebrow .dot {
+      width:6px; height:6px;
+      background:var(--green);
+      border-radius:50%;
+      box-shadow:0 0 8px rgba(106,235,152,0.6);
+    }
+    .event-info {
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:24px;
+      margin-bottom:32px;
+      padding:24px 0;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+    }
+    .event-info-label {
+      font-size:10px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--muted2); margin-bottom:6px;
+    }
+    .event-info-value {
+      font-family:var(--font-serif);
+      font-size:18px; font-weight:700;
+      color:var(--white);
+      letter-spacing:-0.01em;
+    }
+    .event-link-block {
+      background:rgba(0,0,0,0.4);
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:16px 20px;
+      margin-bottom:32px;
+      font-family:var(--font-mono);
+      font-size:13px;
+      color:var(--muted);
+      letter-spacing:0.02em;
+    }
+    .event-link-block strong { color:var(--green); font-weight:500; }
+
+    .discover-section { margin-bottom:64px; }
+    .discover-title {
+      font-family:var(--font-serif);
+      font-size:clamp(24px,3.4vw,30px);
+      font-weight:700; line-height:1.25;
+      letter-spacing:-0.02em;
+      margin-bottom:28px;
+    }
+    .discover-title em { font-style:italic; font-weight:400; color:rgba(255,255,255,0.55); }
+    .discover-list {
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .discover-item {
+      display:flex; align-items:flex-start; gap:14px;
+      padding:16px 22px;
+      background:rgba(255,255,255,0.025);
+      border:1px solid var(--border);
+      border-left:3px solid var(--purple);
+      border-radius:0 10px 10px 0;
+      font-size:15px;
+      color:rgba(255,255,255,0.82);
+      line-height:1.55;
+      transition:border-left-color 0.3s, background 0.3s;
+    }
+    .discover-item:hover {
+      border-left-color:var(--green);
+      background:rgba(255,255,255,0.04);
+    }
+    .discover-item::before {
+      content:'→';
+      color:var(--purple);
+      font-weight:700;
+      flex-shrink:0;
+    }
+    .discover-item:hover::before { color:var(--green); }
+    .discover-item strong { color:var(--white); }
+
+    .closing-block {
+      text-align:center;
+      padding:64px 32px;
+      margin-bottom:48px;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+    }
+    .closing-text {
+      font-family:var(--font-serif);
+      font-style:italic;
+      font-size:clamp(28px,4.5vw,44px);
+      font-weight:400;
+      line-height:1.3;
+      letter-spacing:-0.02em;
+      max-width:680px; margin:0 auto;
+    }
+    .closing-text strong {
+      font-style:normal;
+      font-weight:700;
+      background:linear-gradient(135deg, var(--green), var(--cyan), var(--purple));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .signature {
+      text-align:center;
+      padding:32px 24px;
+    }
+    .signature-greeting {
+      font-family:var(--font-sans);
+      font-size:15px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--green); margin-bottom:20px;
+    }
+    .signature-name {
+      font-family:var(--font-serif);
+      font-size:28px; font-weight:700;
+      letter-spacing:-0.02em;
+      color:var(--white);
+      margin-bottom:6px;
+    }
+    .signature-role {
+      font-size:13px;
+      color:var(--muted);
+      letter-spacing:0.04em;
+    }
+
+    /* ============================================================
+       DOC NAV (footer fixo)
+       ============================================================ */
+    .doc-nav {
+      position:sticky; bottom:0; z-index:99;
+      border-top:1px solid var(--border);
+      background:rgba(0,0,0,0.85);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+    .doc-nav-inner {
+      max-width:1080px; margin:0 auto;
+      padding:18px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:20px;
+    }
+    .doc-nav-btn {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:13px; font-weight:600;
+      letter-spacing:0.04em;
+      color:var(--muted);
+      background:none; border:none;
+      cursor:pointer;
+      padding:10px 16px;
+      border-radius:8px;
+      transition:color 0.2s, background 0.2s;
+      min-width:80px;
+      font-family:var(--font-sans);
+    }
+    .doc-nav-btn:hover { color:var(--white); background:rgba(255,255,255,0.04); }
+    .doc-nav-btn.next { color:rgba(255,255,255,0.85); }
+    .doc-nav-btn.next:hover { color:var(--green); }
+    .doc-nav-btn.disabled { opacity:0.25; pointer-events:none; }
+    .doc-nav-dots { display:flex; align-items:center; gap:8px; }
+    .doc-nav-dot {
+      width:6px; height:6px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.18);
+      border:none; cursor:pointer;
+      transition:width 0.25s, background 0.25s;
+      padding:0;
+    }
+    .doc-nav-dot:hover { background:rgba(255,255,255,0.35); }
+    .doc-nav-dot.current {
+      width:24px;
+      border-radius:100px;
+      background:var(--green);
+    }
+    .doc-nav-dot.done { background:rgba(106,235,152,0.4); }
+
+    /* ============================================================
+       FOOTER INSTITUCIONAL
+       ============================================================ */
+    .doc-footer {
+      background:var(--black);
+      border-top:1px solid var(--border);
+      padding:28px 24px;
+      text-align:center;
+    }
+    .doc-footer-links {
+      display:flex; gap:20px; justify-content:center;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+    .doc-footer-links a {
+      color:var(--muted);
+      text-decoration:none;
+      font-size:12px;
+      transition:color 0.2s;
+    }
+    .doc-footer-links a:hover { color:var(--white); }
+    .doc-footer-copy { font-size:11px; color:var(--muted2); }
+
+    /* ============================================================
+       FADE-UP
+       ============================================================ */
+    @media screen {
+      .fade-up {
+        opacity:0;
+        transform:translateY(20px);
+        transition:opacity 0.7s ease, transform 0.7s ease;
+      }
+    }
+    .fade-up.visible { opacity:1; transform:translateY(0); }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { opacity:1; transform:none; transition:none; }
+      html { scroll-behavior:auto; }
+    }
+
+    /* ============================================================
+       MOBILE
+       ============================================================ */
+    @media (max-width:768px) {
+      .doc-header-inner { padding:12px 16px; }
+      .doc-progress { font-size:10px; letter-spacing:0.12em; }
+      .doc-logo-img { height:22px; }
+
+      .page { padding:48px 20px 72px; }
+
+      /* cover */
+      .cover-eyebrow { font-size:10px; padding:7px 14px; margin-bottom:28px; }
+      .cover-title { line-height:1.1; margin-bottom:18px; }
+      .cover-subtitle { font-size:16px; margin-bottom:36px; }
+      .cover-contents { padding:28px 24px; }
+      .cover-contents li { font-size:14px; }
+      .cover-info-row { flex-direction:column; gap:16px; padding:20px; }
+      .cover-meta-block { font-size:13px; margin-bottom:40px; }
+      .btn-cta, .btn-event { font-size:14px; padding:16px 28px; width:100%; }
+
+      /* page titles */
+      h1.page-title { font-size:30px; }
+      .page-lead { font-size:16px; margin-bottom:48px; }
+
+      /* era */
+      .era { padding:28px 24px; }
+      .era-header-left { gap:16px; }
+      .era-icon { width:46px; height:46px; }
+      .era-icon svg { width:24px; height:24px; }
+      .era-block-row { grid-template-columns:1fr; gap:6px; }
+      .era-block-label { font-size:10px; }
+      .era-block-text { font-size:14.5px; }
+      .era-date { font-size:26px; }
+      .era-title { font-size:16px; }
+      .diff-grid { grid-template-columns:1fr; }
+      .diff-card { padding:22px; }
+      .bridge { padding:32px 24px; }
+      .bridge p { font-size:16px; }
+
+      /* staircase */
+      .staircase { height:200px; gap:8px; }
+      .step { padding:10px 8px; }
+      .step-num { font-size:22px; }
+      .step-name { font-size:10px; }
+      .step-hint { display:none; }
+      .start-here-label { font-size:9px; padding:4px 9px; }
+
+      /* phase */
+      .phase { padding:32px 24px; }
+      .phase-header { flex-direction:column; gap:12px; margin-bottom:28px; }
+      .phase-num { font-size:60px; }
+      .phase-title { font-size:24px; }
+      .phase-subtitle { font-size:15px; }
+      .phase-block-text { font-size:15px; }
+      .start-grid { grid-template-columns:1fr; }
+      .start-card { padding:24px 22px; }
+      .rule-final { padding:32px 24px; }
+
+      /* método */
+      .honest-block, .why-block { padding:24px 22px; }
+      .locked-card { padding:22px 24px; }
+      .depende-block { padding:32px 24px; }
+      .depende-answer { font-size:64px; }
+      .order-note { padding:24px 22px; }
+      .system-row { padding:16px 18px; gap:14px; }
+      .system-num { font-size:22px; min-width:30px; }
+      .system-name { font-size:14.5px; }
+
+      /* calc */
+      .prep-callout { padding:20px; gap:12px; }
+      .data-card { padding:28px 22px; }
+      .data-card-question { font-size:17px; }
+      .data-meta { grid-template-columns:1fr; }
+      .calc-grid { grid-template-columns:1fr; }
+      .save-row { padding:24px 20px; }
+      .btn-save { width:100%; justify-content:center; padding:16px 22px; }
+
+      /* checklist */
+      .check-block { padding:24px 22px; }
+      .check-block-header { flex-direction:column; align-items:flex-start; gap:10px; }
+      .check-block-title { font-size:19px; }
+      .check-text-question { font-size:14.5px; }
+      .result-block { padding:36px 24px; }
+      .result-score { font-size:80px; }
+      .range-guide { grid-template-columns:repeat(2,1fr); }
+
+      /* q&a */
+      .compare-grid { grid-template-columns:1fr; }
+      .compare-card { padding:22px 24px; }
+      .template-block { padding:24px 22px; font-size:15px; }
+      .template-block .var { font-size:12.5px; }
+      .question-item { flex-direction:column; gap:10px; padding:22px 22px; }
+      .question-num { font-size:22px; padding-top:0; }
+      .question-text { font-size:15px; }
+      .personal-card { padding:22px; }
+
+      /* próximos passos */
+      .recap-block { padding:24px 22px; }
+      .recap-title { font-size:20px; }
+      .action-card { flex-direction:column; padding:22px 24px; gap:14px; }
+      .action-num { font-size:28px; padding-top:0; min-width:auto; }
+      .event-card { padding:36px 24px; }
+      .event-info { grid-template-columns:1fr; gap:18px; padding:20px 0; }
+      .event-info-value { font-size:16px; }
+      .event-link-block { font-size:11.5px; padding:14px 16px; word-break:break-all; }
+      .closing-block { padding:48px 16px; }
+      .signature-name { font-size:24px; }
+
+      /* nav */
+      .doc-nav-inner { padding:14px 16px; gap:12px; }
+      .doc-nav-btn { font-size:12px; padding:8px 12px; min-width:auto; }
+      .doc-nav-btn span.label { display:none; }
+      .doc-nav-dots { gap:6px; }
+    }
+
+    /* ============================================================
+       PRINT / PDF — A4 DARK (idêntico à tela, compacto)
+       ============================================================ */
+    @page {
+      size: A4;
+      margin: 1.2cm 1.2cm;
+      orphans: 2;
+      widows: 2;
+      background: #000;
+    }
+    /* Força browsers a imprimirem backgrounds/cores */
+    html, body, * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    @media print {
+      html { scroll-behavior:auto; }
+      body {
+        background:var(--black) !important;
+        color:var(--white) !important;
+        font-size:9.5pt;
+        line-height:1.4;
+      }
+      /* Noise some no print (performance + artefato) */
+      body::before { display:none !important; }
+
+      /* Hide apenas elementos de navegação/interação */
+      .doc-nav, .page-break, .btn-download, .doc-footer,
+      .cover-scroll-hint, .btn-cta, .btn-save, .save-status,
+      .btn-reset, .save-hint, .reset-row, .save-row {
+        display:none !important;
+      }
+      /* btn-event aparece como card visual no print (não clicável) */
+      .btn-event {
+        display:inline-flex !important;
+        background:var(--orange) !important;
+        color:#000 !important;
+        padding:10pt 24pt !important;
+        font-size:10pt !important;
+        font-weight:900 !important;
+        letter-spacing:0.06em;
+        text-transform:uppercase;
+        border-radius:6pt;
+        box-shadow:none !important;
+      }
+      .btn-event::after { display:none !important; }
+
+      /* Header compacto, mantém dark */
+      .doc-header {
+        position:static !important;
+        background:var(--black) !important;
+        border-bottom:1px solid var(--border) !important;
+        padding:0 !important;
+        break-inside:avoid;
+      }
+      .doc-header-inner { padding:6pt 0 !important; max-width:100% !important; }
+      .doc-header-right { gap:0 !important; }
+      .doc-progress { display:none !important; }
+      .doc-logo-img { height:18pt !important; mix-blend-mode:screen !important; }
+
+      main { display:block !important; width:100% !important; max-width:none !important; }
+      main > section.page, main > .page-break {
+        max-width:none !important;
+        width:100% !important;
+      }
+
+      /* Sections: fluxo contínuo, sem page-break forçado */
+      .page {
+        break-before:auto;
+        page-break-before:auto;
+        padding:6pt 0 4pt !important;
+        margin:0 !important;
+        min-height:0 !important;
+        display:block !important;
+        max-width:none !important;
+        width:100% !important;
+      }
+      /* Separador visual entre seções (substitui o page-break) */
+      .page + .page-break + .page,
+      .page + .page {
+        border-top:1.5pt solid rgba(255,255,255,0.12) !important;
+        margin-top:18pt !important;
+        padding-top:14pt !important;
+      }
+      #p1.page {
+        break-before:avoid;
+        page-break-before:avoid;
+        padding:6pt 0 4pt !important;
+        display:block !important;
+        min-height:0 !important;
+        background:var(--black) !important;
+        width:100% !important;
+        text-align:center !important;
+      }
+      .page-inner, .cover-inner {
+        max-width:none !important;
+        padding:0 !important;
+        width:100% !important;
+        margin:0 !important;
+      }
+      .cover-inner { text-align:center; }
+
+      /* Override mobile grids que ativam em print (printable width < 768px) */
+      .range-guide { grid-template-columns:repeat(4,1fr) !important; }
+      .diff-grid, .calc-grid, .compare-grid, .data-meta {
+        grid-template-columns:1fr 1fr !important;
+      }
+      .start-grid, .event-info {
+        grid-template-columns:1fr 1fr 1fr !important;
+      }
+      .era-block-row {
+        grid-template-columns:90pt 1fr !important;
+      }
+      .check-block-header {
+        flex-direction:row !important;
+        align-items:center !important;
+      }
+      .phase-header { flex-direction:row !important; }
+      .action-card { flex-direction:row !important; }
+      .question-item { flex-direction:row !important; }
+      .doc-nav-btn span.label { display:none !important; }
+
+      /* Tipografia compacta (mas mantém cor branca e itálico muted) */
+      h1.page-title, .cover-title {
+        font-family:var(--font-serif);
+        font-size:20pt !important;
+        line-height:1.1 !important;
+        letter-spacing:-0.02em;
+        margin-bottom:4pt !important;
+        page-break-after:avoid;
+      }
+      h2, h3 { page-break-after:avoid; }
+      .section-label {
+        font-size:7.5pt !important;
+        letter-spacing:0.16em;
+        margin-bottom:3pt !important;
+      }
+      .page-divider, .cover-divider { display:none !important; }
+      .page-lead {
+        font-size:9.5pt !important;
+        margin-bottom:6pt !important;
+        max-width:100% !important;
+      }
+
+      /* Cards — compactos, sem sombra, com margem baixa */
+      .era, .phase, .locked-card, .data-card, .check-block,
+      .compare-card, .question-item, .personal-card, .recap-block,
+      .action-card, .honest-block, .why-block, .depende-block,
+      .rule-final, .order-note, .prep-callout, .staircase-wrap,
+      .diff-card, .start-card, .calc-item, .template-block,
+      .result-block, .cover-contents, .event-card, .bridge,
+      .system-row, .discover-item, .range-tile {
+        margin-bottom:4pt !important;
+        box-shadow:none !important;
+      }
+      /* break-inside:avoid apenas em cards PEQUENOS — containers grandes
+         (.phase, .era, .result-block) podem quebrar entre páginas pra
+         evitar páginas parcialmente vazias */
+      .diff-card, .start-card, .calc-item, .system-row,
+      .discover-item, .range-tile, .check-item, .radio-opt,
+      .cover-info-item, .locked-card {
+        break-inside:avoid;
+        page-break-inside:avoid;
+      }
+      .era, .phase, .locked-card, .data-card, .check-block,
+      .compare-card, .question-item, .personal-card, .recap-block,
+      .action-card, .honest-block, .why-block, .depende-block,
+      .rule-final, .order-note, .prep-callout, .staircase-wrap {
+        padding:8pt 10pt !important;
+      }
+      .bridge, .event-card { padding:10pt 14pt !important; }
+      .cover-contents { padding:10pt 14pt !important; margin-bottom:8pt !important; }
+      .cover-info-row { padding:8pt 14pt !important; margin-bottom:8pt !important; flex-direction:row !important; gap:18pt !important; }
+      /* .bridge não deve ficar orfã numa página */
+      .bridge { page-break-before:avoid !important; break-before:avoid !important; }
+
+      /* P1 — CAPA */
+      .cover-eyebrow {
+        font-size:7.5pt !important;
+        padding:4pt 10pt !important;
+        margin-bottom:14pt !important;
+      }
+      .cover-title { font-size:28pt !important; margin-bottom:8pt !important; }
+      .cover-subtitle {
+        font-size:12pt !important;
+        margin-bottom:16pt !important;
+        max-width:100% !important;
+      }
+      .cover-meta-block { font-size:9.5pt !important; margin-bottom:14pt !important; }
+      .cover-contents-title { font-size:7.5pt !important; margin-bottom:8pt !important; }
+      .cover-contents ul { gap:5pt !important; }
+      .cover-contents li { font-size:9.5pt !important; gap:8pt !important; }
+      .cover-contents .icon { width:12pt !important; height:12pt !important; margin-top:1pt; }
+      .cover-contents .icon svg { width:8pt !important; height:8pt !important; }
+      .cover-info-row { gap:18pt !important; }
+      .cover-info-label { font-size:7pt !important; margin-bottom:2pt !important; }
+      .cover-info-value { font-size:9.5pt !important; }
+
+      /* P2 — REVOLUÇÕES */
+      .era { padding:9pt 12pt !important; }
+      .era-header { margin-bottom:5pt !important; gap:10pt !important; }
+      .era-header-left { gap:10pt !important; }
+      .era-icon { width:32pt !important; height:32pt !important; }
+      .era-icon svg { width:20pt !important; height:20pt !important; stroke-width:2 !important; }
+      .era-num { font-size:7.5pt !important; }
+      .era-date { font-size:14pt !important; margin-bottom:2pt !important; }
+      .era-title { font-size:10.5pt !important; margin-bottom:6pt !important; }
+      .era-blocks { gap:5pt !important; margin-bottom:6pt !important; }
+      .era-block-row { grid-template-columns:90pt 1fr !important; gap:8pt !important; }
+      .era-block-label { font-size:7.5pt !important; }
+      .era-block-text { font-size:9.5pt !important; line-height:1.4 !important; }
+      .era-footer { padding-top:5pt !important; }
+      .era-consolidation { font-size:7.5pt !important; padding:2pt 8pt !important; }
+      .era-now-badge { font-size:7pt !important; padding:2pt 7pt !important; }
+      .era-now-badge .dot { width:3pt !important; height:3pt !important; animation:none !important; }
+
+      .diff-section, .systems-section, .compare-section,
+      .template-section, .questions-section, .personal-section,
+      .actions-section, .discover-section, .start-section {
+        margin-top:12pt !important;
+        margin-bottom:8pt !important;
+      }
+      .diff-title, .systems-title, .compare-title, .template-title,
+      .questions-title, .personal-title, .actions-title, .discover-title,
+      .start-title {
+        font-size:14pt !important;
+        margin-bottom:8pt !important;
+      }
+      .diff-grid { grid-template-columns:1fr 1fr !important; gap:6pt !important; }
+      .diff-card { padding:9pt 11pt !important; margin-bottom:0 !important; }
+      .diff-card-num { font-size:16pt !important; margin-bottom:4pt !important; }
+      .diff-card-title { font-size:10pt !important; margin-bottom:3pt !important; }
+      .diff-card-text { font-size:9pt !important; line-height:1.45 !important; }
+      .bridge p { font-size:11pt !important; }
+
+      /* P3 — FASES */
+      .staircase-wrap { padding:10pt 14pt !important; margin-bottom:12pt !important; }
+      .staircase-title { font-size:7.5pt !important; margin-bottom:8pt !important; }
+      .staircase { height:95pt !important; gap:7pt !important; }
+      .step { padding:7pt 5pt !important; }
+      .step-num { font-size:14pt !important; margin-bottom:2pt !important; }
+      .step-name { font-size:8pt !important; margin-bottom:1pt !important; }
+      .step-hint { font-size:6.5pt !important; line-height:1.2 !important; }
+      .start-here-label { font-size:6.5pt !important; padding:2pt 6pt !important; }
+      .start-here svg { width:10pt !important; height:10pt !important; }
+      .staircase-caption { font-size:8pt !important; margin-top:7pt !important; }
+
+      .phase { padding:11pt 13pt !important; }
+      .phase-header { gap:14pt !important; margin-bottom:8pt !important; }
+      .phase-num {
+        font-size:34pt !important;
+        line-height:0.85 !important;
+      }
+      .phase-title { font-size:14pt !important; margin-bottom:2pt !important; }
+      .phase-subtitle { font-size:9.5pt !important; }
+      .phase-tag { font-size:7.5pt !important; margin-bottom:4pt !important; }
+      .phase-block { margin-bottom:6pt !important; }
+      .phase-block-label { font-size:7.5pt !important; margin-bottom:3pt !important; }
+      .phase-block-text { font-size:9.5pt !important; line-height:1.5 !important; }
+      .phase-list { gap:2pt !important; }
+      .phase-list li { font-size:9pt !important; line-height:1.45 !important; }
+      .phase-roi {
+        padding:6pt 11pt !important;
+        margin-top:7pt !important;
+      }
+      .phase-roi-label { font-size:7.5pt !important; }
+      .phase-roi-text { font-size:9pt !important; }
+      .phase-anchor {
+        padding:8pt 11pt !important;
+        margin-top:8pt !important;
+      }
+      .phase-anchor-label { font-size:7.5pt !important; margin-bottom:4pt !important; }
+      .phase-anchor-text { font-size:9.5pt !important; line-height:1.45 !important; }
+
+      .start-grid { grid-template-columns:1fr 1fr 1fr !important; gap:6pt !important; }
+      .start-card { padding:9pt 11pt !important; margin-bottom:0 !important; }
+      .start-card-tier { font-size:7.5pt !important; margin-bottom:5pt !important; }
+      .start-card-faixa { font-size:10.5pt !important; margin-bottom:5pt !important; }
+      .start-card-rota { font-size:7.5pt !important; margin-bottom:3pt !important; }
+      .start-card-recommendation { font-size:8.5pt !important; line-height:1.45 !important; }
+
+      .rule-final { padding:12pt 16pt !important; }
+      .rule-final-label { font-size:7.5pt !important; margin-bottom:6pt !important; }
+      .rule-final-text { font-size:12pt !important; line-height:1.35 !important; }
+
+      /* P4 — MÉTODO */
+      .honest-block { padding:10pt 13pt !important; }
+      .honest-block-title { font-size:11pt !important; margin-bottom:8pt !important; }
+      .honest-list { gap:4pt !important; }
+      .honest-list li { font-size:9pt !important; gap:7pt !important; }
+      .honest-list .x { width:10pt !important; height:10pt !important; font-size:7pt !important; }
+      .honest-block-aside { font-size:8pt !important; margin-top:8pt !important; padding-top:6pt !important; }
+
+      .method-intro { font-size:8pt !important; margin-bottom:6pt !important; }
+      .method-intro-text { font-size:12pt !important; margin-bottom:10pt !important; }
+
+      .locked-list { gap:5pt !important; margin-bottom:10pt !important; }
+      .locked-card { padding:9pt 12pt !important; }
+      .locked-card-tag { font-size:7.5pt !important; }
+      .locked-card-header { margin-bottom:4pt !important; }
+      .locked-card-title { font-size:10.5pt !important; margin-bottom:4pt !important; }
+      .locked-card-desc { font-size:9pt !important; margin-bottom:6pt !important; line-height:1.45 !important; }
+      .locked-card-footer { padding-top:5pt !important; font-size:7.5pt !important; }
+
+      .why-block { padding:10pt 13pt !important; }
+      .why-label { font-size:7.5pt !important; margin-bottom:7pt !important; }
+      .why-text { font-size:9.5pt !important; line-height:1.5 !important; }
+      .why-list { gap:4pt !important; margin-top:7pt !important; }
+      .why-list li { font-size:9pt !important; }
+
+      .systems-list { gap:4pt !important; margin-bottom:10pt !important; }
+      .system-row { padding:6pt 12pt !important; gap:12pt !important; margin-bottom:0 !important; }
+      .system-num { font-size:12pt !important; min-width:20pt !important; }
+      .system-name { font-size:9.5pt !important; }
+
+      .depende-block { padding:12pt 16pt !important; }
+      .depende-question { font-size:10pt !important; margin-bottom:8pt !important; }
+      .depende-answer { font-size:32pt !important; margin-bottom:10pt !important; }
+      .depende-vars-label { font-size:7.5pt !important; margin-bottom:6pt !important; }
+      .depende-vars { gap:4pt !important; }
+      .depende-var { font-size:8pt !important; padding:3pt 8pt !important; }
+
+      .order-note { padding:9pt 13pt !important; }
+      .order-note p { font-size:11pt !important; }
+      .nivelar-note { font-size:8.5pt !important; }
+
+      /* P5 — CALCULADORA */
+      .prep-callout { padding:8pt 12pt !important; gap:10pt !important; margin-bottom:10pt !important; }
+      .prep-callout-icon { width:22pt !important; height:22pt !important; }
+      .prep-callout-icon svg { width:12pt !important; height:12pt !important; }
+      .prep-callout-text { font-size:9pt !important; line-height:1.45 !important; }
+
+      .data-card { padding:10pt 13pt !important; }
+      .data-card-tag { font-size:7.5pt !important; margin-bottom:6pt !important; }
+      .data-card-question { font-size:11pt !important; margin-bottom:3pt !important; }
+      .data-card-example { font-size:8.5pt !important; margin-bottom:8pt !important; }
+      .data-input-label { font-size:7.5pt !important; margin-bottom:4pt !important; }
+      .data-input { font-size:9.5pt !important; padding:6pt 10pt !important; }
+
+      .data-meta { margin-top:8pt !important; gap:6pt !important; grid-template-columns:1fr 1fr !important; }
+      .data-meta-block { padding:6pt 9pt !important; }
+      .data-meta-label { font-size:7pt !important; margin-bottom:3pt !important; }
+      .data-meta-text { font-size:8.5pt !important; line-height:1.4 !important; }
+
+      .radio-list { gap:3pt !important; }
+      .radio-opt { padding:5pt 9pt !important; gap:8pt !important; }
+      .custom-radio { width:10pt !important; height:10pt !important; }
+      .radio-label { font-size:9pt !important; }
+
+      .calc-section { margin-top:12pt !important; }
+      .calc-title { font-size:13pt !important; margin-bottom:8pt !important; }
+      .calc-grid { grid-template-columns:1fr 1fr !important; gap:6pt !important; }
+      .calc-item { padding:7pt 10pt !important; margin-bottom:0 !important; }
+      .calc-item-num { font-size:7.5pt !important; margin-bottom:4pt !important; }
+      .calc-item-text { font-size:9pt !important; line-height:1.4 !important; }
+
+      /* P6 — CHECKLIST */
+      .check-block { padding:10pt 13pt !important; }
+      .check-block-header { padding-bottom:7pt !important; margin-bottom:7pt !important; }
+      .check-block-num { font-size:7.5pt !important; margin-bottom:3pt !important; }
+      .check-block-title { font-size:12pt !important; }
+      .check-block-score { font-size:8pt !important; padding:3pt 9pt !important; }
+      .check-list { gap:2pt !important; }
+      .check-item { padding:4pt 7pt !important; gap:9pt !important; }
+      .custom-check { width:11pt !important; height:11pt !important; }
+      .check-item.checked .custom-check::after {
+        width:6pt !important; height:3.5pt !important;
+        border-left-width:1.5pt !important;
+        border-bottom-width:1.5pt !important;
+      }
+      .check-text-label { font-size:7pt !important; margin-bottom:1pt !important; }
+      .check-text-question { font-size:9.5pt !important; line-height:1.4 !important; }
+
+      .result-block { padding:14pt 16pt !important; }
+      .result-label { font-size:7.5pt !important; margin-bottom:10pt !important; }
+      .result-score { font-size:40pt !important; margin-bottom:4pt !important; line-height:0.9 !important; }
+      .result-score-total { font-size:13pt !important; }
+      .result-tier-name { font-size:13pt !important; margin:8pt 0 5pt !important; }
+      .result-tier-desc { font-size:9.5pt !important; line-height:1.45 !important; }
+      .range-guide { margin-top:10pt !important; padding-top:8pt !important; gap:4pt !important; }
+      .range-tile { padding:5pt 4pt !important; margin-bottom:0 !important; }
+      .range-tile-num { font-size:8.5pt !important; margin-bottom:2pt !important; }
+      .range-tile-name { font-size:7pt !important; }
+
+      /* P7 — Q&A */
+      .compare-grid { grid-template-columns:1fr 1fr !important; gap:6pt !important; }
+      .compare-card { padding:9pt 11pt !important; margin-bottom:0 !important; }
+      .compare-card-header { margin-bottom:7pt !important; padding-bottom:5pt !important; }
+      .compare-mark { width:14pt !important; height:14pt !important; font-size:8pt !important; }
+      .compare-label { font-size:7.5pt !important; }
+      .compare-list { gap:5pt !important; }
+      .compare-list li { font-size:8.5pt !important; padding-left:8pt !important; line-height:1.4 !important; }
+
+      .template-block {
+        padding:11pt 14pt !important;
+        font-size:10pt !important;
+        line-height:1.55 !important;
+      }
+      .template-block .var { font-size:8pt !important; padding:1pt 5pt !important; }
+      .template-sub { font-size:8.5pt !important; margin-bottom:7pt !important; }
+      .template-aside { font-size:8pt !important; margin-top:7pt !important; }
+
+      .question-item {
+        padding:8pt 11pt !important;
+        gap:10pt !important;
+        margin-bottom:4pt !important;
+      }
+      .question-num { font-size:13pt !important; min-width:20pt !important; padding-top:2pt !important; }
+      .question-cat { font-size:7.5pt !important; margin-bottom:3pt !important; }
+      .question-text { font-size:9pt !important; line-height:1.45 !important; }
+
+      .personal-card { padding:9pt 12pt !important; }
+      .personal-label { font-size:7.5pt !important; margin-bottom:5pt !important; }
+      .personal-textarea {
+        min-height:36pt !important;
+        font-size:9pt !important;
+        padding:6pt 8pt !important;
+      }
+      .personal-sub { font-size:8.5pt !important; margin-bottom:7pt !important; }
+
+      /* P8 — PRÓXIMOS PASSOS */
+      .recap-block { padding:10pt 13pt !important; }
+      .recap-label { font-size:7.5pt !important; margin-bottom:6pt !important; }
+      .recap-title { font-size:13pt !important; margin-bottom:8pt !important; }
+      .recap-list { gap:5pt !important; }
+      .recap-list li { font-size:9.5pt !important; gap:8pt !important; line-height:1.4 !important; }
+      .recap-list .icon { width:12pt !important; height:12pt !important; }
+      .recap-list .icon svg { width:8pt !important; height:8pt !important; }
+
+      .actions-sub, .systems-sub, .questions-sub, .actions-sub {
+        font-size:9pt !important;
+        margin-bottom:8pt !important;
+      }
+      .action-card {
+        padding:9pt 12pt !important;
+        gap:12pt !important;
+        margin-bottom:4pt !important;
+      }
+      .action-num { font-size:17pt !important; min-width:22pt !important; padding-top:2pt !important; }
+      .action-tag { font-size:7.5pt !important; margin-bottom:3pt !important; }
+      .action-title-text { font-size:10.5pt !important; margin-bottom:3pt !important; }
+      .action-desc { font-size:9pt !important; line-height:1.45 !important; margin-bottom:4pt !important; }
+      .action-link { font-size:8.5pt !important; }
+
+      .event-card { padding:14pt 16pt !important; }
+      .event-eyebrow { font-size:7.5pt !important; padding:3pt 9pt !important; margin-bottom:10pt !important; }
+      .event-info {
+        gap:12pt !important;
+        padding:8pt 0 !important;
+        margin-bottom:10pt !important;
+      }
+      .event-info-label { font-size:7pt !important; margin-bottom:2pt !important; }
+      .event-info-value { font-size:11pt !important; }
+      .event-link-block {
+        font-size:8pt !important;
+        padding:6pt 10pt !important;
+        margin-bottom:0 !important;
+        word-break:break-word;
+      }
+
+      .discover-list { gap:3pt !important; }
+      .discover-item { padding:6pt 11pt !important; margin-bottom:0 !important; font-size:9pt !important; line-height:1.4 !important; }
+
+      .closing-block { padding:16pt 10pt !important; margin-bottom:10pt !important; }
+      .closing-text { font-size:18pt !important; line-height:1.25 !important; }
+
+      .signature { padding:8pt !important; }
+      .signature-greeting { font-size:8pt !important; margin-bottom:6pt !important; }
+      .signature-name { font-size:16pt !important; }
+      .signature-role { font-size:9pt !important; }
+
+      /* Animações off + força tudo visível no print */
+      .fade-up,
+      main .fade-up,
+      section .fade-up,
+      .cover-inner .fade-up,
+      .page-inner .fade-up {
+        opacity:1 !important;
+        transform:none !important;
+        visibility:visible !important;
+        animation:none !important;
+        transition:none !important;
+      }
+      .cover-eyebrow, .cover-title, .cover-subtitle,
+      .cover-meta-block, .cover-contents, .cover-info-row {
+        opacity:1 !important;
+        transform:none !important;
+        visibility:visible !important;
+        color:#fff !important;
+        -webkit-text-fill-color:#fff !important;
+      }
+      .cover-title, .cover-subtitle, .cover-meta-block, .cover-divider {
+        display:block !important;
+        visibility:visible !important;
+        opacity:1 !important;
+      }
+      .cover-divider {
+        width:48px !important;
+        height:2px !important;
+        background:linear-gradient(90deg,#6aeb98,#6c62e4) !important;
+        margin:8pt auto 12pt !important;
+        border-radius:2px !important;
+      }
+      .cover-eyebrow {
+        display:inline-flex !important;
+        color:#6aeb98 !important;
+        -webkit-text-fill-color:#6aeb98 !important;
+      }
+      .cover-eyebrow .dot {
+        background:#6aeb98 !important;
+        -webkit-text-fill-color:initial !important;
+      }
+      .cover-title {
+        color:#fff !important;
+        -webkit-text-fill-color:#fff !important;
+      }
+      .cover-title .accent {
+        color:#6aeb98 !important;
+        -webkit-text-fill-color:#6aeb98 !important;
+        background:none !important;
+        background-clip:initial !important;
+        -webkit-background-clip:initial !important;
+      }
+      .cover-subtitle {
+        color:rgba(255,255,255,0.55) !important;
+        -webkit-text-fill-color:rgba(255,255,255,0.55) !important;
+      }
+      .cover-meta-block {
+        color:#888 !important;
+        -webkit-text-fill-color:#888 !important;
+      }
+      .cover-meta-block strong {
+        color:#fff !important;
+        -webkit-text-fill-color:#fff !important;
+      }
+      .start-here { animation:none !important; }
+      .era-now-badge .dot,
+      .save-hint .pulse-dot,
+      .cover-eyebrow .dot,
+      .event-eyebrow .dot {
+        animation:none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       DOC HEADER (único, dinâmico via JS)
+       ============================================================ -->
+  <header class="doc-header">
+    <div class="doc-header-inner">
+      <a href="#p1" class="doc-logo">
+        <img src="logo_white.png" alt="ROI com IA" class="doc-logo-img" style="height:28px;mix-blend-mode:screen;">
+      </a>
+      <div class="doc-header-right">
+        <div class="doc-progress" id="doc-progress">
+          <strong>01</strong> / 08 · Capa
+        </div>
+        <button class="btn-download" id="btn-download" type="button" title="Baixar material em PDF (A4)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>
+          <span class="label-full">Baixar PDF</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         PAGE 1 — CAPA
+         ============================================================ -->
+    <section class="page" id="p1" data-title="Capa">
+      <div class="cover-inner">
+
+        <div class="cover-eyebrow fade-up">
+          <span class="dot"></span>
+          Material de Preparação
+        </div>
+
+        <h1 class="cover-title fade-up">
+          IA do Zero ao <span class="accent">ROI</span>
+        </h1>
+
+        <p class="cover-subtitle fade-up">
+          O momento mais importante da história empresarial desde 1760.
+        </p>
+
+        <div class="cover-divider fade-up"></div>
+
+        <p class="cover-meta-block fade-up">
+          Preparação para o evento ao vivo · Com <strong>Henry Risutti</strong>
+        </p>
+
+        <div class="cover-contents fade-up">
+          <div class="cover-contents-title">O que você vai encontrar</div>
+          <ul>
+            <li>
+              <span class="icon">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>As 4 revoluções industriais — contexto histórico que define o momento atual</span>
+            </li>
+            <li>
+              <span class="icon">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>As 3 fases de IA — do assistente ao produto, e onde sua empresa começa</span>
+            </li>
+            <li>
+              <span class="icon">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>Framework e sistemas — prévia do método ROI com IA</span>
+            </li>
+            <li>
+              <span class="icon">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span>Calculadora, checklist e perguntas — preparação ativa para o evento ao vivo</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="cover-info-row fade-up">
+          <div class="cover-info-item">
+            <div class="cover-info-label">Tempo de leitura</div>
+            <div class="cover-info-value">7 — 10 minutos</div>
+          </div>
+          <div class="cover-info-item">
+            <div class="cover-info-label">Quando ler</div>
+            <div class="cover-info-value">Antes do evento</div>
+          </div>
+          <div class="cover-info-item">
+            <div class="cover-info-label">Objetivo</div>
+            <div class="cover-info-value">Chegar nivelado</div>
+          </div>
+        </div>
+
+        <p class="cover-scroll-hint fade-up">
+          <span class="scroll-arrow">↓</span> Role para começar
+        </p>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>02</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 2 — REVOLUÇÕES
+         ============================================================ -->
+    <section class="page" id="p2" data-title="Revoluções">
+      <div class="page-inner">
+
+        <span class="section-label">Contexto Histórico</span>
+        <h1 class="page-title">As 4 Revoluções Industriais<br><em>e por que esta é diferente</em></h1>
+        <div class="page-divider"></div>
+
+        <p class="page-lead">
+          Cada revolução industrial criou dois grupos de empresários: <strong>os que chegaram cedo</strong> e dominaram seus setores por décadas, e <strong>os que chegaram tarde</strong> e nunca recuperaram o atraso. A 4ª está acontecendo agora — e mais rápido que todas as anteriores.
+        </p>
+
+        <div class="era-timeline">
+
+          <!-- ERA 1 — Vapor (máquina/caldeira) -->
+          <div class="era era-1 fade-up">
+            <div class="era-header">
+              <div class="era-header-left">
+                <div class="era-icon" aria-hidden="true">
+                  <!-- Steam/boiler -->
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 20h10"/>
+                    <path d="M9 20V10h6v10"/>
+                    <circle cx="12" cy="14" r="2"/>
+                    <path d="M9 10V7a3 3 0 0 1 6 0v3"/>
+                    <path d="M6 5c0-1 .5-2 1-2M18 5c0 -1-.5-2-1-2M12 3c0-1 .5-1.5 1-2"/>
+                  </svg>
+                </div>
+                <div class="era-meta">
+                  <div class="era-num">1ª Revolução Industrial</div>
+                  <div class="era-date">1760 — 1840</div>
+                  <div class="era-title">Vapor e Mecanização</div>
+                </div>
+              </div>
+            </div>
+            <div class="era-blocks">
+              <div class="era-block-row">
+                <div class="era-block-label">O que mudou</div>
+                <div class="era-block-text">Máquinas a vapor substituíram trabalho manual braçal.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem liderou</div>
+                <div class="era-block-text">Donos de fábricas que adotaram mecanização cedo construíram <strong>impérios têxteis e siderúrgicos</strong> que suas famílias comandam até hoje.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem ficou para trás</div>
+                <div class="era-block-text">Artesãos e pequenas oficinas que resistiram à mecanização <strong>faliram ou foram absorvidos</strong>.</div>
+              </div>
+            </div>
+            <div class="era-footer">
+              <span class="era-consolidation">Tempo de consolidação · ~80 anos</span>
+            </div>
+          </div>
+
+          <!-- ERA 2 — Eletricidade (raio) -->
+          <div class="era era-2 fade-up">
+            <div class="era-header">
+              <div class="era-header-left">
+                <div class="era-icon" aria-hidden="true">
+                  <!-- Bolt / lightning -->
+                  <svg viewBox="0 0 24 24">
+                    <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>
+                  </svg>
+                </div>
+                <div class="era-meta">
+                  <div class="era-num">2ª Revolução Industrial</div>
+                  <div class="era-date">1870 — 1914</div>
+                  <div class="era-title">Eletricidade e Produção em Massa</div>
+                </div>
+              </div>
+            </div>
+            <div class="era-blocks">
+              <div class="era-block-row">
+                <div class="era-block-label">O que mudou</div>
+                <div class="era-block-text">Eletricidade permitiu produção em massa, linhas de montagem e distribuição em escala.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem liderou</div>
+                <div class="era-block-text"><strong>Ford, Carnegie, Rockefeller.</strong> Empresários que entenderam produção em massa dominaram setores inteiros.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem ficou para trás</div>
+                <div class="era-block-text">Empresas que continuaram com produção artesanal <strong>não conseguiram competir em preço ou escala</strong>.</div>
+              </div>
+            </div>
+            <div class="era-footer">
+              <span class="era-consolidation">Tempo de consolidação · ~44 anos</span>
+            </div>
+          </div>
+
+          <!-- ERA 3 — Computadores (chip) -->
+          <div class="era era-3 fade-up">
+            <div class="era-header">
+              <div class="era-header-left">
+                <div class="era-icon" aria-hidden="true">
+                  <!-- CPU / chip -->
+                  <svg viewBox="0 0 24 24">
+                    <rect x="6" y="6" width="12" height="12" rx="1.5"/>
+                    <rect x="9" y="9" width="6" height="6" rx="0.5"/>
+                    <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>
+                  </svg>
+                </div>
+                <div class="era-meta">
+                  <div class="era-num">3ª Revolução Industrial</div>
+                  <div class="era-date">1969 — 2000</div>
+                  <div class="era-title">Computadores e Internet</div>
+                </div>
+              </div>
+            </div>
+            <div class="era-blocks">
+              <div class="era-block-row">
+                <div class="era-block-label">O que mudou</div>
+                <div class="era-block-text">Digitalização de processos, internet, comunicação instantânea global.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem liderou</div>
+                <div class="era-block-text"><strong>Microsoft, Apple, Amazon, Google.</strong> Empresas que adotaram tecnologia digital cedo viraram gigantes globais.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem ficou para trás</div>
+                <div class="era-block-text"><strong>Blockbuster, Kodak, Borders.</strong> Empresas que demoraram para digitalizar desapareceram ou foram absorvidas.</div>
+              </div>
+            </div>
+            <div class="era-footer">
+              <span class="era-consolidation">Tempo de consolidação · ~31 anos</span>
+            </div>
+          </div>
+
+          <!-- ERA 4 — IA (rede neural / cérebro) -->
+          <div class="era era-4 fade-up">
+            <div class="era-header">
+              <div class="era-header-left">
+                <div class="era-icon" aria-hidden="true">
+                  <!-- Neural/brain network -->
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <circle cx="5" cy="6" r="1.5"/>
+                    <circle cx="19" cy="6" r="1.5"/>
+                    <circle cx="5" cy="18" r="1.5"/>
+                    <circle cx="19" cy="18" r="1.5"/>
+                    <path d="M6.2 7l3.5 3.5M17.8 7l-3.5 3.5M6.2 17l3.5-3.5M17.8 17l-3.5-3.5"/>
+                  </svg>
+                </div>
+                <div class="era-meta">
+                  <div class="era-num">4ª Revolução Industrial</div>
+                  <div class="era-date">2020 — Agora</div>
+                  <div class="era-title">Inteligência Artificial e Automação Inteligente</div>
+                </div>
+              </div>
+              <div class="era-now-badge">
+                <span class="dot"></span>
+                Acontecendo agora
+              </div>
+            </div>
+            <div class="era-blocks">
+              <div class="era-block-row">
+                <div class="era-block-label">O que está mudando</div>
+                <div class="era-block-text">IA não apenas executa tarefas — ela <strong>aprende, se adapta e toma decisões</strong>.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem está liderando</div>
+                <div class="era-block-text">Empresas que estão implementando IA com método <strong>agora</strong>. Não só gigantes tech — qualquer empresa de R$ 1M+ pode estar nesse grupo.</div>
+              </div>
+              <div class="era-block-row">
+                <div class="era-block-label">Quem vai ficar para trás</div>
+                <div class="era-block-text">Empresas que esperarem "IA ficar mais madura" ou que testarem ferramentas <strong>sem método</strong> por anos.</div>
+              </div>
+            </div>
+            <div class="era-footer">
+              <span class="era-consolidation">Consolidação estimada · ~10-15 anos · Muito mais rápido</span>
+            </div>
+          </div>
+
+        </div>
+
+        <section class="diff-section">
+          <h2 class="diff-title">Por que esta revolução <em>é diferente</em></h2>
+          <div class="diff-grid">
+            <div class="diff-card fade-up">
+              <div class="diff-card-num">01</div>
+              <div class="diff-card-title">Velocidade exponencial</div>
+              <p class="diff-card-text">As 3 revoluções anteriores levaram décadas. A 4ª está acontecendo em anos.</p>
+            </div>
+            <div class="diff-card fade-up">
+              <div class="diff-card-num">02</div>
+              <div class="diff-card-title">Barreira de entrada baixa</div>
+              <p class="diff-card-text">Antes você precisava de capital massivo. Hoje, uma empresa de R$ 1M/ano implementa IA com ROI em 90 dias.</p>
+            </div>
+            <div class="diff-card fade-up">
+              <div class="diff-card-num">03</div>
+              <div class="diff-card-title">Janela de oportunidade curta</div>
+              <p class="diff-card-text">Antes você tinha décadas para entrar na onda. Hoje, 2-3 anos antes do gap ficar irrecuperável.</p>
+            </div>
+            <div class="diff-card fade-up">
+              <div class="diff-card-num">04</div>
+              <div class="diff-card-title">Não é sobre tamanho</div>
+              <p class="diff-card-text">É sobre velocidade de implementação. Pequenas empresas ágeis estão vencendo grandes corporações lentas.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="bridge fade-up">
+          <p>"No evento, vou mostrar como aproveitar esse momento único antes que a janela feche."</p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>03</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 3 — FASES
+         ============================================================ -->
+    <section class="page" id="p3" data-title="Fases">
+      <div class="page-inner">
+
+        <span class="section-label">Framework Conceitual</span>
+        <h1 class="page-title">As 3 Fases de IA<br><em>do assistente ao produto</em></h1>
+        <div class="page-divider"></div>
+
+        <p class="page-lead">
+          Antes de implementar IA no seu negócio, você precisa entender que <strong>nem toda IA é igual</strong>. Existem 3 fases, e onde você começa define quanto tempo vai levar para ter ROI.
+        </p>
+
+        <!-- STAIRCASE DIAGRAM (novo) -->
+        <div class="staircase-wrap fade-up" aria-hidden="true">
+          <div class="staircase-title">A escada das 3 fases</div>
+          <div class="staircase">
+            <div class="start-here">
+              <span class="start-here-label">Comece aqui</span>
+              <svg viewBox="0 0 24 24"><path d="M12 4v16M6 14l6 6 6-6"/></svg>
+            </div>
+            <div class="step step-1">
+              <div class="step-num">01</div>
+              <div class="step-name">Assistentes</div>
+              <div class="step-hint">Presente<br>desde o dia 1</div>
+            </div>
+            <div class="step step-2">
+              <div class="step-num">02</div>
+              <div class="step-name">Agentes</div>
+              <div class="step-hint">ROI alto<br>40–70%</div>
+            </div>
+            <div class="step step-3">
+              <div class="step-num">03</div>
+              <div class="step-name">Produto</div>
+              <div class="step-hint">ROI altíssimo<br>quando pronto</div>
+            </div>
+          </div>
+          <div class="staircase-base"></div>
+          <p class="staircase-caption">A sequência é obrigatória. Ninguém pula fase sem pagar o preço.</p>
+        </div>
+
+        <div class="phase phase-1 fade-up">
+          <div class="phase-header">
+            <div class="phase-num">01</div>
+            <div class="phase-meta">
+              <div class="phase-tag">Fase 01</div>
+              <h2 class="phase-title">Assistentes</h2>
+              <p class="phase-subtitle">Onde a maioria está hoje, usando de forma equivocada.</p>
+            </div>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">O que são</div>
+            <p class="phase-block-text">Ferramentas que respondem quando você pergunta. <strong>O humano conduz 100% do tempo.</strong></p>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Exemplos</div>
+            <p class="phase-block-text">ChatGPT, Claude, Gemini em uso básico. Copilots integrados como Notion AI, HubSpot AI, GitHub Copilot.</p>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Para que servem</div>
+            <ul class="phase-list">
+              <li>Redigir e revisar textos e e-mails</li>
+              <li>Resumir documentos e reuniões</li>
+              <li>Brainstorms e geração de ideias</li>
+              <li>Sugerir próximos passos e completar propostas</li>
+            </ul>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Limitações</div>
+            <ul class="phase-list">
+              <li>Para quando você para</li>
+              <li>Não integra seus sistemas</li>
+              <li>Não toma decisões</li>
+              <li>Escala o indivíduo, não a empresa</li>
+            </ul>
+          </div>
+          <div class="phase-roi">
+            <span class="phase-roi-label">ROI esperado</span>
+            <p class="phase-roi-text">Presente desde o primeiro dia, <strong>quando há intenção</strong>. Ganho individual de tempo e qualidade de entrega.</p>
+          </div>
+          <div class="phase-anchor">
+            <div class="phase-anchor-label">O ponto que a maioria ignora</div>
+            <p class="phase-anchor-text">
+              Bem aplicada, a Fase 1 já gera ROI real. O problema não está na fase, está em <strong>como a maioria usa</strong> — como curiosidade, não como ferramenta de trabalho. Sem processo, sem intenção, sem medir resultado. Com estratégia, é o primeiro degrau de uma operação AI-first. Sem estratégia, é só mais uma assinatura no cartão.
+            </p>
+          </div>
+        </div>
+
+        <div class="phase phase-2 fade-up">
+          <div class="phase-header">
+            <div class="phase-num">02</div>
+            <div class="phase-meta">
+              <div class="phase-tag">Fase 02</div>
+              <h2 class="phase-title">Agentes</h2>
+              <p class="phase-subtitle">Onde mora o ROI real para empresas.</p>
+            </div>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">O que são</div>
+            <p class="phase-block-text">IA que <strong>executa processos completos</strong> do início ao fim, com autonomia parcial.</p>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Exemplos</div>
+            <p class="phase-block-text">Agente de qualificação de leads, agente de follow-up automático, agente de análise de dados.</p>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Como funcionam</div>
+            <p class="phase-block-text">Você define o objetivo, a IA executa todas as etapas e reporta o resultado.</p>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Para que servem</div>
+            <ul class="phase-list">
+              <li>Qualificar 100% dos leads automaticamente</li>
+              <li>Fazer follow-up com clientes sem você lembrar</li>
+              <li>Enviar análises de dashboard toda segunda às 8h</li>
+              <li>Criar e enviar propostas personalizadas</li>
+            </ul>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Vantagens</div>
+            <ul class="phase-list">
+              <li>Trabalham 24/7 sem supervisão constante</li>
+              <li>Integram múltiplos sistemas: CRM, e-mail, WhatsApp, docs</li>
+              <li>Tomam decisões dentro das regras que você define</li>
+              <li>Escalam receita sem escalar headcount</li>
+            </ul>
+          </div>
+          <div class="phase-roi">
+            <span class="phase-roi-label">ROI esperado</span>
+            <p class="phase-roi-text"><strong>Alto.</strong> Redução de 40 a 70% em processos manuais.</p>
+          </div>
+          <div class="phase-anchor">
+            <div class="phase-anchor-label">O erro fatal</div>
+            <p class="phase-anchor-text">
+              Tentar chegar aqui sem ter passado pela Fase 1. <strong>Quem pula fase, paga.</strong> A Matriz R×C×I (Repetição × Complexidade × Impacto) define o que sobe para agente e em que ordem.
+            </p>
+          </div>
+        </div>
+
+        <div class="phase phase-3 fade-up">
+          <div class="phase-header">
+            <div class="phase-num">03</div>
+            <div class="phase-meta">
+              <div class="phase-tag">Fase 03</div>
+              <h2 class="phase-title">Produto</h2>
+              <p class="phase-subtitle">Onde a inteligência vira ativo proprietário do negócio.</p>
+            </div>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">O que são</div>
+            <p class="phase-block-text">IA que deixa de ser processo isolado e <strong>vira infraestrutura</strong>. Um dashboard interno que toda a operação acessa, uma plataforma de decisão ou uma ferramenta empacotada para clientes. O que define a Fase 3 não é para quem, é maturidade: a inteligência ganhou interface, estrutura de entrega e passou a ser acessada de forma organizada.</p>
+          </div>
+          <div class="phase-block">
+            <div class="phase-block-label">Para que serve</div>
+            <ul class="phase-list">
+              <li>Criar barreira competitiva real</li>
+              <li>Transformar processo em infraestrutura do negócio</li>
+              <li>Construir plataformas internas que escalam sem depender de pessoas</li>
+              <li>Monetizar inteligência como serviço, quando faz sentido</li>
+            </ul>
+          </div>
+          <div class="phase-roi">
+            <span class="phase-roi-label">ROI esperado</span>
+            <p class="phase-roi-text"><strong>Altíssimo</strong>, quando o momento é certo.</p>
+          </div>
+          <div class="phase-anchor">
+            <div class="phase-anchor-label">O que precisa ser dito</div>
+            <p class="phase-anchor-text">
+              A Fase 3 <strong>não é para todo mundo</strong>, e tudo bem. Ela exige as Fases 1 e 2 consolidadas. Empresas que chegam aqui sem as bases constroem em areia. A sequência não é sugestão, é arquitetura.
+            </p>
+          </div>
+        </div>
+
+        <section class="start-section">
+          <h2 class="start-title">Por onde sua empresa <em>deve começar</em></h2>
+          <div class="start-grid">
+            <div class="start-card s1 fade-up">
+              <div class="start-card-tier">Faixa 01</div>
+              <div class="start-card-faixa">R$ 500k — R$ 3M/ano</div>
+              <div class="start-card-rota">Rota recomendada</div>
+              <p class="start-card-recommendation">Comece na <strong>Fase 1 com intenção e processo</strong>. Em 30 a 60 dias você tem clareza do que sobe para agente. A Fase 2 entra com evidência, não com achismo.</p>
+            </div>
+            <div class="start-card s2 fade-up">
+              <div class="start-card-tier">Faixa 02</div>
+              <div class="start-card-faixa">R$ 3M — R$ 10M+/ano</div>
+              <div class="start-card-rota">Rota recomendada</div>
+              <p class="start-card-recommendation">Vá direto para a <strong>Fase 2</strong>. O custo de implementação se paga rápido nessa escala. Com ela rodando, você enxerga quais processos têm maturidade para virar produto.</p>
+            </div>
+            <div class="start-card s3 fade-up">
+              <div class="start-card-tier">Faixa 03</div>
+              <div class="start-card-faixa">Já opera com agentes</div>
+              <div class="start-card-rota">Rota recomendada</div>
+              <p class="start-card-recommendation">O que você construiu já tem interface e entrega empacotada? Se sim, a <strong>Fase 3 não é ambição, é próximo passo</strong>. Pode ser infraestrutura interna ou produto de mercado.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="rule-final fade-up">
+          <div class="rule-final-label">A regra que não tem exceção</div>
+          <p class="rule-final-text">
+            A sequência é obrigatória. <strong>Ninguém pula fase sem pagar o preço.</strong> Mas cada fase, bem executada, já transforma o negócio e prepara o terreno para a próxima.
+          </p>
+        </div>
+
+        <div class="bridge fade-up">
+          <p>"No evento, vou mostrar exatamente por onde entrar no seu negócio específico e qual o caminho mais curto até o ROI real."</p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>04</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 4 — MÉTODO
+         ============================================================ -->
+    <section class="page" id="p4" data-title="Método">
+      <div class="page-inner">
+
+        <span class="section-label">Prévia exclusiva</span>
+        <h1 class="page-title">O Método e os Sistemas<br><em>prévia controlada</em></h1>
+        <div class="page-divider"></div>
+
+        <p class="page-lead">
+          Existe um método estruturado de <strong>3 etapas</strong> para implementar IA com ROI em 90 dias. <strong>Não vou detalhar ele aqui.</strong>
+        </p>
+
+        <div class="honest-block fade-up">
+          <p class="honest-block-title">Porque se eu entregar o método completo agora, você vai:</p>
+          <ul class="honest-list">
+            <li><span class="x">✕</span> <span>Achar que "parece simples"</span></li>
+            <li><span class="x">✕</span> <span>Tentar implementar sozinho sem os detalhes críticos</span></li>
+            <li><span class="x">✕</span> <span>Gastar 6 meses testando sem resultado</span></li>
+            <li><span class="x">✕</span> <span>Desistir achando que "IA não funciona para meu negócio"</span></li>
+          </ul>
+          <p class="honest-block-aside">Eu já vi isso acontecer inúmeras vezes.</p>
+        </div>
+
+        <div class="method-intro">O que eu posso te dizer agora</div>
+        <p class="method-intro-text">O método tem <strong>3 etapas claras</strong>. A profundidade fica para o evento ao vivo.</p>
+
+        <div class="locked-list">
+          <div class="locked-card fade-up">
+            <div class="locked-card-header">
+              <span class="locked-card-tag">Etapa 01 — Mapeamento</span>
+            </div>
+            <h3 class="locked-card-title">Você mapeia ONDE aplicar IA primeiro</h3>
+            <p class="locked-card-desc">Não "em tudo". A ordem certa depende de variáveis específicas do seu negócio que vou mostrar como identificar.</p>
+            <div class="locked-card-footer">
+              <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Detalhes completos no evento ao vivo
+            </div>
+          </div>
+
+          <div class="locked-card fade-up">
+            <div class="locked-card-header">
+              <span class="locked-card-tag">Etapa 02 — Construção</span>
+            </div>
+            <h3 class="locked-card-title">Você constrói 1 sistema completo</h3>
+            <p class="locked-card-desc">Não 10 ferramentas soltas. A diferença entre um sistema integrado e ferramentas isoladas é o que separa quem gera ROI de quem fica testando por anos.</p>
+            <div class="locked-card-footer">
+              <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Detalhes completos no evento ao vivo
+            </div>
+          </div>
+
+          <div class="locked-card fade-up">
+            <div class="locked-card-header">
+              <span class="locked-card-tag">Etapa 03 — Escala</span>
+            </div>
+            <h3 class="locked-card-title">Você escala para outros processos</h3>
+            <p class="locked-card-desc">Com método, não no improviso. Existe uma sequência de expansão que reduz pela metade o tempo de implementação dos sistemas seguintes.</p>
+            <div class="locked-card-footer">
+              <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              Detalhes completos no evento ao vivo
+            </div>
+          </div>
+        </div>
+
+        <div class="why-block fade-up">
+          <div class="why-label">Por que não detalho aqui</div>
+          <p class="why-text">Porque cada etapa tem:</p>
+          <ul class="why-list">
+            <li>Decisões críticas que dependem do <strong>seu</strong> negócio específico</li>
+            <li>Erros comuns que <strong>87% das empresas</strong> cometem</li>
+            <li>Atalhos que economizam <strong>3-6 meses</strong> de tentativa e erro</li>
+          </ul>
+          <p class="why-text" style="margin-top:18px;">E isso eu vou ensinar <strong>ao vivo no evento</strong>, respondendo às suas perguntas específicas.</p>
+        </div>
+
+        <section class="systems-section">
+          <h2 class="systems-title">Os 4 Sistemas de Maior <em>ROI</em></h2>
+          <p class="systems-sub">Baseado em <strong>150+ empresas</strong>, descobri que 4 sistemas geram ROI mais rápido:</p>
+
+          <div class="systems-list">
+            <div class="system-row fade-up">
+              <span class="system-num">01</span>
+              <span class="system-name">Qualificação e Atendimento de Leads</span>
+            </div>
+            <div class="system-row fade-up">
+              <span class="system-num">02</span>
+              <span class="system-name">Produção de Conteúdo e Documentação</span>
+            </div>
+            <div class="system-row fade-up">
+              <span class="system-num">03</span>
+              <span class="system-name">Análise e Relatórios Internos</span>
+            </div>
+            <div class="system-row fade-up">
+              <span class="system-num">04</span>
+              <span class="system-name">Comunicação e Follow-up com Clientes</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="depende-block fade-up">
+          <p class="depende-question">Qual você deveria implementar primeiro?</p>
+          <p class="depende-answer">Depende.</p>
+          <div class="depende-vars-label">Depende do seu</div>
+          <div class="depende-vars">
+            <span class="depende-var">Faturamento atual</span>
+            <span class="depende-var">Tamanho da equipe</span>
+            <span class="depende-var">Principal gargalo operacional</span>
+            <span class="depende-var">Setor de atuação</span>
+            <span class="depende-var">Nível de maturidade digital</span>
+          </div>
+        </div>
+
+        <div class="order-note fade-up">
+          <p>"Você não deve implementar todos ao mesmo tempo. <strong>Existe uma ordem certa.</strong>"</p>
+        </div>
+
+        <p class="nivelar-note">
+          Este material é para <strong>nivelar você</strong>, não para substituir o evento. No evento, vou usar a Calculadora de ROI ao vivo para mostrar qual sistema tem o maior retorno potencial para o <strong>seu</strong> negócio específico.
+        </p>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>05</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 5 — CALCULADORA
+         ============================================================ -->
+    <section class="page" id="p5" data-title="Calculadora">
+      <div class="page-inner">
+
+        <span class="section-label">Preparação ativa</span>
+        <h1 class="page-title">Calculadora de ROI<br><em>quanto você está perdendo?</em></h1>
+        <div class="page-divider"></div>
+
+        <p class="page-lead">
+          Durante o evento, vamos usar a Calculadora de ROI <strong>ao vivo</strong> para descobrir quanto a sua empresa está deixando na mesa por mês sem IA implementada.
+        </p>
+
+        <div class="prep-callout">
+          <div class="prep-callout-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fc8132" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <p class="prep-callout-text">Para aproveitar ao máximo, <strong>prepare agora</strong> os 3 dados abaixo. Eles ficam salvos no seu navegador e você pode voltar a qualquer momento.</p>
+        </div>
+
+        <div class="data-card fade-up">
+          <div class="data-card-tag">Dado 01 — Faturamento</div>
+          <h3 class="data-card-question">Quanto sua empresa fatura por mês?</h3>
+          <p class="data-card-example">Exemplo: R$ 250.000/mês</p>
+          <label class="data-input-label" for="dado1">Sua resposta</label>
+          <input type="text" id="dado1" class="data-input" placeholder="R$ 0,00 (aproximado)" autocomplete="off">
+          <div class="data-meta">
+            <div class="data-meta-block green">
+              <div class="data-meta-label">Por que preciso disso</div>
+              <p class="data-meta-text">O custo de não ter IA é proporcional ao tamanho do negócio. Empresas maiores perdem mais por mês.</p>
+            </div>
+            <div class="data-meta-block">
+              <div class="data-meta-label">Onde encontrar</div>
+              <p class="data-meta-text">DRE dos últimos 3 meses (média) ou faturamento bruto declarado.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-card fade-up">
+          <div class="data-card-tag">Dado 02 — Equipe</div>
+          <h3 class="data-card-question">Quantas pessoas trabalham na sua empresa?</h3>
+          <p class="data-card-example">Exemplo: 12 pessoas (incluindo você, sócios, CLT, PJs)</p>
+          <label class="data-input-label" for="dado2">Sua resposta</label>
+          <input type="number" id="dado2" class="data-input" placeholder="Número de pessoas" autocomplete="off">
+          <div class="data-meta">
+            <div class="data-meta-block green">
+              <div class="data-meta-label">Por que preciso disso</div>
+              <p class="data-meta-text">O ROI de IA vem principalmente da liberação de tempo da equipe para tarefas estratégicas.</p>
+            </div>
+            <div class="data-meta-block">
+              <div class="data-meta-label">Como contar</div>
+              <p class="data-meta-text">Sócios + funcionários CLT + freelancers/PJs recorrentes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-card fade-up">
+          <div class="data-card-tag">Dado 03 — Gargalo</div>
+          <h3 class="data-card-question">Qual processo consome mais tempo da equipe por semana?</h3>
+          <p class="data-card-example">Pergunte para 2-3 pessoas: "Qual tarefa repetitiva consome mais tempo da sua semana?"</p>
+          <label class="data-input-label">Selecione o processo principal</label>
+          <div class="radio-list">
+            <label class="radio-opt" data-value="Atendimento e qualificação de leads">
+              <input type="radio" name="dado3" value="Atendimento e qualificação de leads">
+              <span class="custom-radio"></span>
+              <span class="radio-label">Atendimento e qualificação de leads</span>
+            </label>
+            <label class="radio-opt" data-value="Criação de propostas e apresentações">
+              <input type="radio" name="dado3" value="Criação de propostas e apresentações">
+              <span class="custom-radio"></span>
+              <span class="radio-label">Criação de propostas e apresentações</span>
+            </label>
+            <label class="radio-opt" data-value="Relatórios e análises">
+              <input type="radio" name="dado3" value="Relatórios e análises">
+              <span class="custom-radio"></span>
+              <span class="radio-label">Relatórios e análises</span>
+            </label>
+            <label class="radio-opt" data-value="Follow-up com clientes">
+              <input type="radio" name="dado3" value="Follow-up com clientes">
+              <span class="custom-radio"></span>
+              <span class="radio-label">Follow-up com clientes</span>
+            </label>
+            <label class="radio-opt" data-value="Processos administrativos/financeiros">
+              <input type="radio" name="dado3" value="Processos administrativos/financeiros">
+              <span class="custom-radio"></span>
+              <span class="radio-label">Processos administrativos/financeiros</span>
+            </label>
+            <label class="radio-opt" data-value="Outro">
+              <input type="radio" name="dado3" value="Outro">
+              <span class="custom-radio"></span>
+              <span class="radio-label">Outro processo (especificar abaixo)</span>
+            </label>
+          </div>
+          <div class="other-input-wrap" id="other-wrap">
+            <input type="text" id="dado3-other" class="data-input" placeholder="Descreva o processo" autocomplete="off">
+          </div>
+          <div class="data-meta">
+            <div class="data-meta-block green">
+              <div class="data-meta-label">Por que preciso disso</div>
+              <p class="data-meta-text">Este é o processo que você deveria automatizar primeiro — maior ROI imediato.</p>
+            </div>
+            <div class="data-meta-block">
+              <div class="data-meta-label">Tempo estimado para responder</div>
+              <p class="data-meta-text">2 minutos. Vale a pena perguntar para 2-3 pessoas da equipe.</p>
+            </div>
+          </div>
+        </div>
+
+        <section class="calc-section">
+          <h2 class="calc-title">O que vou calcular <em>ao vivo</em></h2>
+          <div class="calc-grid">
+            <div class="calc-item fade-up">
+              <div class="calc-item-num">01</div>
+              <p class="calc-item-text">Custo mensal do processo manual atual (em R$ e horas)</p>
+            </div>
+            <div class="calc-item fade-up">
+              <div class="calc-item-num">02</div>
+              <p class="calc-item-text">ROI potencial com IA — economia mensal esperada</p>
+            </div>
+            <div class="calc-item fade-up">
+              <div class="calc-item-num">03</div>
+              <p class="calc-item-text">Payback period — quantos meses o investimento se paga</p>
+            </div>
+            <div class="calc-item fade-up">
+              <div class="calc-item-num">04</div>
+              <p class="calc-item-text">Qual sistema implementar primeiro no seu negócio</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="save-row fade-up">
+          <p class="save-info">Suas respostas ficam <strong>salvas no seu navegador</strong>. Tenha-as em mãos no evento ao vivo.</p>
+          <button class="btn-save" id="btn-save">→ Salvar minhas respostas</button>
+          <div class="save-status" id="save-status">Salvo. Vou usar isso ao vivo com você.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>06</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 6 — CHECKLIST
+         ============================================================ -->
+    <section class="page" id="p6" data-title="Checklist">
+      <div class="page-inner">
+
+        <span class="section-label">Diagnóstico</span>
+        <h1 class="page-title">Seu negócio está pronto?<br><em>16 perguntas, 4 blocos</em></h1>
+        <div class="page-divider"></div>
+
+        <p class="page-lead">
+          Marque <strong>SIM</strong> para cada afirmação que se aplica ao seu negócio. O resultado aparece automaticamente no final, em tempo real. <strong>Suas respostas ficam salvas no navegador.</strong>
+        </p>
+
+        <div class="check-block fade-up" data-block="1">
+          <div class="check-block-header">
+            <div class="check-block-meta">
+              <div class="check-block-num">Bloco 01</div>
+              <h2 class="check-block-title">Estrutura do Negócio</h2>
+            </div>
+            <div class="check-block-score" data-score="1">0 de 4</div>
+          </div>
+          <div class="check-list">
+            <label class="check-item" data-block="1">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Faturamento</span>
+                <span class="check-text-question">Minha empresa fatura pelo menos R$ 500k/ano</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="1">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Processos</span>
+                <span class="check-text-question">Temos processos operacionais mínimos documentados</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="1">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Equipe</span>
+                <span class="check-text-question">Temos pelo menos 3 pessoas na operação</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="1">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Dados</span>
+                <span class="check-text-question">Temos dados de clientes e operação (mesmo que desorganizados)</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="check-block fade-up" data-block="2">
+          <div class="check-block-header">
+            <div class="check-block-meta">
+              <div class="check-block-num">Bloco 02</div>
+              <h2 class="check-block-title">Problemas que IA Resolve</h2>
+            </div>
+            <div class="check-block-score" data-score="2">0 de 4</div>
+          </div>
+          <div class="check-list">
+            <label class="check-item" data-block="2">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Velocidade</span>
+                <span class="check-text-question">Perdemos oportunidades por demora no atendimento ou resposta</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="2">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Escala</span>
+                <span class="check-text-question">Queremos crescer mas contratar mais pessoas é caro ou lento</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="2">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Repetição</span>
+                <span class="check-text-question">A equipe gasta muito tempo em tarefas repetitivas</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="2">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Qualidade</span>
+                <span class="check-text-question">A produção de conteúdo e relatórios é inconsistente</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="check-block fade-up" data-block="3">
+          <div class="check-block-header">
+            <div class="check-block-meta">
+              <div class="check-block-num">Bloco 03</div>
+              <h2 class="check-block-title">Mentalidade e Cultura</h2>
+            </div>
+            <div class="check-block-score" data-score="3">0 de 4</div>
+          </div>
+          <div class="check-list">
+            <label class="check-item" data-block="3">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Abertura</span>
+                <span class="check-text-question">A equipe está aberta a testar novas tecnologias</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="3">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Liderança</span>
+                <span class="check-text-question">Eu (decisor) estou disposto a investir tempo aprendendo</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="3">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Método</span>
+                <span class="check-text-question">Prefiro implementar com método do que testar aleatoriamente</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="3">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">ROI</span>
+                <span class="check-text-question">Preciso de resultado mensurável, não só "estar usando IA"</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="check-block fade-up" data-block="4">
+          <div class="check-block-header">
+            <div class="check-block-meta">
+              <div class="check-block-num">Bloco 04</div>
+              <h2 class="check-block-title">Recursos Disponíveis</h2>
+            </div>
+            <div class="check-block-score" data-score="4">0 de 4</div>
+          </div>
+          <div class="check-list">
+            <label class="check-item" data-block="4">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Tempo</span>
+                <span class="check-text-question">Posso dedicar 3-5h/semana à implementação nos próximos 90 dias</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="4">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Budget</span>
+                <span class="check-text-question">Tenho orçamento para ferramentas (R$ 500-2k/mês inicial)</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="4">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Equipe</span>
+                <span class="check-text-question">Tenho alguém na equipe que pode ser responsável por aprender e aplicar</span>
+              </span>
+            </label>
+            <label class="check-item" data-block="4">
+              <input type="checkbox">
+              <span class="custom-check"></span>
+              <span class="check-text">
+                <span class="check-text-label">Suporte</span>
+                <span class="check-text-question">Estou disposto a buscar ajuda externa se necessário</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="result-block fade-up tier-fundamentar" id="result-block">
+          <div class="result-label">Seu Score Atual</div>
+          <div class="result-score">
+            <span id="result-score-current">0</span><span class="result-score-total"> / 16</span>
+          </div>
+          <div class="result-tier-name" id="result-tier-name">Estruture o negócio primeiro</div>
+          <p class="result-tier-desc" id="result-tier-desc">
+            Foque em consolidar fundamentos. <strong>IA vem depois</strong>, quando há o que automatizar.
+          </p>
+          <div class="range-guide">
+            <div class="range-tile r1" data-tier="fundamentar">
+              <div class="range-tile-num">0 — 3</div>
+              <div class="range-tile-name">Fundamentar</div>
+            </div>
+            <div class="range-tile r2" data-tier="estrutura">
+              <div class="range-tile-num">4 — 7</div>
+              <div class="range-tile-name">Estruturar</div>
+            </div>
+            <div class="range-tile r3" data-tier="quase">
+              <div class="range-tile-num">8 — 11</div>
+              <div class="range-tile-name">Quase Lá</div>
+            </div>
+            <div class="range-tile r4" data-tier="pronto">
+              <div class="range-tile-num">12 — 16</div>
+              <div class="range-tile-name">Pronto</div>
+            </div>
+          </div>
+          <div class="reset-row">
+            <button class="btn-reset" id="btn-reset">Limpar respostas</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>07</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 7 — Q&A
+         ============================================================ -->
+    <section class="page" id="p7" data-title="Q&amp;A">
+      <div class="page-inner">
+
+        <span class="section-label">Aproveitamento máximo</span>
+        <h1 class="page-title">5 Perguntas para o Q&amp;A<br><em>chegue preparado</em></h1>
+        <div class="page-divider"></div>
+
+        <p class="page-lead">
+          No final do evento vou abrir Q&amp;A ao vivo para responder dúvidas específicas. <strong>Quanto mais contexto você dá, melhor a resposta.</strong> Prepare suas perguntas agora.
+        </p>
+
+        <section class="compare-section">
+          <h2 class="compare-title">Como fazer <em>boas perguntas</em></h2>
+          <div class="compare-grid">
+            <div class="compare-card bad fade-up">
+              <div class="compare-card-header">
+                <span class="compare-mark">✕</span>
+                <span class="compare-label">Genéricas demais</span>
+              </div>
+              <ul class="compare-list">
+                <li>"IA funciona para o meu negócio?"</li>
+                <li>"Qual é a melhor ferramenta de IA?"</li>
+                <li>"Quanto custa implementar IA?"</li>
+              </ul>
+            </div>
+            <div class="compare-card good fade-up">
+              <div class="compare-card-header">
+                <span class="compare-mark">✓</span>
+                <span class="compare-label">Específicas e aplicáveis</span>
+              </div>
+              <ul class="compare-list">
+                <li>"Qual dos 4 sistemas implementar primeiro num negócio de [SETOR] que fatura [X] e tem [Y] pessoas?"</li>
+                <li>"Como integro IA com [FERRAMENTA] que a gente já usa?"</li>
+                <li>"Meu maior gargalo é [PROCESSO]. Por onde começo a automatizar?"</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="template-section">
+          <h2 class="template-title">Estrutura de pergunta <em>poderosa</em></h2>
+          <p class="template-sub">Use este template como ponto de partida — substitua as variáveis pelos seus dados reais.</p>
+          <div class="template-block fade-up">
+            "Henry, meu negócio é <span class="var">[SETOR/TIPO]</span>, fatura <span class="var">[VALOR]</span> com <span class="var">[X]</span> pessoas.<br><br>
+            Nosso maior gargalo é <span class="var">[PROCESSO ESPECÍFICO]</span>.<br><br>
+            <span class="var q">[SUA PERGUNTA ESPECÍFICA AQUI]</span>?"
+          </div>
+          <p class="template-aside">Quanto mais contexto você der, melhor a resposta que eu vou conseguir dar.</p>
+        </section>
+
+        <section class="questions-section">
+          <h2 class="questions-title">5 perguntas sugeridas <em>(adapte para seu negócio)</em></h2>
+          <p class="questions-sub">Escolha as que mais fazem sentido para você.</p>
+
+          <div class="question-item fade-up">
+            <span class="question-num">01</span>
+            <div class="question-content">
+              <div class="question-cat">Priorização</div>
+              <p class="question-text">"Baseado no que apresentou, qual dos 4 sistemas você recomenda implementar <strong>primeiro</strong> para um negócio de [SEU SETOR] que tem [SEU GARGALO]?"</p>
+            </div>
+          </div>
+
+          <div class="question-item fade-up">
+            <span class="question-num">02</span>
+            <div class="question-content">
+              <div class="question-cat">Ferramentas</div>
+              <p class="question-text">"Para implementar um agente de [PROCESSO ESPECÍFICO], qual <strong>stack de ferramentas</strong> você recomenda? Preciso integrar com [FERRAMENTA QUE JÁ USA]."</p>
+            </div>
+          </div>
+
+          <div class="question-item fade-up">
+            <span class="question-num">03</span>
+            <div class="question-content">
+              <div class="question-cat">Equipe</div>
+              <p class="question-text">"Minha equipe tem [X] pessoas e [NÍVEL DE MATURIDADE DIGITAL]. Como faço o <strong>onboarding de IA sem gerar resistência</strong>?"</p>
+            </div>
+          </div>
+
+          <div class="question-item fade-up">
+            <span class="question-num">04</span>
+            <div class="question-content">
+              <div class="question-cat">ROI</div>
+              <p class="question-text">"Como calculo o <strong>ROI real</strong> de IA no processo de [PROCESSO]? Quais métricas rastrear nos primeiros 90 dias?"</p>
+            </div>
+          </div>
+
+          <div class="question-item fade-up">
+            <span class="question-num">05</span>
+            <div class="question-content">
+              <div class="question-cat">Implementação</div>
+              <p class="question-text">"Se eu pudesse dedicar só 3 horas por semana, qual seria o <strong>caminho mais rápido</strong> para implementar o primeiro agente com resultado?"</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="personal-section">
+          <h2 class="personal-title">Suas <em>3 perguntas</em></h2>
+          <p class="personal-sub">Anote aqui as <strong>3 perguntas</strong> que você quer fazer ao vivo. Salva automaticamente no navegador.</p>
+
+          <div class="personal-card">
+            <label class="personal-label" for="pq1">Pergunta 01</label>
+            <textarea id="pq1" class="personal-textarea" placeholder="Use a estrutura: contexto + gargalo + pergunta específica..."></textarea>
+          </div>
+          <div class="personal-card">
+            <label class="personal-label" for="pq2">Pergunta 02</label>
+            <textarea id="pq2" class="personal-textarea" placeholder="Use a estrutura: contexto + gargalo + pergunta específica..."></textarea>
+          </div>
+          <div class="personal-card">
+            <label class="personal-label" for="pq3">Pergunta 03</label>
+            <textarea id="pq3" class="personal-textarea" placeholder="Use a estrutura: contexto + gargalo + pergunta específica..."></textarea>
+          </div>
+
+          <div class="save-hint">
+            <span class="pulse-dot"></span>
+            <span>Salvando automaticamente · você pode voltar a qualquer momento</span>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <div class="page-break" aria-hidden="true">
+      <div class="page-break-line"></div>
+      <div class="page-break-mark"><span class="dot"></span>Página <strong>08</strong> / 08</div>
+      <div class="page-break-line"></div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 8 — PRÓXIMOS PASSOS
+         ============================================================ -->
+    <section class="page" id="p8" data-title="Próximos Passos">
+      <div class="page-inner">
+
+        <span class="section-label">Reta final</span>
+        <h1 class="page-title">Próximos passos<br><em>até o evento</em></h1>
+        <div class="page-divider"></div>
+
+        <div class="recap-block fade-up">
+          <div class="recap-label">O que você já entendeu</div>
+          <h2 class="recap-title">Você está nivelado sobre:</h2>
+          <ul class="recap-list">
+            <li>
+              <span class="icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>As 4 revoluções industriais e o momento único atual</span>
+            </li>
+            <li>
+              <span class="icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>As 3 fases de IA — assistentes, agentes e produto</span>
+            </li>
+            <li>
+              <span class="icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Que existe um método estruturado (você vai aprender ao vivo)</span>
+            </li>
+            <li>
+              <span class="icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#6aeb98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Que existem 4 sistemas de maior ROI (você vai descobrir qual priorizar)</span>
+            </li>
+          </ul>
+        </div>
+
+        <section class="actions-section">
+          <h2 class="actions-title">Até o evento, <em>faça isso</em></h2>
+          <p class="actions-sub">5 ações concretas para chegar preparado e aproveitar 100% do tempo ao vivo.</p>
+
+          <div class="action-card fade-up">
+            <span class="action-num">01</span>
+            <div class="action-content">
+              <div class="action-tag">Calculadora de ROI</div>
+              <h3 class="action-title-text">Separe os 3 dados para a Calculadora</h3>
+              <p class="action-desc">Faturamento mensal · Tamanho da equipe · Processo que mais consome tempo. <strong>Vamos usar ao vivo.</strong></p>
+              <a href="#p5" class="action-link">→ Ir para a Calculadora</a>
+            </div>
+          </div>
+
+          <div class="action-card fade-up">
+            <span class="action-num">02</span>
+            <div class="action-content">
+              <div class="action-tag">Diagnóstico</div>
+              <h3 class="action-title-text">Responda o Checklist de Prontidão</h3>
+              <p class="action-desc">Conta quantos SIMs você marca. <strong>Identifique onde você precisa estruturar mais</strong> antes de implementar.</p>
+              <a href="#p6" class="action-link">→ Ir para o Checklist</a>
+            </div>
+          </div>
+
+          <div class="action-card fade-up">
+            <span class="action-num">03</span>
+            <div class="action-content">
+              <div class="action-tag">Q&amp;A</div>
+              <h3 class="action-title-text">Prepare 2-3 perguntas específicas</h3>
+              <p class="action-desc">Use a estrutura template. <strong>Quanto mais contexto, melhor a resposta.</strong></p>
+              <a href="#p7" class="action-link">→ Ir para Perguntas</a>
+            </div>
+          </div>
+
+          <div class="action-card fade-up">
+            <span class="action-num">04</span>
+            <div class="action-content">
+              <div class="action-tag">Agenda</div>
+              <h3 class="action-title-text">Bloqueie 90 minutos na agenda</h3>
+              <p class="action-desc">Desligue notificações. Foque 100%. <strong>Não tem replay</strong> — ou você está ao vivo, ou perde.</p>
+            </div>
+          </div>
+
+          <div class="action-card fade-up">
+            <span class="action-num">05</span>
+            <div class="action-content">
+              <div class="action-tag">Comunidade</div>
+              <h3 class="action-title-text">Entre no grupo do WhatsApp</h3>
+              <p class="action-desc">Lá rola interação direta antes do evento, conteúdo exclusivo e bastidores.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="event-card fade-up">
+          <div class="event-eyebrow">
+            <span class="dot"></span>
+            Link de acesso ao evento
+          </div>
+          <div class="event-info">
+            <div class="event-info-item">
+              <div class="event-info-label">Quando</div>
+              <div class="event-info-value">[Data do evento]</div>
+            </div>
+            <div class="event-info-item">
+              <div class="event-info-label">Horário</div>
+              <div class="event-info-value">20h00</div>
+            </div>
+            <div class="event-info-item">
+              <div class="event-info-label">Duração</div>
+              <div class="event-info-value">90 min + Q&amp;A</div>
+            </div>
+          </div>
+          <div class="event-link-block">
+            <strong>→</strong> Seu link será enviado por <strong>e-mail e WhatsApp</strong> · 100% online · Sala abre 10min antes
+          </div>
+          <a href="#" class="btn-event"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Entrar no Grupo</a>
+        </div>
+
+        <section class="discover-section">
+          <h2 class="discover-title">O que você vai descobrir <em>ao vivo</em></h2>
+          <div class="discover-list">
+            <div class="discover-item fade-up">
+              <span>O <strong>Método ROI com IA completo</strong> — 3 etapas detalhadas</span>
+            </div>
+            <div class="discover-item fade-up">
+              <span>Qual dos <strong>4 sistemas priorizar</strong> baseado no seu negócio</span>
+            </div>
+            <div class="discover-item fade-up">
+              <span>Por que <strong>87% falham nos primeiros 6 meses</strong> — e como evitar</span>
+            </div>
+            <div class="discover-item fade-up">
+              <span>Calculadora ao vivo — <strong>quanto você está perdendo por mês</strong></span>
+            </div>
+            <div class="discover-item fade-up">
+              <span>Q&amp;A personalizado — <strong>suas dúvidas respondidas ao vivo</strong></span>
+            </div>
+          </div>
+        </section>
+
+        <div class="closing-block fade-up">
+          <p class="closing-text">
+            Este material te <strong>nivela</strong>.<br>
+            O evento te <strong>transforma</strong>.
+          </p>
+        </div>
+
+        <div class="signature fade-up">
+          <div class="signature-greeting">Nos vemos no evento 🎯</div>
+          <div class="signature-name">Henry Risutti</div>
+          <div class="signature-role">Fundador, ROI com IA</div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       DOC NAV (fixo no fundo, único)
+       ============================================================ -->
+  <nav class="doc-nav">
+    <div class="doc-nav-inner">
+      <button class="doc-nav-btn" id="btn-prev" type="button">← <span class="label">Anterior</span></button>
+      <div class="doc-nav-dots" id="nav-dots">
+        <button class="doc-nav-dot current" data-target="p1" title="Capa"></button>
+        <button class="doc-nav-dot" data-target="p2" title="Revoluções"></button>
+        <button class="doc-nav-dot" data-target="p3" title="Fases"></button>
+        <button class="doc-nav-dot" data-target="p4" title="Método"></button>
+        <button class="doc-nav-dot" data-target="p5" title="Calculadora"></button>
+        <button class="doc-nav-dot" data-target="p6" title="Checklist"></button>
+        <button class="doc-nav-dot" data-target="p7" title="Q&amp;A"></button>
+        <button class="doc-nav-dot" data-target="p8" title="Próximos Passos"></button>
+      </div>
+      <button class="doc-nav-btn next" id="btn-next" type="button"><span class="label">Próxima</span> →</button>
+    </div>
+  </nav>
+
+  <footer class="doc-footer">
+    <div class="doc-footer-links">
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="mailto:suporte@roicomia.com.br">suporte@roicomia.com.br</a>
+    </div>
+    <p class="doc-footer-copy">© 2026 ROI com IA. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    (function() {
+      'use strict';
+
+      /* ---------- PRINT: força todos elementos visíveis ---------- */
+      window.addEventListener('beforeprint', function() {
+        document.querySelectorAll('.fade-up').forEach(function(el) {
+          el.classList.add('visible');
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          el.style.visibility = 'visible';
+        });
+        document.querySelectorAll('.cover-eyebrow, .cover-title, .cover-subtitle, .cover-meta-block').forEach(function(el) {
+          el.style.color = '#fff';
+          el.style.webkitTextFillColor = '#fff';
+          el.style.opacity = '1';
+          el.style.visibility = 'visible';
+        });
+        var accent = document.querySelector('.cover-title .accent');
+        if (accent) {
+          accent.style.color = '#6aeb98';
+          accent.style.webkitTextFillColor = '#6aeb98';
+          accent.style.background = 'none';
+          accent.style.webkitBackgroundClip = 'initial';
+        }
+      });
+      window.addEventListener('afterprint', function() {
+        document.querySelectorAll('.fade-up').forEach(function(el) {
+          el.style.opacity = '';
+          el.style.transform = '';
+          el.style.visibility = '';
+        });
+        document.querySelectorAll('.cover-eyebrow, .cover-title, .cover-subtitle, .cover-meta-block').forEach(function(el) {
+          el.style.color = '';
+          el.style.webkitTextFillColor = '';
+          el.style.opacity = '';
+          el.style.visibility = '';
+        });
+        var accent = document.querySelector('.cover-title .accent');
+        if (accent) {
+          accent.style.color = '';
+          accent.style.webkitTextFillColor = '';
+          accent.style.background = '';
+          accent.style.webkitBackgroundClip = '';
+        }
+      });
+
+      /* ---------- FADE-UP (único IntersectionObserver) ---------- */
+      const fadeEls = document.querySelectorAll('.fade-up');
+      const fadeObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            fadeObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      fadeEls.forEach(function(el) { fadeObs.observe(el); });
+
+      /* ---------- SECTION TRACKING (header + dots) ---------- */
+      const sections = Array.from(document.querySelectorAll('main > section.page'));
+      const dots = Array.from(document.querySelectorAll('.doc-nav-dot'));
+      const progressEl = document.getElementById('doc-progress');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      let currentIdx = 0;
+
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+      function setCurrent(idx) {
+        if (idx < 0 || idx >= sections.length) return;
+        currentIdx = idx;
+        const section = sections[idx];
+        const title = section.getAttribute('data-title') || '';
+
+        // Header
+        progressEl.innerHTML = '<strong>' + pad(idx + 1) + '</strong> / 08 · ' + title;
+
+        // Dots
+        dots.forEach(function(d, i) {
+          d.classList.remove('current', 'done');
+          if (i < idx) d.classList.add('done');
+          else if (i === idx) d.classList.add('current');
+        });
+
+        // Prev/Next
+        if (idx === 0) btnPrev.classList.add('disabled');
+        else btnPrev.classList.remove('disabled');
+        if (idx === sections.length - 1) btnNext.classList.add('disabled');
+        else btnNext.classList.remove('disabled');
+      }
+
+      // Observer para detectar qual section está no topo
+      const sectionObs = new IntersectionObserver(function(entries) {
+        // Pega a que está mais perto do topo com maior intersecção
+        let best = null;
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+          }
+        });
+        if (best) {
+          const idx = sections.indexOf(best.target);
+          if (idx !== -1 && idx !== currentIdx) setCurrent(idx);
+        }
+      }, {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: [0, 0.1, 0.3, 0.5]
+      });
+      sections.forEach(function(s) { sectionObs.observe(s); });
+
+      // Inicial via hash
+      const initialHash = window.location.hash.replace('#', '');
+      if (initialHash) {
+        const initIdx = sections.findIndex(function(s) { return s.id === initialHash; });
+        if (initIdx !== -1) setCurrent(initIdx);
+      }
+
+      /* ---------- CLIQUES NAV ---------- */
+      dots.forEach(function(d, i) {
+        d.addEventListener('click', function() {
+          sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+      btnPrev.addEventListener('click', function() {
+        if (currentIdx > 0) sections[currentIdx - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      btnNext.addEventListener('click', function() {
+        if (currentIdx < sections.length - 1) sections[currentIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      /* ---------- DOWNLOAD PDF ---------- */
+      const btnDownload = document.getElementById('btn-download');
+      if (btnDownload) {
+        btnDownload.addEventListener('click', function() {
+          // Atualiza o título da janela para o nome do arquivo sugerido no PDF
+          const originalTitle = document.title;
+          document.title = 'Material de Preparacao - IA do Zero ao ROI';
+          window.print();
+          setTimeout(function() { document.title = originalTitle; }, 500);
+        });
+      }
+
+      /* ---------- KEYBOARD NAV ---------- */
+      document.addEventListener('keydown', function(e) {
+        if (e.target.matches('input, textarea')) return;
+        if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+          e.preventDefault();
+          if (currentIdx < sections.length - 1) sections[currentIdx + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          if (currentIdx > 0) sections[currentIdx - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      /* ---------- PAGE 5: CALCULADORA (localStorage) ---------- */
+      const radios = document.querySelectorAll('.radio-opt');
+      const otherWrap = document.getElementById('other-wrap');
+      const CALC_KEY = 'roicomia_calc_dados';
+
+      radios.forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          radios.forEach(function(r) { r.classList.remove('checked'); });
+          opt.classList.add('checked');
+          opt.querySelector('input').checked = true;
+          if (opt.dataset.value === 'Outro') otherWrap.classList.add('visible');
+          else otherWrap.classList.remove('visible');
+          saveCalc();
+        });
+      });
+
+      function saveCalc() {
+        const d1 = document.getElementById('dado1').value;
+        const d2 = document.getElementById('dado2').value;
+        const checked = document.querySelector('.radio-opt.checked');
+        const d3 = checked ? checked.dataset.value : '';
+        const d3o = document.getElementById('dado3-other').value;
+        localStorage.setItem(CALC_KEY, JSON.stringify({ dado1: d1, dado2: d2, dado3: d3, dado3Other: d3o }));
+      }
+      function loadCalc() {
+        try {
+          const raw = localStorage.getItem(CALC_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data.dado1) document.getElementById('dado1').value = data.dado1;
+          if (data.dado2) document.getElementById('dado2').value = data.dado2;
+          if (data.dado3) {
+            const opt = document.querySelector('.radio-opt[data-value="' + data.dado3 + '"]');
+            if (opt) {
+              opt.classList.add('checked');
+              opt.querySelector('input').checked = true;
+              if (data.dado3 === 'Outro') otherWrap.classList.add('visible');
+            }
+          }
+          if (data.dado3Other) document.getElementById('dado3-other').value = data.dado3Other;
+        } catch (err) { console.error(err); }
+      }
+      ['dado1', 'dado2', 'dado3-other'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', saveCalc);
+      });
+      const btnSave = document.getElementById('btn-save');
+      if (btnSave) {
+        btnSave.addEventListener('click', function() {
+          saveCalc();
+          const status = document.getElementById('save-status');
+          status.classList.add('visible');
+          setTimeout(function() { status.classList.remove('visible'); }, 4000);
+        });
+      }
+
+      // Pré-preenchimento vindo do extrator (só se o workbook ainda não tem dados salvos)
+      (function prefillFromExtrator() {
+        try {
+          if (localStorage.getItem(CALC_KEY)) return;
+          const raw = localStorage.getItem('roi_extrator_data');
+          if (!raw) return;
+          const data = JSON.parse(raw);
+
+          function mapEquipe(q9) {
+            if (!q9) return '';
+            if (q9.indexOf('1-3') === 0) return '2';
+            if (q9.indexOf('4-10') === 0) return '7';
+            if (q9.indexOf('11-25') === 0) return '18';
+            if (q9.indexOf('26-50') === 0) return '38';
+            if (q9.indexOf('51+') === 0) return '60';
+            return '';
+          }
+
+          function mapProcesso(q10) {
+            if (!q10 || !q10.length) return { dado3: '', dado3Other: '' };
+            const map = {
+              'Atendimento/qualificação de leads (pré-venda)': 'Atendimento e qualificação de leads',
+              'Produção de propostas/apresentações': 'Criação de propostas e apresentações',
+              'Relatórios e análises de dados': 'Relatórios e análises',
+              'Follow-up e nutrição de clientes': 'Follow-up com clientes',
+              'Processos administrativos/financeiros': 'Processos administrativos/financeiros',
+            };
+            for (var i = 0; i < q10.length; i++) {
+              if (map[q10[i]]) return { dado3: map[q10[i]], dado3Other: '' };
+            }
+            return { dado3: 'Outro', dado3Other: q10[0] };
+          }
+
+          const resultProc = mapProcesso(data.q10_processo);
+          localStorage.setItem(CALC_KEY, JSON.stringify({
+            dado1: '',
+            dado2: mapEquipe(data.q9_equipe),
+            dado3: resultProc.dado3,
+            dado3Other: resultProc.dado3Other,
+          }));
+        } catch (e) { /* storage indisponível, segue sem pré-preencher */ }
+      })();
+
+      loadCalc();
+
+      /* ---------- PAGE 6: CHECKLIST (localStorage) ---------- */
+      const CHECK_KEY = 'roicomia_checklist';
+      const items = document.querySelectorAll('.check-item');
+      const resultBlock = document.getElementById('result-block');
+      const scoreCurrent = document.getElementById('result-score-current');
+      const tierName = document.getElementById('result-tier-name');
+      const tierDesc = document.getElementById('result-tier-desc');
+      const rangeTiles = document.querySelectorAll('.range-tile');
+
+      const TIERS = {
+        pronto: {
+          name: 'Pronto para implementar',
+          desc: 'Seu negócio tem estrutura, mentalidade e recursos. <strong>O foco agora é método certo</strong> — não esperar mais.'
+        },
+        quase: {
+          name: 'Quase lá — gaps específicos',
+          desc: 'Você tem boa parte da base. <strong>Identifique no evento</strong> os 2-3 pontos faltantes para destravar implementação.'
+        },
+        estrutura: {
+          name: 'Precisa estruturar mais',
+          desc: 'Existem lacunas relevantes antes de implementar IA com ROI. <strong>Resolva os gaps primeiro</strong>, depois acelere.'
+        },
+        fundamentar: {
+          name: 'Estruture o negócio primeiro',
+          desc: 'Foque em consolidar fundamentos. <strong>IA vem depois</strong>, quando há o que automatizar.'
+        }
+      };
+      function getTier(score) {
+        if (score >= 12) return 'pronto';
+        if (score >= 8) return 'quase';
+        if (score >= 4) return 'estrutura';
+        return 'fundamentar';
+      }
+      function updateBlockScore(blockNum) {
+        const checked = document.querySelectorAll('.check-item[data-block="' + blockNum + '"].checked').length;
+        const scoreEl = document.querySelector('.check-block-score[data-score="' + blockNum + '"]');
+        if (!scoreEl) return;
+        scoreEl.textContent = checked + ' de 4';
+        scoreEl.classList.remove('pass', 'warn');
+        if (checked >= 3) scoreEl.classList.add('pass');
+        else if (checked >= 1) scoreEl.classList.add('warn');
+      }
+      function updateCheckResult() {
+        const totalChecked = document.querySelectorAll('.check-item.checked').length;
+        scoreCurrent.textContent = totalChecked;
+        const tier = getTier(totalChecked);
+        resultBlock.classList.remove('tier-pronto', 'tier-quase', 'tier-estrutura', 'tier-fundamentar');
+        resultBlock.classList.add('tier-' + tier);
+        tierName.textContent = TIERS[tier].name;
+        tierDesc.innerHTML = TIERS[tier].desc;
+        rangeTiles.forEach(function(t) { t.classList.remove('active'); });
+        const activeTile = document.querySelector('.range-tile[data-tier="' + tier + '"]');
+        if (activeTile) activeTile.classList.add('active');
+        [1, 2, 3, 4].forEach(updateBlockScore);
+        const state = {};
+        items.forEach(function(item, idx) { state[idx] = item.classList.contains('checked'); });
+        localStorage.setItem(CHECK_KEY, JSON.stringify(state));
+      }
+      function loadCheckState() {
+        try {
+          const raw = localStorage.getItem(CHECK_KEY);
+          if (!raw) { updateCheckResult(); return; }
+          const state = JSON.parse(raw);
+          items.forEach(function(item, idx) {
+            if (state[idx]) {
+              item.classList.add('checked');
+              item.querySelector('input').checked = true;
+            }
+          });
+        } catch (err) { console.error(err); }
+        updateCheckResult();
+      }
+      items.forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          if (e.target.tagName === 'INPUT') return;
+          e.preventDefault();
+          item.classList.toggle('checked');
+          item.querySelector('input').checked = item.classList.contains('checked');
+          updateCheckResult();
+        });
+      });
+      const btnReset = document.getElementById('btn-reset');
+      if (btnReset) {
+        btnReset.addEventListener('click', function() {
+          items.forEach(function(item) {
+            item.classList.remove('checked');
+            item.querySelector('input').checked = false;
+          });
+          localStorage.removeItem(CHECK_KEY);
+          updateCheckResult();
+        });
+      }
+      loadCheckState();
+
+      /* ---------- PAGE 7: PERGUNTAS (localStorage) ---------- */
+      const PQ_KEY = 'roicomia_perguntas';
+      const pqFields = ['pq1', 'pq2', 'pq3'];
+      function savePQ() {
+        const data = {};
+        pqFields.forEach(function(id) { data[id] = document.getElementById(id).value; });
+        localStorage.setItem(PQ_KEY, JSON.stringify(data));
+      }
+      function loadPQ() {
+        try {
+          const raw = localStorage.getItem(PQ_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          pqFields.forEach(function(id) {
+            if (data[id]) document.getElementById(id).value = data[id];
+          });
+        } catch (err) { console.error(err); }
+      }
+      pqFields.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', savePQ);
+      });
+      loadPQ();
+    })();
+  </script>
+
+</body>
+</html>

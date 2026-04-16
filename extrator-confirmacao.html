@@ -619,21 +619,21 @@
             <div class="action-icon">📱</div>
             <h3>Entre no Grupo WhatsApp</h3>
             <p>Se ainda não entrou, confirme sua inscrição agora. É lá que você recebe atualizações em tempo real sobre o evento e seu relatório.</p>
-            <a href="grupo.html" class="btn-action-green">Entrar no Grupo</a>
+            <a href="https://sndflw.com/i/ai-do-zero-ao-roi" target="_blank" rel="noopener" class="btn-action-green">Entrar no Grupo</a>
           </div>
 
           <div class="action-card">
             <div class="action-icon">📄</div>
             <h3>Baixe o Workbook</h3>
             <p>Material exclusivo que vai te dar uma vantagem competitiva real e uma experiência incrível no evento. Quem chega preparado, sai na frente.</p>
-            <a href="#" class="btn-action-outline">Baixar Workbook</a>
+            <a href="workbook.html" target="_blank" rel="noopener" class="btn-action-outline">Baixar Workbook</a>
           </div>
 
           <div class="action-card">
             <div class="action-icon">📅</div>
             <h3>Salve a Data</h3>
             <p>Evento ao vivo: <strong style="color:#fff;">Terça-feira às 20h BRT</strong>. Adicione ao seu calendário para não perder nenhuma parte.</p>
-            <a href="#" class="btn-action-outline">Adicionar ao Calendário</a>
+            <a href="calendario.html" target="_blank" rel="noopener" class="btn-action-outline">Adicionar ao Calendário</a>
           </div>
 
         </div>
@@ -693,6 +693,7 @@
   const urlP  = new URLSearchParams(window.location.search);
   const nome  = urlP.get('nome')  || '';
   const email = urlP.get('email') || '';
+  const phone = urlP.get('phone') || '';
 
   // Inject first name where .lead-nome appears
   if (nome) {
@@ -718,7 +719,26 @@
     const emailRow = document.getElementById('email-row');
     if (emailRow) emailRow.style.display = 'block';
   }
+
+  // Propaga nome/email/phone pro link do calendário
+  const calLink = document.querySelector('a[href="calendario.html"]');
+  if (calLink) {
+    const p = new URLSearchParams();
+    if (nome)  p.set('nome', nome);
+    if (email) p.set('email', email);
+    if (phone) p.set('phone', phone);
+    const qs = p.toString();
+    if (qs) calLink.href = 'calendario.html?' + qs;
+  }
+
+  // Tracking
+  if (window.__tracker) {
+    window.__tracker.setLeadInfo({ name: nome, email: email, phone: phone });
+  }
 })();
 </script>
+
+  <script src="tracker.js" defer></script>
+
 </body>
 </html>

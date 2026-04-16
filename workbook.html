@@ -4429,6 +4429,50 @@
           setTimeout(function() { status.classList.remove('visible'); }, 4000);
         });
       }
+
+      // Pré-preenchimento vindo do extrator (só se o workbook ainda não tem dados salvos)
+      (function prefillFromExtrator() {
+        try {
+          if (localStorage.getItem(CALC_KEY)) return;
+          const raw = localStorage.getItem('roi_extrator_data');
+          if (!raw) return;
+          const data = JSON.parse(raw);
+
+          function mapEquipe(q9) {
+            if (!q9) return '';
+            if (q9.indexOf('1-3') === 0) return '2';
+            if (q9.indexOf('4-10') === 0) return '7';
+            if (q9.indexOf('11-25') === 0) return '18';
+            if (q9.indexOf('26-50') === 0) return '38';
+            if (q9.indexOf('51+') === 0) return '60';
+            return '';
+          }
+
+          function mapProcesso(q10) {
+            if (!q10 || !q10.length) return { dado3: '', dado3Other: '' };
+            const map = {
+              'Atendimento/qualificação de leads (pré-venda)': 'Atendimento e qualificação de leads',
+              'Produção de propostas/apresentações': 'Criação de propostas e apresentações',
+              'Relatórios e análises de dados': 'Relatórios e análises',
+              'Follow-up e nutrição de clientes': 'Follow-up com clientes',
+              'Processos administrativos/financeiros': 'Processos administrativos/financeiros',
+            };
+            for (var i = 0; i < q10.length; i++) {
+              if (map[q10[i]]) return { dado3: map[q10[i]], dado3Other: '' };
+            }
+            return { dado3: 'Outro', dado3Other: q10[0] };
+          }
+
+          const resultProc = mapProcesso(data.q10_processo);
+          localStorage.setItem(CALC_KEY, JSON.stringify({
+            dado1: '',
+            dado2: mapEquipe(data.q9_equipe),
+            dado3: resultProc.dado3,
+            dado3Other: resultProc.dado3Other,
+          }));
+        } catch (e) { /* storage indisponível, segue sem pré-preencher */ }
+      })();
+
       loadCalc();
 
       /* ---------- PAGE 6: CHECKLIST (localStorage) ---------- */

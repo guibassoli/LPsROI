@@ -1973,6 +1973,17 @@ function handleSubmit() {
     });
   }
 
+  // Persiste dados relevantes pro workbook (pré-preenchimento)
+  try {
+    localStorage.setItem('roi_extrator_data', JSON.stringify({
+      nome: formData.nome,
+      email: formData.email,
+      q9_equipe: formData.q9_equipe,
+      q10_processo: formData.q10_processo,
+      saved_at: new Date().toISOString(),
+    }));
+  } catch (e) { /* storage indisponível, segue sem persistir */ }
+
   showSuccess(formData);
 }
 

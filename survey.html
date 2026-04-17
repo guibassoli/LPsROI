@@ -178,11 +178,12 @@
 
     /* ── VSL PLAYER ───────────────────────────────── */
     .vsl-wrap {
-      background: #0d5f7a;
+      background: #000;
       border-radius: 8px;
       overflow: hidden;
-      margin-bottom: 28px;
-      aspect-ratio: 16 / 9;
+      margin: 0 auto 28px;
+      max-width: 400px;
+      aspect-ratio: 9 / 16;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -575,6 +576,8 @@
       .btn-cta-survey { font-size: 11px; }
     }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -604,31 +607,18 @@
         <p>Assista ao vídeo abaixo para concluir seu cadastro e responda a pesquisa para desbloquear uma <strong>Ferramenta de IA Gratuita</strong> dentro do Grupo do WhatsApp:</p>
       </div>
 
-      <!-- VSL PLAYER -->
-      <!-- ════════════════════════════════════════════════
-           SUBSTITUA O BLOCO ABAIXO PELO EMBED DO SEU PLAYER
-           Ex: <div id="vid_XXXXXXXX" style="position:relative;width:100%;padding:56.25% 0 0;"> ... </div>
-      ════════════════════════════════════════════════ -->
+      <!-- VSL PLAYER — Panda Video -->
       <div class="vsl-wrap">
-        <div class="vsl-placeholder">
-          <p>Você já começou a assistir este vídeo</p>
-          <div class="vsl-options">
-            <div class="vsl-option">
-              <div class="vsl-option-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
-              </div>
-              Continuar assistindo?
-            </div>
-            <div class="vsl-option">
-              <div class="vsl-option-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 .49-5"/></svg>
-              </div>
-              Começar do início?
-            </div>
-          </div>
-        </div>
+        <iframe
+          id="panda-794b135e-eb44-41b3-8336-668d18622d59"
+          src="https://player-vz-484576e9-f7a.tv.pandavideo.com.br/embed/?v=794b135e-eb44-41b3-8336-668d18622d59"
+          style="border:none;position:absolute;top:0;left:0;width:100%;height:100%;"
+          allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture"
+          allowfullscreen
+          fetchpriority="high"
+          title="VSL — IA do Zero ao ROI"
+        ></iframe>
       </div>
-      <!-- ═══════════════════════════════════════════════ -->
 
       <!-- CTA BUTTON -->
       <div class="cta-survey-wrap">
@@ -778,6 +768,29 @@
     const answers = { nome: leadNome, email: leadEmail, phone: leadPhone };
     let currentQ = 1;
 
+    // Webhook Funil.AI — fire-and-forget, Nucleo e backup.
+    const FUNIL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/jQEzeVVb4zeKArgbpiWs/webhook-trigger/707b294b-fa52-4ff1-9cc5-7175db8fd144';
+    function sendSurveyToFunil() {
+      const payload = {
+        nome:             answers.nome,
+        email:            answers.email,
+        phone:            answers.phone,
+        faturamento:      answers.q1 || '',
+        cargo:            answers.q2 || '',
+        desafio:          answers.q3 || '',
+        experiencia_ia:   answers.q4 || '',
+        lead_id_external: (window.__tracker && window.__tracker.getLeadId) ? window.__tracker.getLeadId() : null,
+        source:           'lp-roicomia-survey',
+        submitted_at:     new Date().toISOString(),
+      };
+      fetch(FUNIL_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch((err) => console.warn('[funil-webhook] survey falhou:', err.message || err));
+    }
+
     // Progresso: começa em 62%, termina em 92% (próxima página = 98%)
     const PROGRESS_STEPS = { 1: 62, 2: 69, 3: 76, 4: 84, 5: 90, done: 92 };
 
@@ -835,6 +848,7 @@
           phone_confirmed: answers.phone
         });
       }
+      sendSurveyToFunil();
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
       setTimeout(() => {
@@ -861,6 +875,7 @@
           phone_confirmed: answers.phone
         });
       }
+      sendSurveyToFunil();
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
       setTimeout(() => {
@@ -986,7 +1001,6 @@
     });
   </script>
 
-  <script src="tracker.js" defer></script>
 
 </body>
 </html>

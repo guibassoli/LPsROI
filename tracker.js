@@ -13,9 +13,9 @@
 	'use strict'
 
 	// ── Config ────────────────────────────────────────────────
-	// Em producao, trocar por 'https://staging-api.roisemhype.cloud'
-	var API_URL = 'https://staging-api.roisemhype.cloud'
-	var API_KEY = 'nuc_22a59866b4d9af1b75f8959a29da73be24bf18a7'
+	// Endpoint de tracking do Nucleo em prod (org ROI COM IA).
+	var API_URL = 'https://core-api.roisemhype.cloud'
+	var API_KEY = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b'
 
 	// ── State ─────────────────────────────────────────────────
 	var _leadId = null

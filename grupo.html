@@ -369,6 +369,8 @@
       .headline-block h1 { font-size: 19px; }
     }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -492,7 +494,6 @@
     }
   </script>
 
-  <script src="tracker.js" defer></script>
 
 </body>
 </html>

@@ -2852,6 +2852,8 @@
       }
     }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -4427,7 +4429,65 @@
           const status = document.getElementById('save-status');
           status.classList.add('visible');
           setTimeout(function() { status.classList.remove('visible'); }, 4000);
+          sendWorkbookCalc();
         });
+      }
+
+      // ══════════════════════════════════════════════════
+      // Envio pro Nucleo + Funil (so no click do Salvar — evita flood em input)
+      // ══════════════════════════════════════════════════
+      const FUNIL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/jQEzeVVb4zeKArgbpiWs/webhook-trigger/707b294b-fa52-4ff1-9cc5-7175db8fd144';
+
+      function readExtratorLead() {
+        try {
+          const raw = localStorage.getItem('roi_extrator_data');
+          if (!raw) return {};
+          const d = JSON.parse(raw);
+          return { nome: d.nome || '', email: d.email || '', phone: d.phone || '' };
+        } catch (e) { return {}; }
+      }
+
+      function sendWorkbookCalc() {
+        const d1  = (document.getElementById('dado1') || {}).value || '';
+        const d2  = (document.getElementById('dado2') || {}).value || '';
+        const d3  = ((document.querySelector('.radio-opt.checked') || {}).dataset || {}).value || '';
+        const d3o = (document.getElementById('dado3-other') || {}).value || '';
+
+        // Guard: so envia se ao menos 1 dado foi preenchido
+        if (!d1 && !d2 && !d3) return;
+
+        const lead = readExtratorLead();
+        const basePayload = {
+          faturamento_autodeclarado: d1,
+          equipe_autodeclarado:      d2,
+          processo_prioritario:      d3,
+          processo_prioritario_outro: d3o,
+        };
+
+        // Nucleo: sempre grava, mesmo sem email (identifica por lead_id_external)
+        if (window.__tracker) {
+          window.__tracker.setLeadInfo({ name: lead.nome, email: lead.email, phone: lead.phone });
+          window.__tracker.trackNow('workbook_calc_submitted', basePayload);
+        }
+
+        // Funil: so manda se tiver email (senao nao tem como fazer Find Contact)
+        if (lead.email) {
+          const funilPayload = Object.assign({
+            nome:             lead.nome,
+            email:            lead.email,
+            phone:            lead.phone,
+            lead_id_external: (window.__tracker && window.__tracker.getLeadId) ? window.__tracker.getLeadId() : null,
+            source:           'lp-roicomia-workbook',
+            submitted_at:     new Date().toISOString(),
+          }, basePayload);
+
+          fetch(FUNIL_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(funilPayload),
+            keepalive: true,
+          }).catch(function(err) { console.warn('[funil-webhook] workbook falhou:', err.message || err); });
+        }
       }
 
       // Pré-preenchimento vindo do extrator (só se o workbook ainda não tem dados salvos)

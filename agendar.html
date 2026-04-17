@@ -787,6 +787,8 @@
     .status-badge.confirmed { background: rgba(106,235,152,0.1); color: var(--green); border: 1px solid rgba(106,235,152,0.2); }
     .status-badge.pending   { background: rgba(252,129,50,0.1); color: var(--orange); border: 1px solid rgba(252,129,50,0.2); }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -851,528 +853,57 @@
       <span class="session-tag">✦ Gratuito · Sem compromisso</span>
     </div>
 
-    <!-- RIGHT: Booking flow -->
-    <div class="booking-panel">
-
-      <!-- Steps -->
-      <div class="booking-steps">
-        <div class="bstep active" id="bstep-1">
-          <div class="bstep-num" id="bstep-num-1">1</div>
-          Escolha o dia
-          <div class="bstep-line"></div>
-        </div>
-        <div class="bstep" id="bstep-2">
-          <div class="bstep-num" id="bstep-num-2">2</div>
-          Horário
-          <div class="bstep-line"></div>
-        </div>
-        <div class="bstep" id="bstep-3">
-          <div class="bstep-num" id="bstep-num-3">3</div>
-          Confirmar
-        </div>
-      </div>
-
-      <!-- STEP 1: Calendar -->
-      <div class="bpanel active" id="bpanel-1">
-        <div class="cal-header">
-          <span class="cal-month" id="cal-month-label">Abril 2026</span>
-          <div class="cal-nav">
-            <button class="cal-nav-btn" id="cal-prev" onclick="calNav(-1)">‹</button>
-            <button class="cal-nav-btn" id="cal-next" onclick="calNav(1)">›</button>
-          </div>
-        </div>
-
-        <div class="cal-weekdays">
-          <div class="cal-wday">Dom</div>
-          <div class="cal-wday">Seg</div>
-          <div class="cal-wday">Ter</div>
-          <div class="cal-wday">Qua</div>
-          <div class="cal-wday">Qui</div>
-          <div class="cal-wday">Sex</div>
-          <div class="cal-wday">Sáb</div>
-        </div>
-
-        <div class="cal-grid" id="cal-grid"></div>
-
-        <div class="cal-legend">
-          <div class="cal-legend-item"><div class="cal-legend-dot green"></div> Disponível</div>
-          <div class="cal-legend-item"><div class="cal-legend-dot muted"></div> Indisponível</div>
-        </div>
-      </div>
-
-      <!-- STEP 2: Time slots -->
-      <div class="bpanel" id="bpanel-2">
-        <button class="slots-back" onclick="goToStep(1)">‹ Voltar ao calendário</button>
-        <p class="slots-date-label" id="slots-date-label"></p>
-        <h2 class="slots-headline" id="slots-headline">Selecione um horário</h2>
-        <p class="slots-tz">Todos os horários em Brasília (BRT, UTC−3)</p>
-        <div class="slots-grid" id="slots-grid"></div>
-      </div>
-
-      <!-- STEP 3: Confirm -->
-      <div class="bpanel" id="bpanel-3">
-        <button class="slots-back" onclick="goToStep(2)">‹ Voltar aos horários</button>
-
-        <div class="confirm-booking-info" id="confirm-booking-info">
-          <div class="confirm-info-block">
-            <div class="confirm-info-label">Data</div>
-            <div class="confirm-info-value" id="confirm-date-val">—</div>
-            <div class="confirm-info-sub" id="confirm-date-sub"></div>
-          </div>
-          <div class="confirm-info-block">
-            <div class="confirm-info-label">Horário</div>
-            <div class="confirm-info-value" id="confirm-time-val">—</div>
-            <div class="confirm-info-sub">30 min · BRT</div>
-          </div>
-          <div class="confirm-info-block">
-            <div class="confirm-info-label">Formato</div>
-            <div class="confirm-info-value">Online</div>
-            <div class="confirm-info-sub">Link enviado por email</div>
-          </div>
-        </div>
-
-        <div class="confirm-form-group">
-          <div class="confirm-field">
-            <label>Nome completo *</label>
-            <input type="text" id="cf-nome" placeholder="Seu nome completo" autocomplete="name">
-            <div class="field-error" id="cf-err-nome">Por favor, informe seu nome.</div>
-          </div>
-          <div class="confirm-field">
-            <label>E-mail *</label>
-            <input type="email" id="cf-email" placeholder="seu@email.com" autocomplete="email">
-            <div class="field-error" id="cf-err-email">Por favor, informe um email válido.</div>
-          </div>
-          <div class="confirm-field">
-            <label>WhatsApp *</label>
-            <input type="tel" id="cf-wpp" placeholder="+55 (11) 99999-9999" autocomplete="tel">
-            <div class="field-error" id="cf-err-wpp">Por favor, informe seu WhatsApp com DDD.</div>
-          </div>
-        </div>
-
-        <div class="confirm-notes-group">
-          <label>Deseja adiantar algo para a equipe? <span style="font-weight:400;opacity:0.6;">(opcional)</span></label>
-          <textarea id="cf-notes" placeholder="Ex: Quero focar em automação de vendas, tenho urgência em resolver..."></textarea>
-        </div>
-
-        <button class="btn-confirm" id="btn-confirm" onclick="confirmBooking()">
-          ✓ Confirmar Agendamento
-        </button>
-        <p class="confirm-micro">🔒 Seus dados são confidenciais e usados apenas para o agendamento.</p>
-      </div>
-
-      <!-- STEP 4: Success -->
-      <div class="bpanel" id="bpanel-4">
-        <div class="success-state">
-          <div class="success-icon">
-            <svg viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="18" r="16" stroke="#6aeb98" stroke-width="1.5" opacity="0.4"/>
-              <path d="M11 18.5l5 5 9-10" stroke="#6aeb98" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-
-          <h2>Agendamento <em>confirmado!</em></h2>
-          <p>Você receberá um e-mail com o link da reunião e um lembrete 1 hora antes. Até lá!</p>
-
-          <div class="booking-summary-card" id="booking-summary">
-            <div class="booking-summary-row">
-              <span class="ico">🗓️</span>
-              <div>
-                <div class="val" id="sum-date">—</div>
-                <div class="sub" id="sum-time">—</div>
-              </div>
-            </div>
-            <div class="booking-summary-row">
-              <span class="ico">👤</span>
-              <div>
-                <div class="val" id="sum-nome">—</div>
-                <div class="sub" id="sum-email">—</div>
-              </div>
-            </div>
-            <div class="booking-summary-row">
-              <span class="ico">💻</span>
-              <div>
-                <div class="val">Google Meet</div>
-                <div class="sub">Link enviado para seu e-mail</div>
-              </div>
-            </div>
-          </div>
-
-          <a href="#" id="gcal-link" class="btn-gcal" target="_blank">
-            <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.25"/><path d="M2 7h12M5 1v4M11 1v4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
-            Adicionar ao Google Calendar
-          </a>
-        </div>
-      </div>
-
+    <!-- RIGHT: Funil.AI booking widget -->
+    <div class="booking-panel" style="padding:0;overflow:hidden;">
+      <iframe
+        id="aIuMxtLurrwiLO4VcTVP_1776373933191"
+        scrolling="no"
+        title="Agendar Sessão de Análise com Equipe RoicomIA"
+        style="width:100%;min-height:720px;border:none;display:block;"
+      ></iframe>
     </div>
   </div>
 </div>
 
-<!-- ADMIN TOGGLE -->
-<button class="admin-toggle" onclick="toggleAdmin()">📋 Admin</button>
-
-<!-- ADMIN PANEL -->
-<div id="admin-panel">
-  <div class="admin-card">
-    <div class="admin-title">
-      Agendamentos Recebidos
-      <span class="admin-badge" id="admin-count">0 agendamentos</span>
-    </div>
-    <div id="admin-table-wrap">
-      <div class="admin-empty">Nenhum agendamento registrado ainda.</div>
-    </div>
-  </div>
-</div>
-
+<!-- Pre-fill do widget Funil.AI (mesmo esquema de calendario.html) -->
 <script>
-// ══════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════
-let currentStep = 1;
-let selectedDate = null;   // Date object
-let selectedSlot = null;   // "09:00"
-let calYear, calMonth;
+  (function () {
+    const BASE = 'https://link.funil.ai/widget/booking/aIuMxtLurrwiLO4VcTVP';
 
-const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const DAYS_PT   = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-const DAYS_PT_SHORT = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
-// Available days: only weekdays (Mon-Fri), 7+ days from today
-// Available time slots (mock)
-const SLOT_TIMES = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
-
-// Bookings stored in localStorage
-let bookings = JSON.parse(localStorage.getItem('roicomia_bookings') || '[]');
-
-// ══════════════════════════════════════════════════
-// URL PARAMS → PRE-FILL
-// ══════════════════════════════════════════════════
-(function() {
-  const p = new URLSearchParams(window.location.search);
-  const nome  = p.get('nome')  || '';
-  const email = p.get('email') || '';
-
-  if (nome) {
-    const el = document.getElementById('cf-nome');
-    el.value = nome;
-    el.classList.add('prefilled');
-  }
-  if (email) {
-    const el = document.getElementById('cf-email');
-    el.value = email;
-    el.classList.add('prefilled');
-  }
-})();
-
-// ══════════════════════════════════════════════════
-// CALENDAR
-// ══════════════════════════════════════════════════
-const today = new Date();
-calYear  = today.getFullYear();
-calMonth = today.getMonth();
-
-function isAvailable(date) {
-  // Weekdays only, at least 2 business days from today
-  const dow = date.getDay();
-  if (dow === 0 || dow === 6) return false; // weekend
-  const diff = Math.floor((date - today) / 86400000);
-  if (diff < 2) return false; // need 2 days ahead
-  if (diff > 45) return false; // not too far
-  // Mock: block some days (every 3rd available day)
-  const dateStr = date.toISOString().split('T')[0];
-  const hash = dateStr.split('-').join('').slice(-2);
-  if (parseInt(hash) % 5 === 0) return false; // mock some blocked days
-  return true;
-}
-
-function renderCalendar() {
-  const label = document.getElementById('cal-month-label');
-  label.textContent = MONTHS_PT[calMonth] + ' ' + calYear;
-
-  const grid = document.getElementById('cal-grid');
-  grid.innerHTML = '';
-
-  // First day of month
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  // Days in month
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-
-  // Empty cells
-  for (let i = 0; i < firstDay; i++) {
-    const el = document.createElement('div');
-    el.className = 'cal-day empty';
-    grid.appendChild(el);
-  }
-
-  // Day cells
-  for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(calYear, calMonth, d);
-    const el   = document.createElement('div');
-    el.textContent = d;
-
-    // Is today?
-    if (date.toDateString() === today.toDateString()) el.classList.add('today');
-
-    // Determine class
-    if (date < today && date.toDateString() !== today.toDateString()) {
-      el.className = 'cal-day past';
-    } else if (!isAvailable(date)) {
-      el.className = 'cal-day unavailable';
-    } else {
-      el.className = 'cal-day available';
-      el.addEventListener('click', () => selectDate(date, el));
+    function fromStorage() {
+      try {
+        const raw = localStorage.getItem('roi_extrator_data');
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) { return {}; }
     }
 
-    // Mark selected
-    if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
-      el.classList.add('selected');
+    const urlP   = new URLSearchParams(window.location.search);
+    const stored = fromStorage();
+
+    const nome  = urlP.get('nome')  || stored.nome  || '';
+    const email = urlP.get('email') || stored.email || '';
+    const phone = urlP.get('phone') || stored.phone || '';
+
+    const [firstName, ...rest] = (nome || '').trim().split(/\s+/);
+    const lastName = rest.join(' ');
+
+    const params = new URLSearchParams();
+    if (firstName) params.set('first_name', firstName);
+    if (lastName)  params.set('last_name',  lastName);
+    if (email)     params.set('email',      email);
+    if (phone)     params.set('phone',      phone);
+
+    const qs = params.toString();
+    const iframe = document.getElementById('aIuMxtLurrwiLO4VcTVP_1776373933191');
+    if (iframe) iframe.src = qs ? BASE + '?' + qs : BASE;
+
+    // Tracker: marca que chegou na pagina de agendamento
+    if (window.__tracker) {
+      window.__tracker.setLeadInfo({ name: nome, email, phone });
     }
-
-    grid.appendChild(el);
-  }
-
-  // Nav buttons state
-  const isCurrentMonth = (calMonth === today.getMonth() && calYear === today.getFullYear());
-  document.getElementById('cal-prev').disabled = isCurrentMonth;
-  document.getElementById('cal-prev').style.opacity = isCurrentMonth ? '0.3' : '1';
-}
-
-function calNav(dir) {
-  calMonth += dir;
-  if (calMonth < 0)  { calMonth = 11; calYear--; }
-  if (calMonth > 11) { calMonth = 0;  calYear++; }
-  // Don't go before current month
-  if (calYear < today.getFullYear() || (calYear === today.getFullYear() && calMonth < today.getMonth())) {
-    calMonth = today.getMonth();
-    calYear  = today.getFullYear();
-  }
-  renderCalendar();
-}
-
-function selectDate(date, el) {
-  selectedDate = date;
-  selectedSlot = null;
-  renderCalendar(); // re-render to update selected state
-  renderSlots();
-  goToStep(2);
-}
-
-// ══════════════════════════════════════════════════
-// TIME SLOTS
-// ══════════════════════════════════════════════════
-function renderSlots() {
-  if (!selectedDate) return;
-
-  const dow    = selectedDate.getDay();
-  const dayStr = DAYS_PT[dow];
-  const dateStr = selectedDate.getDate() + ' de ' + MONTHS_PT[selectedDate.getMonth()];
-
-  document.getElementById('slots-date-label').textContent = dayStr.charAt(0).toUpperCase() + dayStr.slice(1) + ', ' + dateStr;
-  document.getElementById('slots-headline').textContent = 'Selecione um horário';
-
-  // Get booked slots for this day
-  const dateKey = selectedDate.toISOString().split('T')[0];
-  const bookedSlots = bookings.filter(b => b.date === dateKey).map(b => b.time);
-
-  const grid = document.getElementById('slots-grid');
-  grid.innerHTML = '';
-
-  // Mock: some slots randomly blocked
-  const hash = parseInt(dateKey.replace(/-/g,'').slice(-3));
-
-  const availableSlots = SLOT_TIMES.filter((_, i) => {
-    if (bookedSlots.includes(SLOT_TIMES[i])) return false;
-    // Mock block some slots
-    return (i + hash) % 7 !== 0;
-  });
-
-  if (availableSlots.length === 0) {
-    grid.innerHTML = '<div class="no-slots" style="grid-column:1/-1"><div class="no-slots-icon">😔</div>Não há horários disponíveis neste dia.<br>Por favor, selecione outra data.</div>';
-    return;
-  }
-
-  availableSlots.forEach(time => {
-    const hour = parseInt(time.split(':')[0]);
-    const period = hour < 12 ? 'manhã' : 'tarde';
-    const btn = document.createElement('button');
-    btn.className = 'slot-btn' + (selectedSlot === time ? ' selected' : '');
-    btn.innerHTML = '<div class="slot-time">' + time + '</div><div class="slot-period">' + period + '</div>';
-    btn.addEventListener('click', () => selectSlot(time));
-    grid.appendChild(btn);
-  });
-}
-
-function selectSlot(time) {
-  selectedSlot = time;
-  // Update UI
-  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-
-  // Short delay then advance
-  setTimeout(() => {
-    updateConfirmSummary();
-    goToStep(3);
-  }, 350);
-}
-
-// ══════════════════════════════════════════════════
-// CONFIRM FORM
-// ══════════════════════════════════════════════════
-function updateConfirmSummary() {
-  if (!selectedDate || !selectedSlot) return;
-
-  const dow    = selectedDate.getDay();
-  const dateStr = DAYS_PT[dow].charAt(0).toUpperCase() + DAYS_PT[dow].slice(1) + ', ' + selectedDate.getDate() + ' de ' + MONTHS_PT[selectedDate.getMonth()];
-
-  document.getElementById('confirm-date-val').textContent = dateStr;
-  document.getElementById('confirm-date-sub').textContent = MONTHS_PT[selectedDate.getMonth()] + ' ' + selectedDate.getFullYear();
-  document.getElementById('confirm-time-val').textContent = selectedSlot;
-}
-
-async function confirmBooking() {
-  // Validate
-  let ok = true;
-  const nome  = document.getElementById('cf-nome').value.trim();
-  const email = document.getElementById('cf-email').value.trim();
-  const wpp   = document.getElementById('cf-wpp').value.trim();
-
-  document.querySelectorAll('.field-error').forEach(e => e.style.display = 'none');
-
-  if (!nome) { document.getElementById('cf-err-nome').style.display = 'block'; ok = false; }
-  if (!email || !/\S+@\S+\.\S+/.test(email)) { document.getElementById('cf-err-email').style.display = 'block'; ok = false; }
-  if (!wpp || wpp.replace(/\D/g,'').length < 10) { document.getElementById('cf-err-wpp').style.display = 'block'; ok = false; }
-
-  if (!ok) return;
-
-  const btn = document.getElementById('btn-confirm');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="btn-confirm-loading"><span class="spin-sm"></span> Confirmando...</span>';
-
-  // ────────────────────────────────────────────────
-  // TODO: Substituir por chamada real à API GHL/Calendly/n8n
-  // await fetch('/api/create-booking', { method: 'POST', body: JSON.stringify({ nome, email, wpp, date, time }) });
-  // ────────────────────────────────────────────────
-  await new Promise(r => setTimeout(r, 1600));
-
-  // Save booking locally
-  const dateKey = selectedDate.toISOString().split('T')[0];
-  const booking = {
-    id:    Date.now(),
-    nome, email, wpp,
-    date:  dateKey,
-    time:  selectedSlot,
-    notes: document.getElementById('cf-notes').value.trim(),
-    status: 'confirmed',
-    created: new Date().toISOString()
-  };
-  bookings.push(booking);
-  localStorage.setItem('roicomia_bookings', JSON.stringify(bookings));
-
-  // Fill success state
-  const dow = selectedDate.getDay();
-  const dateStr = DAYS_PT[dow].charAt(0).toUpperCase() + DAYS_PT[dow].slice(1) + ', ' + selectedDate.getDate() + ' de ' + MONTHS_PT[selectedDate.getMonth()] + ' de ' + selectedDate.getFullYear();
-  document.getElementById('sum-date').textContent = dateStr;
-  document.getElementById('sum-time').textContent = selectedSlot + ' (BRT) · 30 minutos';
-  document.getElementById('sum-nome').textContent = nome;
-  document.getElementById('sum-email').textContent = email;
-
-  // Google Calendar link
-  const gcalStart = toGCalDate(selectedDate, selectedSlot, 0);
-  const gcalEnd   = toGCalDate(selectedDate, selectedSlot, 30);
-  const gcalUrl   = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
-    + '&text=' + encodeURIComponent('Sessão Estratégica - Mapa de IA RoicomIA')
-    + '&dates=' + gcalStart + '/' + gcalEnd
-    + '&details=' + encodeURIComponent('Sessão de análise do Mapa de Implementação de IA.\nO link da reunião será enviado por e-mail.')
-    + '&location=' + encodeURIComponent('Online (link por e-mail)');
-  document.getElementById('gcal-link').href = gcalUrl;
-
-  goToStep(4);
-  renderAdminTable();
-}
-
-function toGCalDate(date, time, addMins) {
-  const [h, m] = time.split(':').map(Number);
-  const d = new Date(date);
-  d.setHours(h, m + addMins, 0, 0);
-  return d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
-}
-
-// ══════════════════════════════════════════════════
-// STEPS
-// ══════════════════════════════════════════════════
-function goToStep(n) {
-  // Update panels
-  document.querySelectorAll('.bpanel').forEach((p, i) => {
-    p.classList.toggle('active', i + 1 === n);
-  });
-
-  // Update step indicators
-  for (let i = 1; i <= 3; i++) {
-    const step = document.getElementById('bstep-' + i);
-    const num  = document.getElementById('bstep-num-' + i);
-    if (!step) continue;
-    step.classList.remove('active','done');
-    if (i < n) { step.classList.add('done'); num.textContent = '✓'; }
-    else if (i === n) { step.classList.add('active'); num.textContent = i; }
-    else { num.textContent = i; }
-  }
-
-  // Hide steps bar on success
-  document.querySelector('.booking-steps').style.display = n === 4 ? 'none' : '';
-
-  currentStep = n;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ══════════════════════════════════════════════════
-// ADMIN TABLE
-// ══════════════════════════════════════════════════
-function toggleAdmin() {
-  const panel = document.getElementById('admin-panel');
-  panel.classList.toggle('visible');
-  if (panel.classList.contains('visible')) renderAdminTable();
-}
-
-function renderAdminTable() {
-  const wrap = document.getElementById('admin-table-wrap');
-  document.getElementById('admin-count').textContent = bookings.length + ' agendamento' + (bookings.length !== 1 ? 's' : '');
-
-  if (bookings.length === 0) {
-    wrap.innerHTML = '<div class="admin-empty">Nenhum agendamento registrado ainda.</div>';
-    return;
-  }
-
-  const rows = bookings.slice().reverse().map(b => `
-    <tr>
-      <td>${b.nome}</td>
-      <td style="color:var(--muted)">${b.email}</td>
-      <td style="color:var(--muted)">${b.wpp || '—'}</td>
-      <td>${formatAdminDate(b.date)}</td>
-      <td><strong>${b.time}</strong></td>
-      <td><span class="status-badge ${b.status}">${b.status === 'confirmed' ? '✓ Confirmado' : '⏳ Pendente'}</span></td>
-    </tr>
-  `).join('');
-
-  wrap.innerHTML = `
-    <table class="admin-table">
-      <thead><tr>
-        <th>Nome</th><th>Email</th><th>WhatsApp</th><th>Data</th><th>Horário</th><th>Status</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
-}
-
-function formatAdminDate(dateStr) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return d + '/' + String(m).padStart(2,'0') + '/' + y;
-}
-
-// ══════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════
-renderCalendar();
+  })();
 </script>
+<script src="https://link.funil.ai/js/form_embed.js" type="text/javascript"></script>
 
 </body>
 </html>

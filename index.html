@@ -4,6 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoicomIA — Evento Gratuito: IA do Zero ao ROI</title>
+  <meta name="description" content="Evento gratuito ao vivo com Henry Risutti. O framework completo pra transformar IA em ROI previsivel — sem teoria, sem hype. Vagas limitadas.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://lp.roicomia.com/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="RoicomIA">
+  <meta property="og:url" content="https://lp.roicomia.com/">
+  <meta property="og:title" content="RoicomIA — Evento Gratuito: IA do Zero ao ROI">
+  <meta property="og:description" content="Evento gratuito ao vivo com Henry Risutti. O framework completo pra transformar IA em ROI previsivel — sem teoria, sem hype. Vagas limitadas.">
+  <meta property="og:image" content="https://lp.roicomia.com/hero-henry.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Henry Risutti — RoicomIA">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RoicomIA — Evento Gratuito: IA do Zero ao ROI">
+  <meta name="twitter:description" content="Evento gratuito ao vivo com Henry Risutti. O framework completo pra transformar IA em ROI previsivel — sem teoria, sem hype.">
+  <meta name="twitter:image" content="https://lp.roicomia.com/hero-henry.jpg">
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1881542805775271');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1881542805775271&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -1711,6 +1754,8 @@
       .metrics-grid .metric-card:last-child { grid-column: auto; }
     }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -2416,8 +2461,8 @@
     </div>
 
     <div class="footer-links">
-      <a href="#">Política de Privacidade</a>
-      <a href="#">Termos de Uso</a>
+      <a href="mailto:suporte@roicomia.com.br?subject=Pol%C3%ADtica%20de%20Privacidade">Política de Privacidade</a>
+      <a href="mailto:suporte@roicomia.com.br?subject=Termos%20de%20Uso">Termos de Uso</a>
       <a href="mailto:suporte@roicomia.com.br">suporte@roicomia.com.br</a>
     </div>
 
@@ -2724,6 +2769,11 @@
           window.__tracker.trackNow('form_submitted', { nome, email, phone });
         }
 
+        // Meta Pixel: evento padrao Lead pra otimizacao de campanhas
+        if (typeof fbq === 'function') {
+          fbq('track', 'Lead', { content_name: 'Evento Gratuito — IA do Zero ao ROI' });
+        }
+
         const goToSurvey = () => {
           const params = new URLSearchParams({ nome, email, phone });
           let url = 'survey.html?' + params.toString();
@@ -3021,7 +3071,6 @@
           loading="eager"></iframe>
 
   <!-- Tracker: tracking progressivo de leads para o Nucleo -->
-  <script src="tracker.js" defer></script>
 
 </body>
 </html>

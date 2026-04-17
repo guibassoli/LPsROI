@@ -1014,6 +1014,8 @@
       letter-spacing: 0.04em;
     }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -1896,18 +1898,49 @@ document.getElementById('application-form').addEventListener('submit', async fun
 
   showLoading('Enviando sua aplicação...');
 
-  try {
-    // ────────────────────────────────────────────────
-    // TODO: Substituir por chamada real à API GHL
-    // const res = await fetch('/api/submit-application', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload)
-    // });
-    // ────────────────────────────────────────────────
+  // Monta payload com TODOS os campos da ficha
+  const nomeVal    = nome.value.trim();
+  const emailVal   = email.value.trim();
+  const wppVal     = wpp.value.trim();
+  const empresaVal = empresa.value.trim();
+  const fatVal     = fat.value;
+  const cargoVal   = cargo.value;
+  const iaVal      = (document.querySelector('input[name="ja_testou_ia"]:checked') || {}).value || '';
+  const desafioVal = desafio.value.trim();
+  const pgtosVals  = Array.from(document.querySelectorAll('input[name="forma_pagamento"]:checked')).map(c => c.value);
 
-    // MOCK — simula envio bem-sucedido
-    await new Promise(r => setTimeout(r, 1800));
+  const payload = {
+    nome:            nomeVal,
+    email:           emailVal,
+    whatsapp:        wppVal,
+    empresa:         empresaVal,
+    faturamento:     fatVal,
+    cargo:           cargoVal,
+    ja_testou_ia:    iaVal,
+    desafio:         desafioVal,
+    forma_pagamento: pgtosVals,
+    source:          'lp-roicomia-ficha',
+    submitted_at:    new Date().toISOString(),
+  };
+
+  // Tracking Nucleo: amarra lead info + dispara evento com payload completo
+  if (window.__tracker) {
+    window.__tracker.setLeadInfo({ name: nomeVal, email: emailVal, phone: wppVal });
+    window.__tracker.trackNow('ficha_submitted', payload);
+  }
+
+  try {
+    // Webhook Funil.AI (fire-and-forget — Nucleo e backup, UX nao trava)
+    const FUNIL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/jQEzeVVb4zeKArgbpiWs/webhook-trigger/707b294b-fa52-4ff1-9cc5-7175db8fd144';
+    fetch(FUNIL_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch((err) => console.warn('[funil-webhook] ficha falhou:', err.message || err));
+
+    // Aguarda 1.2s pra garantir que o trackNow complete antes de trocar a tela
+    await new Promise(r => setTimeout(r, 1200));
 
     hideLoading();
     updateProgress(9); // 100%

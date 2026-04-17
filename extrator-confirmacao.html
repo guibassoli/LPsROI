@@ -411,6 +411,46 @@
       background: rgba(255,255,255,0.06);
     }
 
+    /* ── CALENDAR DROPDOWN ───────────────────────────── */
+    #calendar-card { position: relative; }
+
+    #btn-cal-open {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .cal-menu {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      animation: calMenuIn 0.18s ease-out;
+    }
+
+    .cal-menu a {
+      display: block;
+      padding: 10px 12px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .cal-menu a:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    @keyframes calMenuIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── FAQ SECTION ────────────────────────────────── */
     .faq-section {
       margin-bottom: 64px;
@@ -495,6 +535,8 @@
       .header-badge { display: none; }
     }
   </style>
+  <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
+  <script src="tracker.js"></script>
 </head>
 <body>
 
@@ -629,11 +671,20 @@
             <a href="workbook.html" target="_blank" rel="noopener" class="btn-action-outline">Baixar Workbook</a>
           </div>
 
-          <div class="action-card">
+          <div class="action-card" id="calendar-card">
             <div class="action-icon">📅</div>
             <h3>Salve a Data</h3>
-            <p>Evento ao vivo: <strong style="color:#fff;">Terça-feira às 20h BRT</strong>. Adicione ao seu calendário para não perder nenhuma parte.</p>
-            <a href="calendario.html" target="_blank" rel="noopener" class="btn-action-outline">Adicionar ao Calendário</a>
+            <p>Evento ao vivo: <strong style="color:#fff;">Terça-feira às 17h BRT</strong>. Adicione ao seu calendário para não perder nenhuma parte.</p>
+
+            <button type="button" class="btn-action-outline" id="btn-cal-open" aria-expanded="false" aria-controls="cal-menu">
+              Adicionar à minha agenda
+            </button>
+
+            <div id="cal-menu" class="cal-menu" role="menu" hidden>
+              <a id="cal-google" target="_blank" rel="noopener" role="menuitem">Google Calendar</a>
+              <a id="cal-outlook" target="_blank" rel="noopener" role="menuitem">Outlook</a>
+              <a id="cal-ics" role="menuitem" download="ia-do-zero-ao-roi.ics">Apple Calendar / iPhone (.ics)</a>
+            </div>
           </div>
 
         </div>
@@ -721,24 +772,156 @@
   }
 
   // Propaga nome/email/phone pro link do calendário
-  const calLink = document.querySelector('a[href="calendario.html"]');
-  if (calLink) {
-    const p = new URLSearchParams();
-    if (nome)  p.set('nome', nome);
-    if (email) p.set('email', email);
-    if (phone) p.set('phone', phone);
-    const qs = p.toString();
-    if (qs) calLink.href = 'calendario.html?' + qs;
-  }
-
   // Tracking
   if (window.__tracker) {
     window.__tracker.setLeadInfo({ name: nome, email: email, phone: phone });
   }
 })();
+
+// ═══════════════════════════════════════════════════════════════
+// ADD TO CALENDAR — Google / Outlook / Apple (.ics)
+// Proxima terca-feira as 17h BRT (UTC-3), duracao 2h
+// ═══════════════════════════════════════════════════════════════
+(function () {
+  const EVENT_TITLE = 'IA do Zero ao ROI — Evento Gratuito com Henry Risutti';
+  const EVENT_DESC  = 'Evento ao vivo com Henry Risutti mostrando o framework completo pra transformar IA em ROI previsivel, sem teoria e sem hype. O link de acesso vai chegar no seu email registrado no dia do evento. Duvidas: suporte@roicomia.com.br | https://lp.roicomia.com';
+  const EVENT_LOC   = 'Online — link enviado por email no dia do evento';
+  const EVENT_URL   = 'https://lp.roicomia.com/';
+  const DURATION_HOURS = 2;
+
+  // Proxima terca-feira as 17h00 BRT. Se hoje for terca antes das 17h, usa hoje.
+  function nextTuesday17BRT() {
+    // BRT = UTC-3. 17h BRT = 20h UTC.
+    const now = new Date();
+    // Base em UTC: hoje as 20:00 UTC (que e 17:00 BRT)
+    const target = new Date(Date.UTC(
+      now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 20, 0, 0, 0
+    ));
+    // getUTCDay: 0=dom, 1=seg, 2=ter ... 6=sab
+    let daysUntilTue = (2 - target.getUTCDay() + 7) % 7;
+    // Se ja e terca mas ja passou das 20h UTC (17h BRT), pula pra proxima semana
+    if (daysUntilTue === 0 && now.getTime() >= target.getTime()) daysUntilTue = 7;
+    target.setUTCDate(target.getUTCDate() + daysUntilTue);
+    return target;
+  }
+
+  function formatUtcCompact(d) {
+    // YYYYMMDDTHHMMSSZ
+    const pad = n => String(n).padStart(2, '0');
+    return d.getUTCFullYear() +
+      pad(d.getUTCMonth() + 1) +
+      pad(d.getUTCDate()) + 'T' +
+      pad(d.getUTCHours()) +
+      pad(d.getUTCMinutes()) +
+      pad(d.getUTCSeconds()) + 'Z';
+  }
+
+  const start = nextTuesday17BRT();
+  const end = new Date(start.getTime() + DURATION_HOURS * 60 * 60 * 1000);
+
+  const startStr = formatUtcCompact(start);
+  const endStr   = formatUtcCompact(end);
+
+  // Google Calendar
+  const gcalParams = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: EVENT_TITLE,
+    dates: startStr + '/' + endStr,
+    details: EVENT_DESC,
+    location: EVENT_LOC,
+  });
+  const gcalUrl = 'https://calendar.google.com/calendar/render?' + gcalParams.toString();
+
+  // Outlook Live
+  const outlookParams = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: EVENT_TITLE,
+    startdt: start.toISOString(),
+    enddt: end.toISOString(),
+    body: EVENT_DESC,
+    location: EVENT_LOC,
+  });
+  const outlookUrl = 'https://outlook.live.com/calendar/0/deeplink/compose?' + outlookParams.toString();
+
+  // ICS (Apple Calendar, Thunderbird, outros)
+  // Escape linhas longas e caracteres especiais do formato iCal
+  function icsEscape(s) {
+    return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  }
+  const uid = 'roicomia-' + startStr + '@lp.roicomia.com';
+  const icsLines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//RoicomIA//LP//PT-BR',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    'UID:' + uid,
+    'DTSTAMP:' + formatUtcCompact(new Date()),
+    'DTSTART:' + startStr,
+    'DTEND:' + endStr,
+    'SUMMARY:' + icsEscape(EVENT_TITLE),
+    'DESCRIPTION:' + icsEscape(EVENT_DESC),
+    'LOCATION:' + icsEscape(EVENT_LOC),
+    'URL:' + EVENT_URL,
+    'STATUS:CONFIRMED',
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Reminder',
+    'TRIGGER:-PT30M',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+    ''
+  ].join('\r\n');
+
+  const icsBlob = new Blob([icsLines], { type: 'text/calendar;charset=utf-8' });
+  const icsUrl  = URL.createObjectURL(icsBlob);
+
+  // Wiring
+  const $google  = document.getElementById('cal-google');
+  const $outlook = document.getElementById('cal-outlook');
+  const $ics     = document.getElementById('cal-ics');
+  if ($google)  $google.href  = gcalUrl;
+  if ($outlook) $outlook.href = outlookUrl;
+  if ($ics)     $ics.href     = icsUrl;
+
+  // Toggle do dropdown
+  const $btn  = document.getElementById('btn-cal-open');
+  const $menu = document.getElementById('cal-menu');
+  if ($btn && $menu) {
+    $btn.addEventListener('click', () => {
+      const open = $menu.hasAttribute('hidden') ? false : true;
+      if (open) {
+        $menu.setAttribute('hidden', '');
+        $btn.setAttribute('aria-expanded', 'false');
+      } else {
+        $menu.removeAttribute('hidden');
+        $btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+    // Fecha ao clicar em opcao
+    $menu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        $menu.setAttribute('hidden', '');
+        $btn.setAttribute('aria-expanded', 'false');
+        if (window.__tracker) {
+          window.__tracker.track('calendar_event_added', { target: a.id.replace('cal-', '') });
+        }
+      });
+    });
+    // Fecha ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!$menu.contains(e.target) && e.target !== $btn) {
+        $menu.setAttribute('hidden', '');
+        $btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+})();
 </script>
 
-  <script src="tracker.js" defer></script>
 
 </body>
 </html>

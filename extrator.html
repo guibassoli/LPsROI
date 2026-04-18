@@ -2019,6 +2019,57 @@ function handleSubmit() {
     keepalive: true,
   }).catch((err) => console.warn('[funil-webhook] extrator falhou:', err.message || err));
 
+  // Nucleo — grava submissao em form_submissions e materializa/enriquece o lead.
+  // Match do lead no backend: leads.email -> leads.phone -> lead_events.email.
+  // A API key opaca e a mesma usada pelo gate/tracker (X-API-Key).
+  const NUCLEUS_FORMS_URL = 'https://core-api.roisemhype.cloud/public/forms';
+  const nucleusPayload = {
+    formType:  'extrator-dna-marca',
+    formLabel: 'Extrator DNA de Marca',
+    contact: {
+      name:  funilPayload.nome || formData.nome || formData.q1_empresa || 'Lead sem nome',
+      email: funilPayload.email || '',
+      phone: funilPayload.phone || '',
+    },
+    data: {
+      empresa:       funilPayload.empresa,
+      setor:         funilPayload.setor,
+      produto:       funilPayload.produto,
+      estagio_ia:    funilPayload.estagio_ia,
+      icp:           funilPayload.icp,
+      diferencial:   funilPayload.diferencial,
+      canais:        funilPayload.canais,
+      ticket:        funilPayload.ticket,
+      equipe:        funilPayload.equipe,
+      processo:      funilPayload.processo,
+      ferramentas:   funilPayload.ferramentas,
+      maturidade_ia: funilPayload.maturidade_ia,
+      objetivo:      funilPayload.objetivo,
+      roi_esperado:  funilPayload.roi_esperado,
+      prazo:         funilPayload.prazo,
+      responsavel:   funilPayload.responsavel,
+      instagram:     funilPayload.instagram,
+      site:          funilPayload.site,
+      concorrentes:  funilPayload.concorrentes,
+      tom_de_voz:    funilPayload.tom_de_voz,
+      source:        funilPayload.source,
+      submitted_at:  funilPayload.submitted_at,
+    },
+    keyFields: {
+      company:            funilPayload.empresa || undefined,
+      instagramUsername:  funilPayload.instagram || undefined,
+    },
+  };
+  fetch(NUCLEUS_FORMS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key':    GATE_API_KEY,
+    },
+    body: JSON.stringify(nucleusPayload),
+    keepalive: true,
+  }).catch((err) => console.warn('[nucleus-forms] extrator falhou:', err.message || err));
+
   // Tracking: conta campos preenchidos e envia pro Nucleo
   if (window.__tracker) {
     const fields = [

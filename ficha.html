@@ -1937,6 +1937,8 @@ document.getElementById('application-form').addEventListener('submit', async fun
   const fatVal     = fat.value;
   const cargoVal   = cargo.value;
   const iaVal      = (document.querySelector('input[name="ja_testou_ia"]:checked') || {}).value || '';
+  const iaTestadaVal   = (document.getElementById('f-ia-testada')?.value || '').trim();
+  const iaBloqueiosVal = (document.getElementById('f-ia-bloqueios')?.value || '').trim();
   const desafioVal = desafio.value.trim();
   const pgtosVals  = Array.from(document.querySelectorAll('input[name="forma_pagamento"]:checked')).map(c => c.value);
 
@@ -1948,6 +1950,8 @@ document.getElementById('application-form').addEventListener('submit', async fun
     faturamento:     fatVal,
     cargo:           cargoVal,
     ja_testou_ia:    iaVal,
+    ia_testada:      iaTestadaVal,
+    ia_bloqueios:    iaBloqueiosVal,
     desafio:         desafioVal,
     forma_pagamento: pgtosVals,
     source:          'lp-roicomia-ficha',
@@ -1978,6 +1982,32 @@ document.getElementById('application-form').addEventListener('submit', async fun
       body: JSON.stringify(payload),
       keepalive: true,
     }).catch((err) => console.warn('[funil-webhook] ficha falhou:', err.message || err));
+
+    // Nucleo — grava submissao em form_submissions (formType 'ficha-aplicacao')
+    // e alimenta a Etapa 3 do scoring do funil (detalhe IA 5 + dor 10 + pagamento 15).
+    const NUCLEUS_FORMS_URL = 'https://core-api.roisemhype.cloud/public/forms';
+    const NUCLEUS_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
+    fetch(NUCLEUS_FORMS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key':    NUCLEUS_API_KEY,
+      },
+      body: JSON.stringify({
+        formType:  'ficha-aplicacao',
+        formLabel: 'Ficha de Aplicação',
+        contact: {
+          name:  nomeVal,
+          email: emailVal,
+          phone: wppVal,
+        },
+        data: payload,
+        keyFields: {
+          company: empresaVal || undefined,
+        },
+      }),
+      keepalive: true,
+    }).catch((err) => console.warn('[nucleus-forms] ficha falhou:', err.message || err));
 
     // Aguarda 1.2s pra garantir que o trackNow complete antes de trocar a tela
     await new Promise(r => setTimeout(r, 1200));

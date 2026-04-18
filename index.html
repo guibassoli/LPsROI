@@ -363,13 +363,12 @@
       align-items: center;
       gap: 10px;
     }
-    #hero .hero-overlay .logo-lockup { margin: 0; }
     /* Compact content area below image — fits rest in fold */
     #hero .hero-content {
       padding: 10px 24px 28px;
     }
-    /* hide logo duplicate in content */
-    #hero .hero-content .logo-lockup { display: none; }
+    /* Hero brand logo: hidden on desktop, shown on mobile below the image */
+    #hero .hero-content .hero-logo-img { display: none; }
     /* checks horizontal row to save space */
     /* Hero content: hide checks, keep headline + subline + CTA */
     #hero .hero-content .checks { display: none !important; }
@@ -406,8 +405,13 @@
     }
     @media (max-width: 640px) {
       #hero .hero-image-wrap { height: 46vh; }
-      #hero .hero-overlay .logo-lockup { display: none; }
-      #hero .hero-content .logo-lockup { display: flex !important; margin-bottom: 20px; }
+      #hero .hero-content .hero-logo-img {
+        display: block;
+        height: 56px;
+        width: auto;
+        margin: 0 auto 20px;
+        mix-blend-mode: screen;
+      }
       #hero .hero-content .checks { display: none !important; }
       #hero .hero-content { padding: 20px 24px 32px; }
     }
@@ -1808,30 +1812,8 @@
     <div class="hero-content">
       <div class="container">
 
-        <div class="logo-lockup">
-          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#6aeb98"/>
-                <stop offset="100%" stop-color="#6c62e4"/>
-              </linearGradient>
-            </defs>
-            <circle cx="50" cy="50" r="9" fill="url(#hg)"/>
-            <line x1="50" y1="50" x2="50" y2="20" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="76" y2="35" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="76" y2="65" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="50" y2="80" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="24" y2="65" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="24" y2="35" stroke="url(#hg)" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="50" cy="20" r="7" fill="url(#hg)"/>
-            <circle cx="76" cy="35" r="5.5" fill="url(#hg)" opacity="0.85"/>
-            <circle cx="76" cy="65" r="4.5" fill="url(#hg)" opacity="0.7"/>
-            <circle cx="50" cy="80" r="6.5" fill="url(#hg)" opacity="0.9"/>
-            <circle cx="24" cy="65" r="4.5" fill="url(#hg)" opacity="0.7"/>
-            <circle cx="24" cy="35" r="5.5" fill="url(#hg)" opacity="0.85"/>
-          </svg>
-          <div class="logo-text">Roi<em>com</em>IA</div>
-        </div>
+        <img src="logo.png" alt="RoicomIA" class="hero-logo-img" loading="eager">
+
 
         <h1>Empresários de <span class="highlight">R$ 1M+/Ano</span> Estão<br>Implementando IA Para Escalar Sem Aumentar Equipe</h1>
 

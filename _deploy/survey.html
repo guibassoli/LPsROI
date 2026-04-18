@@ -676,8 +676,8 @@
             <div class="mc-option" data-value="Abaixo de R$ 500k/ano"><div class="mc-dot"></div> Abaixo de R$ 500 mil/ano</div>
             <div class="mc-option" data-value="Entre R$ 500k e R$ 1M/ano"><div class="mc-dot"></div> Entre R$ 500 mil e R$ 1M/ano</div>
             <div class="mc-option" data-value="Entre R$ 1M e R$ 5M/ano"><div class="mc-dot"></div> Entre R$ 1M e R$ 5M/ano</div>
-            <div class="mc-option" data-value="Entre R$ 5M e R$ 20M/ano"><div class="mc-dot"></div> Entre R$ 5M e R$ 20M/ano</div>
-            <div class="mc-option" data-value="Acima de R$ 20M/ano"><div class="mc-dot"></div> Acima de R$ 20M/ano</div>
+            <div class="mc-option" data-value="Entre R$ 5M e R$ 10M/ano"><div class="mc-dot"></div> Entre R$ 5M e R$ 10M/ano</div>
+            <div class="mc-option" data-value="Acima de R$ 10M/ano"><div class="mc-dot"></div> Acima de R$ 10M/ano</div>
           </div>
         </div>
 
@@ -689,7 +689,8 @@
           <div class="mc-options">
             <div class="mc-option" data-value="CEO / Sócio-Fundador"><div class="mc-dot"></div> CEO / Sócio-Fundador</div>
             <div class="mc-option" data-value="Diretor / C-level"><div class="mc-dot"></div> Diretor / C-level</div>
-            <div class="mc-option" data-value="Gerente / Coordenador"><div class="mc-dot"></div> Gerente / Coordenador</div>
+            <div class="mc-option" data-value="Gerente"><div class="mc-dot"></div> Gerente</div>
+            <div class="mc-option" data-value="Coordenador"><div class="mc-dot"></div> Coordenador</div>
             <div class="mc-option" data-value="Analista / Assistente"><div class="mc-dot"></div> Analista / Assistente</div>
           </div>
         </div>
@@ -822,6 +823,45 @@
       }).catch((err) => console.warn('[funil-webhook] survey falhou:', err.message || err));
     }
 
+    // Nucleo — grava submissao em form_submissions (formType 'survey-qualificacao')
+    // e materializa/enriquece o lead. Mesma API key opaca do tracker/gate;
+    // publicApiKeyAuth resolve organization_id.
+    const NUCLEUS_FORMS_URL = 'https://core-api.roisemhype.cloud/public/forms';
+    const NUCLEUS_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
+    function sendSurveyToNucleo() {
+      const name = answers.nome || answers.email || 'Lead sem nome';
+      // Gate do Nucleo pra match do lead exige email OU phone — survey sempre tem
+      // pelo menos um dos dois (URL params da origem ou do q5).
+      if (!answers.email && !answers.phone) return;
+      const payload = {
+        formType:  'survey-qualificacao',
+        formLabel: 'Survey de Qualificação',
+        contact: {
+          name:  name,
+          email: answers.email || '',
+          phone: answers.phone || '',
+        },
+        data: {
+          q1_faturamento:    answers.q1 || '',
+          q2_cargo:          answers.q2 || '',
+          q3_desafio:        answers.q3 || '',
+          q4_experiencia_ia: answers.q4 || '',
+          phone_confirmed:   answers.phone || '',
+          source:            'lp-roicomia-survey',
+          submitted_at:      new Date().toISOString(),
+        },
+      };
+      fetch(NUCLEUS_FORMS_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key':    NUCLEUS_API_KEY,
+        },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch((err) => console.warn('[nucleus-forms] survey falhou:', err.message || err));
+    }
+
     // Progresso: começa em 62%, termina em 92% (próxima página = 98%)
     const PROGRESS_STEPS = { 1: 62, 2: 69, 3: 76, 4: 84, 5: 90, done: 92 };
 
@@ -886,6 +926,7 @@
         });
       }
       sendSurveyToFunil();
+      sendSurveyToNucleo();
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
       setTimeout(() => {
@@ -919,6 +960,7 @@
         });
       }
       sendSurveyToFunil();
+      sendSurveyToNucleo();
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
       setTimeout(() => {

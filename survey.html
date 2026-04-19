@@ -800,9 +800,80 @@
     const answers = { nome: leadNome, email: leadEmail, phone: leadPhone };
     let currentQ = 1;
 
+    // ── LEAD SCORING ─────────────────────────────────
+    // Regra de negócio:
+    //   A = faturamento >= R$1M E cargo decisor (CEO ou Diretor/C-level)
+    //   B = uma das duas condições (faturamento OU decisor)
+    //   C = nenhuma, mas desafio com fit direto de IA
+    //   D = demais casos
+    // O score numérico (4–20) é informativo/breakdown; o tier vem da regra.
+    const FAT_PTS = {
+      'Abaixo de R$ 500k/ano':     1,
+      'Entre R$ 500k e R$ 1M/ano': 2,
+      'Entre R$ 1M e R$ 5M/ano':   3,
+      'Entre R$ 5M e R$ 10M/ano':  4,
+      'Acima de R$ 10M/ano':       5,
+    };
+    const CARGO_PTS = {
+      'CEO / Sócio-Fundador':  5,
+      'Diretor / C-level':     4,
+      'Gerente':               3,
+      'Coordenador':           2,
+      'Analista / Assistente': 1,
+    };
+    const DESAFIO_PTS = {
+      'Automatizar processos repetitivos':   5,
+      'Escalar sem contratar mais pessoas':  5,
+      'Gerar mais leads e vendas':           4,
+      'Reduzir custos operacionais':         4,
+      'Melhorar a experiência do cliente':   3,
+    };
+    const EXP_IA_PTS = {
+      'Já implementei com resultados': 5,
+      'Uso pontualmente':              4,
+      'Tentei mas não funcionou':      3,
+      'Nunca tentei':                  2,
+    };
+    const FAT_ACIMA_1M = new Set([
+      'Entre R$ 1M e R$ 5M/ano',
+      'Entre R$ 5M e R$ 10M/ano',
+      'Acima de R$ 10M/ano',
+    ]);
+    const CARGO_DECISOR = new Set([
+      'CEO / Sócio-Fundador',
+      'Diretor / C-level',
+    ]);
+    const DESAFIO_FIT = new Set([
+      'Automatizar processos repetitivos',
+      'Escalar sem contratar mais pessoas',
+      'Gerar mais leads e vendas',
+      'Reduzir custos operacionais',
+    ]);
+
+    function computeLeadScore(a) {
+      const q1 = FAT_PTS[a.q1]     || 0;
+      const q2 = CARGO_PTS[a.q2]   || 0;
+      const q3 = DESAFIO_PTS[a.q3] || 0;
+      const q4 = EXP_IA_PTS[a.q4]  || 0;
+      const score = q1 + q2 + q3 + q4;
+
+      const hasFat     = FAT_ACIMA_1M.has(a.q1);
+      const hasDecisor = CARGO_DECISOR.has(a.q2);
+      const hasFit     = DESAFIO_FIT.has(a.q3);
+
+      let tier;
+      if (hasFat && hasDecisor)      tier = 'A';
+      else if (hasFat || hasDecisor) tier = 'B';
+      else if (hasFit)               tier = 'C';
+      else                           tier = 'D';
+
+      return { tier, score, breakdown: { q1, q2, q3, q4 } };
+    }
+
     // Webhook Funil.AI — fire-and-forget, Nucleo e backup.
     const FUNIL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/jQEzeVVb4zeKArgbpiWs/webhook-trigger/707b294b-fa52-4ff1-9cc5-7175db8fd144';
     function sendSurveyToFunil() {
+      const ls = computeLeadScore(answers);
       const payload = {
         nome:             answers.nome,
         email:            answers.email,
@@ -811,6 +882,9 @@
         cargo:            answers.q2 || '',
         desafio:          answers.q3 || '',
         experiencia_ia:   answers.q4 || '',
+        lead_tier:        ls.tier,
+        lead_score:       ls.score,
+        score_breakdown:  ls.breakdown,
         lead_id_external: (window.__tracker && window.__tracker.getLeadId) ? window.__tracker.getLeadId() : null,
         source:           'lp-roicomia-survey',
         submitted_at:     new Date().toISOString(),
@@ -823,6 +897,33 @@
       }).catch((err) => console.warn('[funil-webhook] survey falhou:', err.message || err));
     }
 
+    // Webhook Leadscore — envia tier/score pra automação de qualificação.
+    const LEADSCORE_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/jQEzeVVb4zeKArgbpiWs/webhook-trigger/6023cdb0-9146-4c6a-83ce-4edc02bbc15e';
+    function sendLeadscoreToWebhook() {
+      const ls = computeLeadScore(answers);
+      const payload = {
+        nome:             answers.nome,
+        email:            answers.email,
+        phone:            answers.phone,
+        faturamento:      answers.q1 || '',
+        cargo:            answers.q2 || '',
+        desafio:          answers.q3 || '',
+        experiencia_ia:   answers.q4 || '',
+        lead_tier:        ls.tier,
+        lead_score:       ls.score,
+        score_breakdown:  ls.breakdown,
+        lead_id_external: (window.__tracker && window.__tracker.getLeadId) ? window.__tracker.getLeadId() : null,
+        source:           'lp-roicomia-survey',
+        submitted_at:     new Date().toISOString(),
+      };
+      fetch(LEADSCORE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch((err) => console.warn('[leadscore-webhook] survey falhou:', err.message || err));
+    }
+
     // Nucleo — grava submissao em form_submissions (formType 'survey-qualificacao')
     // e materializa/enriquece o lead. Mesma API key opaca do tracker/gate;
     // publicApiKeyAuth resolve organization_id.
@@ -833,6 +934,7 @@
       // Gate do Nucleo pra match do lead exige email OU phone — survey sempre tem
       // pelo menos um dos dois (URL params da origem ou do q5).
       if (!answers.email && !answers.phone) return;
+      const ls = computeLeadScore(answers);
       const payload = {
         formType:  'survey-qualificacao',
         formLabel: 'Survey de Qualificação',
@@ -846,6 +948,9 @@
           q2_cargo:          answers.q2 || '',
           q3_desafio:        answers.q3 || '',
           q4_experiencia_ia: answers.q4 || '',
+          lead_tier:         ls.tier,
+          lead_score:        ls.score,
+          score_breakdown:   ls.breakdown,
           phone_confirmed:   answers.phone || '',
           source:            'lp-roicomia-survey',
           submitted_at:      new Date().toISOString(),
@@ -911,11 +1016,14 @@
         });
       }
       if (window.__tracker) {
+        const ls = computeLeadScore(answers);
         window.__tracker.trackNow('survey_completed', {
           q1_faturamento: answers.q1,
           q2_cargo: answers.q2,
           q3_desafio: answers.q3,
           q4_experiencia_ia: answers.q4,
+          lead_tier: ls.tier,
+          lead_score: ls.score,
           phone_confirmed: answers.phone
         });
       }
@@ -927,6 +1035,7 @@
       }
       sendSurveyToFunil();
       sendSurveyToNucleo();
+      sendLeadscoreToWebhook();
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
       setTimeout(() => {
@@ -945,11 +1054,14 @@
       renderDots();
 
       if (window.__tracker) {
+        const ls = computeLeadScore(answers);
         window.__tracker.trackNow('survey_completed', {
           q1_faturamento: answers.q1,
           q2_cargo: answers.q2,
           q3_desafio: answers.q3,
           q4_experiencia_ia: answers.q4,
+          lead_tier: ls.tier,
+          lead_score: ls.score,
           phone_confirmed: answers.phone
         });
       }
@@ -961,6 +1073,7 @@
       }
       sendSurveyToFunil();
       sendSurveyToNucleo();
+      sendLeadscoreToWebhook();
 
       const p = new URLSearchParams({ nome: answers.nome, email: answers.email, phone: answers.phone });
       setTimeout(() => {

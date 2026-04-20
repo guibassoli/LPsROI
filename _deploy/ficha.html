@@ -1719,7 +1719,12 @@ function fillForm(data) {
 
 // ══════════════════════════════════════════════════
 // STEP 1 — VALIDAÇÃO
+// Verifica email contra o DB do Nucleo (mesmo endpoint
+// do extrator.html — /public/tracking/check-access).
 // ══════════════════════════════════════════════════
+
+const GATE_CHECK_URL = 'https://core-api.roisemhype.cloud/public/tracking/check-access';
+const GATE_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
 
 async function validateAndLoad() {
   const emailEl = document.getElementById('val-email');
@@ -1746,41 +1751,84 @@ async function validateAndLoad() {
   }
   if (!ok) return;
 
-  showLoading('Buscando seus dados...');
+  showLoading('Verificando sua inscrição...');
 
   try {
-    // ────────────────────────────────────────────────
-    // TODO: Substituir por chamada real à API GHL
-    // const res = await fetch('/api/get-lead-data', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email, whatsapp: wpp })
-    // });
-    // if (!res.ok) throw new Error('not_found');
-    // const leadData = await res.json();
-    // ────────────────────────────────────────────────
-
-    // MOCK para demonstração — simula dados encontrados
-    await new Promise(r => setTimeout(r, 1400));
-    const leadData = {
-      nome: 'Guilherme Bassoli',
-      email: email,
-      whatsapp: wpp,
-      nome_empresa: '',
-      faturamento_anual: '1m_5m',
-      cargo: 'socio_ceo',
-      estagio_ia: 'uso_pontualmente',
-      gargalo_operacional: ''
-    };
+    const res = await fetch(
+      GATE_CHECK_URL + '?email=' + encodeURIComponent(email),
+      { headers: { 'X-API-Key': GATE_API_KEY } }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const { allowed, name } = await res.json();
 
     hideLoading();
-    showForm(leadData, true);
 
-  } catch (e) {
+    if (!allowed) {
+      // Email nao consta no evento — bloqueia com mesma UX do extrator
+      if (window.__tracker) window.__tracker.track('ficha_gate_blocked', { email });
+      showBlocked(email);
+      return;
+    }
+
+    // Allowed: amarra lead no tracker e libera form
+    const nome = name || email.split('@')[0];
+    if (window.__tracker) {
+      window.__tracker.setLeadInfo({ name: nome, email, phone: wpp });
+      window.__tracker.trackNow('ficha_gate_passed', { email });
+    }
+
+    // Enriquecimento opcional: localStorage do extrator (se email bater)
+    const normEmail = (v) => (v || '').trim().toLowerCase();
+    let extra = {};
+    try {
+      const raw = localStorage.getItem('roi_extrator_data');
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s && s.email && normEmail(s.email) === normEmail(email)) {
+          extra = { gargalo_operacional: s.q10_processo || '' };
+        }
+      }
+    } catch (e) { /* storage indisponivel */ }
+
+    showForm({
+      nome:                nome,
+      email:               email,
+      whatsapp:            wpp,
+      nome_empresa:        '',
+      faturamento_anual:   '',
+      cargo:               '',
+      estagio_ia:          '',
+      gargalo_operacional: extra.gargalo_operacional || '',
+    }, true);
+
+  } catch (err) {
     hideLoading();
-    // Dados não encontrados — mostrar formulário vazio
-    showForm(null, false);
+    console.warn('[ficha-gate] verificacao falhou:', err.message || err);
+    const errE = document.getElementById('err-val-email');
+    errE.style.display = 'block';
+    errE.textContent    = 'Erro ao verificar. Tente novamente em instantes.';
   }
+}
+
+// Bloqueia o acesso quando o email nao consta no evento, inline no card do step 1.
+function showBlocked(email) {
+  const card = document.getElementById('step-validation');
+  if (!card) return;
+  card.innerHTML = `
+    <div style="text-align:center;padding:12px 0;">
+      <div style="font-size:52px;margin-bottom:14px;">🔒</div>
+      <h2 style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--f-text);margin-bottom:10px;">Acesso exclusivo</h2>
+      <p style="font-size:15px;color:var(--f-muted);line-height:1.65;margin-bottom:20px;">
+        A ficha de aplicação é liberada somente pra quem se inscreveu no evento <strong style="color:var(--f-text);">IA do Zero ao ROI</strong>.
+      </p>
+      <div style="background:rgba(252,129,50,0.06);border:1px solid rgba(252,129,50,0.3);border-radius:12px;padding:16px 20px;margin-bottom:20px;text-align:left;">
+        <p style="font-size:13px;color:var(--f-muted);margin:0 0 10px;"><strong style="color:#d25a0f;">E-mail verificado:</strong> ${email}</p>
+        <p style="font-size:13px;color:var(--f-muted);margin:0;line-height:1.55;">Se já se inscreveu mas ainda não entrou no grupo, entra agora. Senão, a inscrição é gratuita e leva menos de 1 minuto.</p>
+      </div>
+      <a href="grupo.html" style="display:block;background:linear-gradient(135deg,#6aeb98,#6c62e4);color:#fff;font-weight:800;font-size:15px;text-decoration:none;padding:16px 28px;border-radius:100px;margin-bottom:10px;">→ Entrar no grupo do WhatsApp</a>
+      <a href="index.html" style="display:block;color:var(--f-muted);font-size:13px;text-decoration:none;padding:10px;">Ainda não me inscrevi no evento</a>
+    </div>
+  `;
 }
 
 function showForm(leadData, found) {
@@ -1804,6 +1852,8 @@ function showForm(leadData, found) {
       `Pré-preenchemos ${filled} de ${TOTAL_FIELDS} campos (${pct}%). Confirme os dados abaixo e preencha o que está faltando.`;
     bar.style.display = 'block';
   } else {
+    // Sem match: ainda pre-preenche o email/wpp que o usuario acabou de digitar
+    if (leadData) fillForm(leadData);
     document.getElementById('not-found-bar').style.display = 'block';
   }
 
@@ -2193,5 +2243,6 @@ function launchMapaConfetti() {
 });
 </script>
 
+<script src="https://link.funil.ai/js/external-tracking.js" data-tracking-id="tk_51eb73e12aeb45e99193f00b98992aa0"></script>
 </body>
 </html>

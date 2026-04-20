@@ -1592,10 +1592,18 @@
       .container, .container-wide { padding: 0 20px; }
 
       /* ── STICKY NAV ────────────────────────────── */
-      #sticky-nav { padding: 12px 16px; }
-      #sticky-nav .nav-logo img { height: 28px; }
-      #sticky-nav .nav-vagas { display: none; }
-      #sticky-nav .btn-nav { padding: 9px 16px; font-size: 12px; }
+      #sticky-nav { padding: 10px 12px; }
+      #sticky-nav .nav-logo img { height: 26px; }
+      #sticky-nav .nav-right { gap: 8px; }
+      #sticky-nav .nav-vagas {
+        font-size: 10px;
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: baseline;
+        gap: 4px;
+      }
+      #sticky-nav .nav-vagas strong { font-size: 12px; }
+      #sticky-nav .btn-nav { padding: 8px 12px; font-size: 11px; letter-spacing: 0.03em; }
 
       /* ── HERO ──────────────────────────────────── */
       #hero .hero-image-wrap {
@@ -1769,6 +1777,27 @@
       .btn-cta { font-size: 13px; padding: 15px 20px; }
       .metrics-grid { grid-template-columns: 1fr; }
       .metrics-grid .metric-card:last-child { grid-column: auto; }
+      /* Condensa "87 vagas restantes" em pill só com número + "vagas" */
+      #sticky-nav .nav-vagas {
+        font-size: 0;
+        gap: 0;
+      }
+      #sticky-nav .nav-vagas strong {
+        font-size: 11px;
+        color: var(--orange);
+        background: rgba(252,129,50,0.12);
+        border: 1px solid rgba(252,129,50,0.35);
+        padding: 3px 8px;
+        border-radius: 100px;
+        line-height: 1;
+      }
+      #sticky-nav .nav-vagas::after {
+        content: " vagas";
+        font-size: 10px;
+        color: var(--muted);
+        margin-left: 4px;
+        letter-spacing: 0.02em;
+      }
     }
   </style>
   <!-- Tracker: carregado no head pra window.__tracker estar pronto antes dos inline scripts -->
@@ -3079,5 +3108,6 @@
 
   <!-- Tracker: tracking progressivo de leads para o Nucleo -->
 
+<script src="https://link.funil.ai/js/external-tracking.js" data-tracking-id="tk_51eb73e12aeb45e99193f00b98992aa0"></script>
 </body>
 </html>

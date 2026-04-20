@@ -905,87 +905,93 @@
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-    .bio-grid {
+
+    /* ── 3-PARTNER GRID ───────────────────────────── */
+    .partners-grid {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 72px;
-      align-items: start;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 48px;
     }
-    @media (max-width: 700px) {
-      .bio-grid { grid-template-columns: 1fr; gap: 40px; }
-      .bio-photo { margin: 0 auto; }
-    }
-    .bio-photo {
-      width: 320px; height: 360px;
-      border-radius: 16px;
+    @media (max-width: 900px) { .partners-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; } }
+
+    .partner-card {
       background: var(--card);
       border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 0 60px rgba(106,235,152,0.12), 0 0 120px rgba(108,98,228,0.08);
+      transition: border-color 0.25s, transform 0.25s;
     }
-    .bio-photo::after {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(106,235,152,0.4), rgba(108,98,228,0.4));
-      z-index: -1;
+    .partner-card:hover {
+      border-color: rgba(106,235,152,0.25);
+      transform: translateY(-4px);
     }
-    .bio-photo-placeholder {
-      font-size: 60px;
-      opacity: 0.3;
-    }
-    .bio-photo-label {
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
+    .partner-card.featured {
+      border-color: rgba(106,235,152,0.2);
+      box-shadow: 0 0 40px rgba(106,235,152,0.08);
     }
 
-    .bio-content h2 { margin-bottom: 8px; }
-    .bio-content .bio-role {
-      font-size: 14px;
-      color: var(--green);
-      font-weight: 600;
-      letter-spacing: 0.05em;
+    .partner-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .partner-body {
+      padding: 24px 24px 28px;
+    }
+    .partner-role {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 24px;
+      color: var(--green);
+      margin-bottom: 6px;
     }
-    .bio-content p {
-      font-size: 16px;
-      color: rgba(255,255,255,0.65);
-      line-height: 1.75;
-      margin-bottom: 32px;
-    }
-    .bio-stats {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-    .bio-stat .num {
+    .partner-name {
       font-family: var(--font-serif);
-      font-size: 30px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .partner-bio {
+      font-size: 14px;
+      color: rgba(255,255,255,0.58);
+      line-height: 1.7;
+    }
+    .partner-stats {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .partner-stat .num {
+      font-family: var(--font-serif);
+      font-size: 22px;
       font-weight: 700;
       color: var(--green);
       display: block;
+      line-height: 1.1;
     }
-    .bio-stat .lbl {
-      font-size: 12px;
+    .partner-stat .lbl {
+      font-size: 10px;
       color: var(--muted);
-      font-weight: 500;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
+
+    /* keep legacy classes for other references */
+    .bio-grid { display: none; }
+    .bio-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+    .bio-stat .num { font-family: var(--font-serif); font-size: 30px; font-weight: 700; color: var(--green); display: block; }
+    .bio-stat .lbl { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* ── FOR WHO ──────────────────────────────────── */
     #para-quem { background: var(--black); }
@@ -2144,47 +2150,85 @@
     </div>
   </section>
 
-  <!-- HENRY -->
+  <!-- SÓCIOS / PARCEIROS -->
   <section id="henry">
     <div class="container-wide">
-      <div class="bio-grid">
-        <div>
-          <div class="bio-photo">
-            <img src="henry-bio.jpg" alt="Henry Risutti" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
-          </div>
-        </div>
-        <div class="bio-content">
-          <span class="section-label">Quem vai apresentar</span>
-          <h2 class="section-title fade-up" style="font-size:clamp(26px,3.5vw,40px);">Henry Risutti</h2>
-          <p class="bio-role">Fundador da RoicomIA · Especialista em Implementação de IA</p>
-          <p class="fade-up">
-            Henry Risutti é fundador da <strong>RoicomIA</strong> e referência em implementação prática de
-            Inteligência Artificial em empresas de médio porte no Brasil. Nos últimos anos, aplicou o Método
-            ROI com IA em mais de 150 empresas de serviços, e-commerce e B2B.
-          </p>
-          <p class="fade-up" style="color:var(--muted);font-size:15px;">
-            Não é teórico. Não é vendedor de sonho. É quem senta na sua frente, entende sua operação
-            e entrega o método que funciona para o seu negócio específico.
-          </p>
-          <div class="bio-stats fade-up">
-            <div class="bio-stat">
-              <span class="num">150+</span>
-              <span class="lbl">Empresas</span>
-            </div>
-            <div class="bio-stat">
-              <span class="num">R$ 2,4M</span>
-              <span class="lbl">Eficiência Gerada</span>
-            </div>
-            <div class="bio-stat">
-              <span class="num">47%</span>
-              <span class="lbl">Redução operacional</span>
+      <div class="text-center">
+        <span class="section-label">Quem vai apresentar</span>
+        <h2 class="section-title fade-up">Os sócios por trás do<br><em>ROI com IA</em></h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="partners-grid">
+
+        <!-- Henry -->
+        <div class="partner-card featured fade-up">
+          <img class="partner-photo" src="henry-bio.jpg" alt="Henry Risutti">
+          <div class="partner-body">
+            <p class="partner-role">Fundador · Especialista em IA</p>
+            <h3 class="partner-name">Henry Risutti</h3>
+            <p class="partner-bio">Fundador da RoicomIA e referência em implementação prática de Inteligência Artificial em empresas de médio porte no Brasil. Aplicou o Método ROI com IA em mais de 150 empresas de serviços, e-commerce e B2B. Não é teórico — é quem senta na sua frente, entende sua operação e entrega o método que funciona para o seu negócio.</p>
+            <div class="partner-stats">
+              <div class="partner-stat">
+                <span class="num">150+</span>
+                <span class="lbl">Empresas</span>
+              </div>
+              <div class="partner-stat">
+                <span class="num">R$ 2,4M</span>
+                <span class="lbl">Eficiência Gerada</span>
+              </div>
+              <div class="partner-stat">
+                <span class="num">47%</span>
+                <span class="lbl">Redução operacional</span>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Guilherme -->
+        <div class="partner-card fade-up">
+          <img class="partner-photo" src="guilherme-bio.jpg" alt="Guilherme Bassoli">
+          <div class="partner-body">
+            <p class="partner-role">Sócio · Estrategista Digital</p>
+            <h3 class="partner-name">Guilherme Bassoli</h3>
+            <p class="partner-bio">Empresário e estrategista há uma década. Desenvolveu e operou estratégias para grandes especialistas do mercado digital. Entusiasta de tecnologia, implementou IA para mais de 2.300 clientes no Brasil, Estados Unidos e Europa.</p>
+            <div class="partner-stats">
+              <div class="partner-stat">
+                <span class="num">2.300+</span>
+                <span class="lbl">Clientes</span>
+              </div>
+              <div class="partner-stat">
+                <span class="num">10+</span>
+                <span class="lbl">Anos de mercado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alexandre -->
+        <div class="partner-card fade-up">
+          <img class="partner-photo" src="alexandre-bio.jpg" alt="Alexandre Dielo">
+          <div class="partner-body">
+            <p class="partner-role">Sócio · Investidor & Mentor</p>
+            <h3 class="partner-name">Alexandre Dielo</h3>
+            <p class="partner-bio">Empresário com mais de 30 anos de experiência em empreendedorismo. Especializado em processos, liderança de equipes e finanças. Investe atualmente em mais de 10 startups e empresas de tecnologia. Acelera e escala resultados com o uso diário e contínuo de IA.</p>
+            <div class="partner-stats">
+              <div class="partner-stat">
+                <span class="num">30+</span>
+                <span class="lbl">Anos de experiência</span>
+              </div>
+              <div class="partner-stat">
+                <span class="num">10+</span>
+                <span class="lbl">Startups investidas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="section-cta fade-up">
-        <div class="cta-group"><a href="#registro" class="btn-cta-sm">→ Quero Aprender com o Henry — Reservar Vaga</a></div>
+        <div class="cta-group"><a href="#registro" class="btn-cta-sm">→ Aprender com esse time — Reservar Vaga</a></div>
       </div>
     </div>
   </section>

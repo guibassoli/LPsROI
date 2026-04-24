@@ -929,20 +929,33 @@
       }).catch((err) => console.warn('[leadscore-webhook] survey falhou:', err.message || err));
     }
 
-    // Nucleo — grava submissao em form_submissions (formType 'survey-qualificacao')
-    // e materializa/enriquece o lead. Mesma API key opaca do tracker/gate;
-    // publicApiKeyAuth resolve organization_id.
-    const NUCLEUS_FORMS_URL = 'https://core-api.roisemhype.cloud/public/forms';
-    const NUCLEUS_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
+    // Nucleo interno (nucleo_roi) — grava submissao em form_submissions
+    // (formType 'survey-qualificacao') e materializa/enriquece o lead.
+    // externalSubmissionId dedupa retries dentro da mesma sessao.
+    const NUCLEUS_FORMS_URL = 'https://nucleo-api.roicomia.com/webhooks/forms';
+    const NUCLEUS_API_KEY   = 'nuc_e641f7ab3280e586c2810ac59d9bac644f648c2c16e7894bb5fb26e60975cab2';
+    const NUCLEUS_FORM_TYPE = 'survey-qualificacao';
+    function nucleusSubmissionId(formType) {
+      const k = 'nucleus-sub-' + formType;
+      let id = sessionStorage.getItem(k);
+      if (!id) {
+        id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+        sessionStorage.setItem(k, id);
+      }
+      return id;
+    }
     function sendSurveyToNucleo() {
       const name = answers.nome || answers.email || 'Lead sem nome';
-      // Gate do Nucleo pra match do lead exige email OU phone — survey sempre tem
-      // pelo menos um dos dois (URL params da origem ou do q5).
+      // Backend exige email OU phone — survey sempre tem pelo menos um dos dois
+      // (URL params da origem ou do q5).
       if (!answers.email && !answers.phone) return;
       const ls = computeLeadScore(answers);
       const payload = {
-        formType:  'survey-qualificacao',
+        formType:  NUCLEUS_FORM_TYPE,
         formLabel: 'Survey de Qualificação',
+        externalSubmissionId: nucleusSubmissionId(NUCLEUS_FORM_TYPE),
         contact: {
           name:  name,
           email: answers.email || '',

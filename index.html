@@ -2752,6 +2752,47 @@
         const email = form.querySelector('[type="email"]').value.trim();
         const phone = form.querySelector('[type="tel"]').value.trim();
 
+        // Nucleo interno (nucleo_roi) — cria o lead ja na inscricao do index.
+        // Dessa forma, mesmo que o cara nao chegue no survey/ficha, voce enxerga
+        // quem se inscreveu no webinario. Lead vai pro pipeline default com
+        // formType 'inscricao-webinario'.
+        // externalSubmissionId dedupa retries dentro da mesma sessao.
+        const NUCLEUS_FORMS_URL = 'https://nucleo-api.roicomia.com/webhooks/forms';
+        const NUCLEUS_API_KEY   = 'nuc_e641f7ab3280e586c2810ac59d9bac644f648c2c16e7894bb5fb26e60975cab2';
+        const NUCLEUS_FORM_TYPE = 'inscricao-webinario';
+        (function() {
+          const k = 'nucleus-sub-' + NUCLEUS_FORM_TYPE;
+          let subId = sessionStorage.getItem(k);
+          if (!subId) {
+            subId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+              ? crypto.randomUUID()
+              : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+            sessionStorage.setItem(k, subId);
+          }
+          fetch(NUCLEUS_FORMS_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key':    NUCLEUS_API_KEY,
+            },
+            body: JSON.stringify({
+              formType:  NUCLEUS_FORM_TYPE,
+              formLabel: 'Inscrição no Webinário',
+              externalSubmissionId: subId,
+              contact: {
+                name:  nome,
+                email: email,
+                phone: phone,
+              },
+              data: {
+                source:       'lp-roicomia-index',
+                submitted_at: new Date().toISOString(),
+              },
+            }),
+            keepalive: true,
+          }).catch((err) => console.warn('[nucleus-forms] index falhou:', err.message || err));
+        })();
+
         // Tracking: envia form_submitted com dados de contato pro Nucleo
         if (window.__tracker) {
           window.__tracker.setLeadInfo({ name: nome, email, phone });

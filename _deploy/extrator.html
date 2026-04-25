@@ -2019,13 +2019,27 @@ function handleSubmit() {
     keepalive: true,
   }).catch((err) => console.warn('[funil-webhook] extrator falhou:', err.message || err));
 
-  // Nucleo — grava submissao em form_submissions e materializa/enriquece o lead.
-  // Match do lead no backend: leads.email -> leads.phone -> lead_events.email.
-  // A API key opaca e a mesma usada pelo gate/tracker (X-API-Key).
-  const NUCLEUS_FORMS_URL = 'https://core-api.roisemhype.cloud/public/forms';
+  // Nucleo interno (nucleo_roi) — grava submissao em form_submissions e
+  // materializa/enriquece o lead. Match no backend: leads.email -> leads.phone.
+  // externalSubmissionId garante idempotencia: retry dentro da mesma sessao reusa o ID.
+  const NUCLEUS_FORMS_URL = 'https://nucleo-api.roicomia.com/webhooks/forms';
+  const NUCLEUS_API_KEY   = 'nuc_e641f7ab3280e586c2810ac59d9bac644f648c2c16e7894bb5fb26e60975cab2';
+  const NUCLEUS_FORM_TYPE = 'extrator-dna-marca';
+  function nucleusSubmissionId(formType) {
+    const k = 'nucleus-sub-' + formType;
+    let id = sessionStorage.getItem(k);
+    if (!id) {
+      id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+      sessionStorage.setItem(k, id);
+    }
+    return id;
+  }
   const nucleusPayload = {
-    formType:  'extrator-dna-marca',
+    formType:  NUCLEUS_FORM_TYPE,
     formLabel: 'Extrator DNA de Marca',
+    externalSubmissionId: nucleusSubmissionId(NUCLEUS_FORM_TYPE),
     contact: {
       name:  funilPayload.nome || formData.nome || formData.q1_empresa || 'Lead sem nome',
       email: funilPayload.email || '',
@@ -2064,7 +2078,7 @@ function handleSubmit() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-API-Key':    GATE_API_KEY,
+      'X-API-Key':    NUCLEUS_API_KEY,
     },
     body: JSON.stringify(nucleusPayload),
     keepalive: true,

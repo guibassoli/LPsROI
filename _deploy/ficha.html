@@ -2033,10 +2033,23 @@ document.getElementById('application-form').addEventListener('submit', async fun
       keepalive: true,
     }).catch((err) => console.warn('[funil-webhook] ficha falhou:', err.message || err));
 
-    // Nucleo — grava submissao em form_submissions (formType 'ficha-aplicacao')
-    // e alimenta a Etapa 3 do scoring do funil (detalhe IA 5 + dor 10 + pagamento 15).
-    const NUCLEUS_FORMS_URL = 'https://core-api.roisemhype.cloud/public/forms';
-    const NUCLEUS_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
+    // Nucleo interno (nucleo_roi) — grava submissao em form_submissions
+    // (formType 'ficha-aplicacao') e alimenta a Etapa 3 do scoring do funil.
+    // externalSubmissionId dedupa retries dentro da mesma sessao.
+    const NUCLEUS_FORMS_URL = 'https://nucleo-api.roicomia.com/webhooks/forms';
+    const NUCLEUS_API_KEY   = 'nuc_e641f7ab3280e586c2810ac59d9bac644f648c2c16e7894bb5fb26e60975cab2';
+    const NUCLEUS_FORM_TYPE = 'ficha-aplicacao';
+    function nucleusSubmissionId(formType) {
+      const k = 'nucleus-sub-' + formType;
+      let id = sessionStorage.getItem(k);
+      if (!id) {
+        id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+        sessionStorage.setItem(k, id);
+      }
+      return id;
+    }
     fetch(NUCLEUS_FORMS_URL, {
       method: 'POST',
       headers: {
@@ -2044,8 +2057,9 @@ document.getElementById('application-form').addEventListener('submit', async fun
         'X-API-Key':    NUCLEUS_API_KEY,
       },
       body: JSON.stringify({
-        formType:  'ficha-aplicacao',
+        formType:  NUCLEUS_FORM_TYPE,
         formLabel: 'Ficha de Aplicação',
+        externalSubmissionId: nucleusSubmissionId(NUCLEUS_FORM_TYPE),
         contact: {
           name:  nomeVal,
           email: emailVal,

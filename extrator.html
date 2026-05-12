@@ -2178,6 +2178,11 @@ function handleSubmit() {
     formType:  NUCLEUS_FORM_TYPE,
     formLabel: 'Extrator DNA de Marca',
     externalSubmissionId: nucleusSubmissionId(NUCLEUS_FORM_TYPE),
+    // leadIdExternal vem do tracker (init/extrator-check/etc) e dá ao backend
+    // do nucleo_roi um match exato no /webhooks/forms — vence email/phone na
+    // cascada e evita amarrar o submit ao lead errado quando phone colide com
+    // outro contato. Ver fix backend (PR #184).
+    leadIdExternal: funilPayload.lead_id_external || undefined,
     contact: {
       name:  funilPayload.nome || formData.nome || formData.q1_empresa || 'Lead sem nome',
       email: funilPayload.email || '',

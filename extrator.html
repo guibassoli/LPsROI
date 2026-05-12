@@ -157,7 +157,26 @@
       margin-bottom: 32px;
     }
 
-    /* Email input */
+    /* Captura: 3 campos empilhados */
+    .gate-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .gate-field { display: flex; flex-direction: column; }
+    .gate-field-err {
+      font-size: 12px;
+      color: #f87171;
+      margin-top: 6px;
+      padding-left: 4px;
+      display: none;
+      line-height: 1.4;
+    }
+    .gate-field-err.show { display: block; }
+
+    /* Email input (compat com gate-input-wrap antigo, agora não usado mas mantido pra estilos) */
     .gate-input-wrap {
       display: flex;
       gap: 10px;
@@ -380,6 +399,63 @@
       max-width: 640px;
       margin: 0 auto;
       line-height: 1.65;
+    }
+
+    /* ── POST-GATE BANNER (convite pro grupo, não bloqueante) ──── */
+    .post-gate-banner {
+      max-width: 920px;
+      margin: 0 auto 24px;
+      padding: 0 24px;
+    }
+    .post-gate-banner-inner {
+      background: rgba(106,235,152,0.06);
+      border: 1px solid rgba(106,235,152,0.18);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .post-gate-banner-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .post-gate-banner-text {
+      flex: 1;
+      min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.45;
+    }
+    .post-gate-banner-text strong { color: var(--white); font-weight: 700; }
+    .post-gate-banner-text em { color: var(--green); font-style: normal; font-weight: 600; }
+    .post-gate-banner-cta {
+      flex-shrink: 0;
+      background: rgba(106,235,152,0.14);
+      border: 1px solid rgba(106,235,152,0.3);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .post-gate-banner-cta:hover {
+      background: rgba(106,235,152,0.22);
+      border-color: rgba(106,235,152,0.5);
+      transform: translateY(-1px);
+    }
+    @media (max-width: 560px) {
+      .post-gate-banner-inner { flex-direction: column; align-items: stretch; text-align: left; }
+      .post-gate-banner-cta { text-align: center; }
     }
 
     /* ── BENEFITS SECTION ───────────────────────────── */
@@ -931,44 +1007,43 @@
   <div class="gate-box">
     <div class="gate-badge">🧬 Ferramenta Exclusiva</div>
 
-    <!-- ── ESTADO 1: Input de email ── -->
+    <!-- ── ESTADO 1: Captura (nome + telefone + email) ── -->
     <div class="gate-state active" id="gate-input">
       <h1 class="gate-title">Acesse seu<br><em>Extrator de DNA</em></h1>
-      <p class="gate-sub">Informe o e-mail com que você se inscreveu no evento para acessar a ferramenta.</p>
+      <p class="gate-sub">Preencha seus dados pra liberar a ferramenta gratuita.</p>
 
-      <div class="gate-input-wrap">
-        <input type="email" id="gate-email" class="gate-input"
-          placeholder="seu@email.com" autocomplete="email"
-          onkeydown="if(event.key==='Enter') checkGateEmail()">
-        <button class="btn-gate-check" id="btn-gate-check" onclick="checkGateEmail()">
-          Acessar →
-        </button>
+      <div class="gate-fields">
+        <div class="gate-field">
+          <input type="text" id="gate-name" class="gate-input"
+            placeholder="Seu nome" autocomplete="name" maxlength="200">
+          <div class="gate-field-err" data-for="name"></div>
+        </div>
+        <div class="gate-field">
+          <input type="tel" id="gate-phone" class="gate-input"
+            placeholder="WhatsApp com DDD" autocomplete="tel" maxlength="40" inputmode="tel">
+          <div class="gate-field-err" data-for="phone"></div>
+        </div>
+        <div class="gate-field">
+          <input type="email" id="gate-email" class="gate-input"
+            placeholder="seu@email.com" autocomplete="email" maxlength="320"
+            onkeydown="if(event.key==='Enter') captureGateSubmit()">
+          <div class="gate-field-err" data-for="email"></div>
+        </div>
       </div>
-      <div class="gate-error-msg" id="gate-err">Por favor, informe um e-mail válido.</div>
-      <p class="gate-helper">🔒 Acesso exclusivo para participantes inscritos no evento <strong style="color:rgba(255,255,255,0.5)">IA do Zero ao ROI</strong>.</p>
+
+      <button class="btn-gate-check" id="btn-gate-check" onclick="captureGateSubmit()" style="width:100%;margin-top:4px;">
+        Liberar Extrator →
+      </button>
+
+      <div class="gate-error-msg" id="gate-err">Erro ao liberar. Tente novamente em instantes.</div>
+      <p class="gate-helper">🔒 Seus dados ficam seguros. Usamos pra liberar o acesso e te enviar o relatório quando estiver pronto.</p>
     </div>
 
-    <!-- ── ESTADO 2: Verificando ── -->
+    <!-- ── ESTADO 2: Liberando acesso ── -->
     <div class="gate-state" id="gate-loading">
       <div class="gate-spinner"></div>
-      <h2 class="gate-title" style="font-size:22px;">Verificando inscrição...</h2>
-      <p class="gate-sub" style="margin-bottom:0;">Consultando sua inscrição no evento.</p>
-    </div>
-
-    <!-- ── ESTADO 3: Não liberado (não entrou no grupo) ── -->
-    <div class="gate-state" id="gate-not-found">
-      <span class="not-found-icon">🔒</span>
-      <h1 class="gate-title" style="font-size:clamp(22px,4vw,28px);">Acesso exclusivo do grupo</h1>
-      <p class="gate-sub">O Extrator de DNA é liberado somente pra quem entrou no grupo do WhatsApp do evento <strong style="color:#fff;">IA do Zero ao ROI</strong>.</p>
-
-      <div class="not-found-card">
-        <p><strong>E-mail verificado:</strong> <span id="gate-email-display">—</span><br><br>
-        Se você já se inscreveu mas ainda não entrou no grupo, entra agora pelo link abaixo. Se ainda não se inscreveu, a inscrição é gratuita e leva menos de 1 minuto.</p>
-      </div>
-
-      <a href="grupo.html" class="btn-register">→ Entrar no grupo do WhatsApp</a>
-      <a href="index.html" class="btn-register" style="background:rgba(255,255,255,0.08);color:#fff;margin-top:12px;">Ainda não me inscrevi no evento</a>
-      <button class="btn-gate-retry" onclick="gateReset()">← Tentar com outro e-mail</button>
+      <h2 class="gate-title" style="font-size:22px;">Liberando seu acesso...</h2>
+      <p class="gate-sub" style="margin-bottom:0;">Só um instante.</p>
     </div>
 
   </div>
@@ -994,10 +1069,23 @@
 
   <!-- ── HERO ──────────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-badge">✨ Ferramenta Exclusiva para Inscritos</div>
+    <div class="hero-badge">✨ Ferramenta Exclusiva</div>
     <h1>Descubra o DNA Estratégico da Sua Empresa com IA</h1>
     <p class="hero-subtitle">Preencha as 20 perguntas abaixo e receba um relatório estratégico completo, personalizado para o seu negócio e mercado. <strong>Empresas de consultoria cobram mais de R$&nbsp;50.000 por algo similar.</strong></p>
   </section>
+
+
+  <!-- ── BANNER: convite pro grupo (não bloqueante, opcional) ── -->
+  <aside class="post-gate-banner" role="complementary">
+    <div class="post-gate-banner-inner">
+      <span class="post-gate-banner-icon" aria-hidden="true">💬</span>
+      <div class="post-gate-banner-text">
+        <strong>Quer falar com a gente ao vivo?</strong>
+        <span>Entra no grupo do WhatsApp do evento <em>IA do Zero ao ROI</em> — gratuito, sem compromisso.</span>
+      </div>
+      <a href="grupo.html" class="post-gate-banner-cta">Entrar no grupo →</a>
+    </div>
+  </aside>
 
 
   <!-- ── BENEFITS ──────────────────────────────────── -->
@@ -1470,84 +1558,136 @@
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// EMAIL GATE — verificação de inscrição antes de abrir o extrator
+// CAPTURE GATE — gate aberto: nome + telefone + email -> libera direto
+// Backend: POST nucleo-api.roicomia.com/public/tracking/extrator-signup
+// Lead nasce no nucleo_roi com source='lp-roicomia-extrator' + tag.
+// Ver ADR 0012 do nucleo_roi.
 // ══════════════════════════════════════════════════════════════
+
+const SIGNUP_URL   = 'https://nucleo-api.roicomia.com/public/tracking/extrator-signup';
+const GATE_API_KEY = 'nuc_0621ef28c9c3f69d50633b2abe4fe7d62349065f';
 
 function gateShowState(id) {
   document.querySelectorAll('.gate-state').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function gateReset() {
-  document.getElementById('gate-email').value = '';
-  document.getElementById('gate-err').style.display = 'none';
-  document.getElementById('gate-email').classList.remove('error');
-  gateShowState('gate-input');
-  setTimeout(() => document.getElementById('gate-email').focus(), 100);
+function gateClearFieldErrors() {
+  document.querySelectorAll('.gate-field-err').forEach(el => {
+    el.classList.remove('show');
+    el.textContent = '';
+  });
+  document.querySelectorAll('.gate-input').forEach(el => el.classList.remove('error'));
 }
 
-// Endpoint do Nucleo que verifica se o email passou pelo fluxo (evento
-// whatsapp_join_clicked em grupo.html). Mesma key opaca usada pelo tracker.js.
-const GATE_CHECK_URL = 'https://core-api.roisemhype.cloud/public/tracking/check-access';
-const GATE_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
+function gateShowFieldError(field, msg) {
+  const errEl = document.querySelector('.gate-field-err[data-for="' + field + '"]');
+  const inputEl = document.getElementById('gate-' + field);
+  if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
+  if (inputEl) inputEl.classList.add('error');
+}
 
-async function checkGateEmail() {
+function validateGateInputs(values) {
+  const errors = {};
+  if (!values.name || values.name.length < 2) {
+    errors.name = 'Informe seu nome (mínimo 2 caracteres).';
+  }
+  // phone: aceita qualquer formato com 8+ dígitos numéricos (BR ou internacional)
+  const phoneDigits = (values.phone || '').replace(/\D/g, '');
+  if (phoneDigits.length < 8) {
+    errors.phone = 'Informe um telefone válido com DDD.';
+  }
+  // email: regex padrão simples (a validação rigorosa é no backend)
+  if (!values.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+    errors.email = 'Informe um e-mail válido.';
+  }
+  return errors;
+}
+
+function collectUtm() {
+  const p = new URLSearchParams(window.location.search);
+  const utm = {};
+  ['source','medium','campaign','term','content'].forEach(k => {
+    const v = p.get('utm_' + k);
+    if (v) utm[k] = v;
+  });
+  return Object.keys(utm).length ? utm : undefined;
+}
+
+async function captureGateSubmit() {
+  const nameEl  = document.getElementById('gate-name');
+  const phoneEl = document.getElementById('gate-phone');
   const emailEl = document.getElementById('gate-email');
-  const email   = emailEl.value.trim();
   const errEl   = document.getElementById('gate-err');
+  const btnEl   = document.getElementById('btn-gate-check');
 
-  // Valida formato
+  const name  = (nameEl.value  || '').trim();
+  const phone = (phoneEl.value || '').trim();
+  const email = (emailEl.value || '').trim();
+
+  // limpa erros visuais
   errEl.style.display = 'none';
-  emailEl.classList.remove('error');
-  if (!email || !/\S+@\S+\.\S+/.test(email)) {
-    errEl.style.display = 'block';
-    errEl.textContent   = 'Por favor, informe um e-mail válido.';
-    emailEl.classList.add('error');
-    emailEl.focus();
+  gateClearFieldErrors();
+
+  // valida client-side
+  const errors = validateGateInputs({ name, phone, email });
+  if (Object.keys(errors).length > 0) {
+    Object.keys(errors).forEach(k => gateShowFieldError(k, errors[k]));
+    const first = Object.keys(errors)[0];
+    const focusEl = document.getElementById('gate-' + first);
+    if (focusEl) focusEl.focus();
     return;
   }
 
-  // Mostra loading
-  document.getElementById('btn-gate-check').disabled = true;
+  btnEl.disabled = true;
   gateShowState('gate-loading');
 
   try {
-    const res = await fetch(
-      GATE_CHECK_URL + '?email=' + encodeURIComponent(email),
-      { headers: { 'X-API-Key': GATE_API_KEY } }
-    );
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const res = await fetch(SIGNUP_URL, {
+      method: 'POST',
+      headers: {
+        'X-API-Key': GATE_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        email: email,
+        pageUrl: window.location.href,
+        referrer: document.referrer || undefined,
+        userAgent: navigator.userAgent,
+        utm: collectUtm(),
+      }),
+    });
 
-    const { allowed, name } = await res.json();
-    const nome = name || email.split('@')[0];
-
-    if (allowed) {
-      // ✅ Passou no fluxo — propaga email pro tracker pra amarrar submissoes
-      // deste extrator ao mesmo lead no Nucleo
-      window._leadEmail = email;
-      window._leadNome  = nome;
-      if (window.__tracker) {
-        window.__tracker.setLeadInfo({ name: nome, email });
-        window.__tracker.trackNow('extrator_gate_passed', { email });
-      }
-      document.getElementById('email-gate').style.display = 'none';
-      grantAccess(email, nome);
-    } else {
-      // ❌ Nao entrou no grupo
-      if (window.__tracker) {
-        window.__tracker.track('extrator_gate_blocked', { email });
-      }
-      document.getElementById('gate-email-display').textContent = email;
-      gateShowState('gate-not-found');
-      document.getElementById('btn-gate-check').disabled = false;
+    if (!res.ok) {
+      throw new Error('HTTP ' + res.status);
     }
 
+    const data = await res.json();
+    const leadId = data && data.leadId;
+    const leadIdExternal = data && data.leadIdExternal;
+
+    // Propaga pro tracker pra amarrar submissões posteriores ao mesmo lead
+    window._leadEmail = email;
+    window._leadNome  = name;
+    window._leadPhone = phone;
+    if (window.__tracker) {
+      try {
+        window.__tracker.setLeadInfo({ name: name, email: email, phone: phone });
+        window.__tracker.trackNow('extrator_gate_submitted', { leadId: leadId, leadIdExternal: leadIdExternal });
+      } catch (e) { /* tracker é best-effort */ }
+    }
+
+    document.getElementById('email-gate').style.display = 'none';
+    grantAccess(email, name);
+
   } catch (err) {
-    console.warn('[gate] verificacao falhou:', err.message || err);
+    console.warn('[gate] captureGateSubmit falhou:', (err && err.message) || err);
     gateShowState('gate-input');
+    errEl.textContent   = 'Erro ao liberar. Tente novamente em instantes.';
     errEl.style.display = 'block';
-    errEl.textContent   = 'Erro ao verificar. Tente novamente em instantes.';
-    document.getElementById('btn-gate-check').disabled = false;
+    btnEl.disabled = false;
   }
 }
 

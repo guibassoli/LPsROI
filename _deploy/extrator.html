@@ -200,6 +200,21 @@
     .gate-input::placeholder { color: rgba(255,255,255,0.3); }
     .gate-input:focus { border-color: rgba(106,235,152,0.5); }
     .gate-input.error { border-color: #f87171; }
+    /* Anula o background branco/amarelo que o Chrome aplica em campos
+       autofilled (-webkit-autofill). Usa inset box-shadow grosso que cobre
+       o background nativo + força text-fill-color e caret-color brancos
+       pra manter contraste com o tema escuro. transition longa evita o
+       flash do background nativo no momento do preenchimento. */
+    .gate-input:-webkit-autofill,
+    .gate-input:-webkit-autofill:hover,
+    .gate-input:-webkit-autofill:focus,
+    .gate-input:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--white);
+      -webkit-box-shadow: 0 0 0 1000px #15151a inset;
+      box-shadow: 0 0 0 1000px #15151a inset;
+      caret-color: var(--white);
+      transition: background-color 5000s ease-in-out 0s;
+    }
 
     .btn-gate-check {
       padding: 15px 28px;

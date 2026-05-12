@@ -1151,7 +1151,7 @@
         <!-- Progress bar -->
         <div class="progress-wrap">
           <div class="progress-label">
-            <span id="progress-text">0 de 9 campos preenchidos</span>
+            <span id="progress-text">0 de 8 campos preenchidos</span>
             <span id="progress-pct">0%</span>
           </div>
           <div class="progress-bar">
@@ -1377,51 +1377,9 @@
               </div>
             </div>
 
-            <!-- Nav bloco 4 -->
-            <div class="block-nav">
-              <button type="button" class="btn-block-back" onclick="goToBlock(3)">‹ IA</button>
-              <button type="button" class="btn-block-next" onclick="goToBlock(5)">Próximo → Pagamento</button>
-            </div>
-          </div>
-
-
-          <!-- ─────────────────────────────────────── -->
-          <!-- BLOCO 5: INVESTIMENTO                   -->
-          <!-- ─────────────────────────────────────── -->
-          <div class="form-section" id="block-5">
-            <div class="section-heading">
-              <span class="section-icon">💰</span>
-              Investimento e Pagamento
-            </div>
-
-            <div class="form-field" id="ff-pagamento">
-              <div class="field-group">
-                <label>9. Como você prefere pagar? * <span style="font-weight:400;color:#6b7280;">(pode marcar mais de uma)</span></label>
-                <div class="options-list">
-                  <label class="cb-opt">
-                    <input type="checkbox" name="forma_pagamento" value="pix">
-                    PIX à vista — R$ 20.000
-                  </label>
-                  <label class="cb-opt">
-                    <input type="checkbox" name="forma_pagamento" value="cartao">
-                    Cartão de crédito — 12× R$ 2.000 sem juros
-                  </label>
-                  <label class="cb-opt">
-                    <input type="checkbox" name="forma_pagamento" value="boleto">
-                    Boleto parcelado
-                  </label>
-                  <label class="cb-opt">
-                    <input type="checkbox" name="forma_pagamento" value="call">
-                    Quero conversar com a equipe antes de decidir
-                  </label>
-                </div>
-                <div class="field-error" id="err-pagamento">Por favor, selecione pelo menos uma opção.</div>
-              </div>
-            </div>
-
-            <!-- Nav bloco 5: back + submit -->
+            <!-- Nav bloco 4: back + submit (último bloco) -->
             <div class="block-nav" style="margin-top:24px;">
-              <button type="button" class="btn-block-back" onclick="goToBlock(4)">‹ Desafio</button>
+              <button type="button" class="btn-block-back" onclick="goToBlock(3)">‹ IA</button>
               <div style="flex:1;">
                 <button type="submit" class="btn-submit-ficha" id="btn-submit" style="width:100%;border-radius:100px;">
                   ENVIAR APLICAÇÃO →
@@ -1429,8 +1387,7 @@
                 <p class="submit-microcopy" style="text-align:center;margin-top:10px;">🔒 Seus dados são 100% seguros e confidenciais.</p>
               </div>
             </div>
-
-          </div><!-- /#block-5 -->
+          </div><!-- /#block-4 -->
 
         </form>
       </div><!-- /#step-form -->
@@ -1590,7 +1547,7 @@ function setStepActive(n) {
 // PROGRESSO — avança conforme blocos completados
 // ══════════════════════════════════════════════════
 let filledFields = 0;
-const TOTAL_FIELDS = 9;
+const TOTAL_FIELDS = 8;
 // Campos acumulados até ANTES de entrar no bloco N
 const BLOCK_CUMULATIVE = { 1: 0, 2: 3, 3: 6, 4: 7, 5: 8 };
 
@@ -1723,8 +1680,22 @@ function fillForm(data) {
 // do extrator.html — /public/tracking/check-access).
 // ══════════════════════════════════════════════════
 
-const GATE_CHECK_URL = 'https://core-api.roisemhype.cloud/public/tracking/check-access';
-const GATE_API_KEY   = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b';
+// Endpoint de captura aberta do nucleo_roi — SEMPRE libera. Se email já
+// existe na base, retorna {found:true, name} pra pré-preencher o nome.
+// Se email novo, cria lead com fallback (joao.silva@x → "Joao Silva") e
+// retorna {found:false}. Ver ADR 0012 + adendo 2026-05-12 do nucleo_roi.
+const GATE_CHECK_URL = 'https://nucleo-api.roicomia.com/public/tracking/extrator-check';
+const GATE_API_KEY   = 'nuc_0621ef28c9c3f69d50633b2abe4fe7d62349065f';
+
+function fichaCollectUtm() {
+  const p = new URLSearchParams(window.location.search);
+  const utm = {};
+  ['source','medium','campaign','term','content'].forEach(k => {
+    const v = p.get('utm_' + k);
+    if (v) utm[k] = v;
+  });
+  return Object.keys(utm).length ? utm : undefined;
+}
 
 async function validateAndLoad() {
   const emailEl = document.getElementById('val-email');
@@ -1751,30 +1722,36 @@ async function validateAndLoad() {
   }
   if (!ok) return;
 
-  showLoading('Verificando sua inscrição...');
+  showLoading('Liberando sua ficha...');
 
   try {
-    const res = await fetch(
-      GATE_CHECK_URL + '?email=' + encodeURIComponent(email),
-      { headers: { 'X-API-Key': GATE_API_KEY } }
-    );
+    const res = await fetch(GATE_CHECK_URL, {
+      method: 'POST',
+      headers: {
+        'X-API-Key': GATE_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        pageUrl: window.location.href,
+        referrer: document.referrer || undefined,
+        userAgent: navigator.userAgent,
+        utm: fichaCollectUtm(),
+      }),
+    });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const { allowed, name } = await res.json();
+    const data = await res.json();
+    const name = (data && data.name) || '';
+    const found = !!(data && data.found);
 
     hideLoading();
 
-    if (!allowed) {
-      // Email nao consta no evento — bloqueia com mesma UX do extrator
-      if (window.__tracker) window.__tracker.track('ficha_gate_blocked', { email });
-      showBlocked(email);
-      return;
-    }
-
-    // Allowed: amarra lead no tracker e libera form
+    // SEMPRE libera (gate aberto). Se email existe, name é o real do lead;
+    // senão, é o fallback derivado do email (ex: 'Joao Silva' pra joao.silva@x).
     const nome = name || email.split('@')[0];
     if (window.__tracker) {
       window.__tracker.setLeadInfo({ name: nome, email, phone: wpp });
-      window.__tracker.trackNow('ficha_gate_passed', { email });
+      window.__tracker.trackNow('ficha_gate_passed', { email, found });
     }
 
     // Enriquecimento opcional: localStorage do extrator (se email bater)
@@ -1799,36 +1776,15 @@ async function validateAndLoad() {
       cargo:               '',
       estagio_ia:          '',
       gargalo_operacional: extra.gargalo_operacional || '',
-    }, true);
+    }, found);
 
   } catch (err) {
     hideLoading();
     console.warn('[ficha-gate] verificacao falhou:', err.message || err);
     const errE = document.getElementById('err-val-email');
     errE.style.display = 'block';
-    errE.textContent    = 'Erro ao verificar. Tente novamente em instantes.';
+    errE.textContent    = 'Erro ao liberar. Tente novamente em instantes.';
   }
-}
-
-// Bloqueia o acesso quando o email nao consta no evento, inline no card do step 1.
-function showBlocked(email) {
-  const card = document.getElementById('step-validation');
-  if (!card) return;
-  card.innerHTML = `
-    <div style="text-align:center;padding:12px 0;">
-      <div style="font-size:52px;margin-bottom:14px;">🔒</div>
-      <h2 style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--f-text);margin-bottom:10px;">Acesso exclusivo</h2>
-      <p style="font-size:15px;color:var(--f-muted);line-height:1.65;margin-bottom:20px;">
-        A ficha de aplicação é liberada somente pra quem se inscreveu no evento <strong style="color:var(--f-text);">IA do Zero ao ROI</strong>.
-      </p>
-      <div style="background:rgba(252,129,50,0.06);border:1px solid rgba(252,129,50,0.3);border-radius:12px;padding:16px 20px;margin-bottom:20px;text-align:left;">
-        <p style="font-size:13px;color:var(--f-muted);margin:0 0 10px;"><strong style="color:#d25a0f;">E-mail verificado:</strong> ${email}</p>
-        <p style="font-size:13px;color:var(--f-muted);margin:0;line-height:1.55;">Se já se inscreveu mas ainda não entrou no grupo, entra agora. Senão, a inscrição é gratuita e leva menos de 1 minuto.</p>
-      </div>
-      <a href="grupo.html" style="display:block;background:linear-gradient(135deg,#6aeb98,#6c62e4);color:#fff;font-weight:800;font-size:15px;text-decoration:none;padding:16px 28px;border-radius:100px;margin-bottom:10px;">→ Entrar no grupo do WhatsApp</a>
-      <a href="index.html" style="display:block;color:var(--f-muted);font-size:13px;text-decoration:none;padding:10px;">Ainda não me inscrevi no evento</a>
-    </div>
-  `;
 }
 
 function showForm(leadData, found) {
@@ -1895,16 +1851,6 @@ document.querySelectorAll('input[name="ja_testou_ia"]').forEach(radio => {
 });
 
 // ══════════════════════════════════════════════════
-// CHECKBOX VISUAL SYNC (pagamento)
-// ══════════════════════════════════════════════════
-document.querySelectorAll('input[name="forma_pagamento"]').forEach(cb => {
-  cb.addEventListener('change', function() {
-    this.closest('.cb-opt').classList.toggle('selected', this.checked);
-    document.getElementById('err-pagamento').style.display = 'none';
-  });
-});
-
-// ══════════════════════════════════════════════════
 // CHAR COUNTERS
 // ══════════════════════════════════════════════════
 function updateCharCount(id, len, max) {
@@ -1964,9 +1910,6 @@ document.getElementById('application-form').addEventListener('submit', async fun
   const desafio = document.getElementById('f-desafio');
   if (!desafio.value.trim()) flagErr('err-desafio', 'Por favor, descreva seu maior desafio atual.');
 
-  const pgtos = document.querySelectorAll('input[name="forma_pagamento"]:checked');
-  if (pgtos.length === 0) flagErr('err-pagamento', 'Por favor, selecione pelo menos uma forma de pagamento.');
-
   if (firstError) {
     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
@@ -1990,7 +1933,6 @@ document.getElementById('application-form').addEventListener('submit', async fun
   const iaTestadaVal   = (document.getElementById('f-ia-testada')?.value || '').trim();
   const iaBloqueiosVal = (document.getElementById('f-ia-bloqueios')?.value || '').trim();
   const desafioVal = desafio.value.trim();
-  const pgtosVals  = Array.from(document.querySelectorAll('input[name="forma_pagamento"]:checked')).map(c => c.value);
 
   const payload = {
     nome:            nomeVal,
@@ -2003,7 +1945,6 @@ document.getElementById('application-form').addEventListener('submit', async fun
     ia_testada:      iaTestadaVal,
     ia_bloqueios:    iaBloqueiosVal,
     desafio:         desafioVal,
-    forma_pagamento: pgtosVals,
     source:          'lp-roicomia-ficha',
     submitted_at:    new Date().toISOString(),
   };
@@ -2060,6 +2001,13 @@ document.getElementById('application-form').addEventListener('submit', async fun
         formType:  NUCLEUS_FORM_TYPE,
         formLabel: 'Ficha de Aplicação',
         externalSubmissionId: nucleusSubmissionId(NUCLEUS_FORM_TYPE),
+        // leadIdExternal vem do tracker (init/extrator-check/etc) — dá ao
+        // backend um match exato no /webhooks/forms (vence email/phone).
+        // Garante que o submit da ficha amarra ao lead criado pelo gate
+        // mesmo se phone do submit colidir com outro contato.
+        leadIdExternal: (window.__tracker && window.__tracker.getLeadId)
+          ? (window.__tracker.getLeadId() || undefined)
+          : undefined,
         contact: {
           name:  nomeVal,
           email: emailVal,
@@ -2077,7 +2025,7 @@ document.getElementById('application-form').addEventListener('submit', async fun
     await new Promise(r => setTimeout(r, 1200));
 
     hideLoading();
-    updateProgress(9); // 100%
+    updateProgress(8); // 100%
     showMapaSection();
 
   } catch (err) {
@@ -2111,9 +2059,6 @@ const BLOCK_FIELDS = {
   ],
   4: [
     { id: 'f-desafio', err: 'err-desafio', check: v => v.trim().length > 0 }
-  ],
-  5: [
-    { id: null, err: 'err-pagamento', checkbox: 'forma_pagamento' }
   ]
 };
 

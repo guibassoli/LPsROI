@@ -1022,35 +1022,21 @@
   <div class="gate-box">
     <div class="gate-badge">🧬 Ferramenta Exclusiva</div>
 
-    <!-- ── ESTADO 1: Captura (nome + telefone + email) ── -->
+    <!-- ── ESTADO 1: Gate de 1 input (email) ── -->
     <div class="gate-state active" id="gate-input">
       <h1 class="gate-title">Acesse seu<br><em>Extrator de DNA</em></h1>
-      <p class="gate-sub">Preencha seus dados pra liberar a ferramenta gratuita.</p>
+      <p class="gate-sub">Informe seu e-mail pra liberar a ferramenta gratuita.</p>
 
-      <div class="gate-fields">
-        <div class="gate-field">
-          <input type="text" id="gate-name" class="gate-input"
-            placeholder="Seu nome" autocomplete="name" maxlength="200">
-          <div class="gate-field-err" data-for="name"></div>
-        </div>
-        <div class="gate-field">
-          <input type="tel" id="gate-phone" class="gate-input"
-            placeholder="WhatsApp com DDD" autocomplete="tel" maxlength="40" inputmode="tel">
-          <div class="gate-field-err" data-for="phone"></div>
-        </div>
-        <div class="gate-field">
-          <input type="email" id="gate-email" class="gate-input"
-            placeholder="seu@email.com" autocomplete="email" maxlength="320"
-            onkeydown="if(event.key==='Enter') captureGateSubmit()">
-          <div class="gate-field-err" data-for="email"></div>
-        </div>
+      <div class="gate-input-wrap">
+        <input type="email" id="gate-email" class="gate-input"
+          placeholder="seu@email.com" autocomplete="email" maxlength="320"
+          onkeydown="if(event.key==='Enter') gateCheckOrCreate()">
+        <button class="btn-gate-check" id="btn-gate-check" onclick="gateCheckOrCreate()">
+          Liberar Extrator →
+        </button>
       </div>
 
-      <button class="btn-gate-check" id="btn-gate-check" onclick="captureGateSubmit()" style="width:100%;margin-top:4px;">
-        Liberar Extrator →
-      </button>
-
-      <div class="gate-error-msg" id="gate-err">Erro ao liberar. Tente novamente em instantes.</div>
+      <div class="gate-error-msg" id="gate-err">Por favor, informe um e-mail válido.</div>
       <p class="gate-helper">🔒 Seus dados ficam seguros. Usamos pra liberar o acesso e te enviar o relatório quando estiver pronto.</p>
     </div>
 
@@ -1205,6 +1191,14 @@
           <input type="text" id="q1" name="q1"
             placeholder="Ex: Acme Consultoria, João Silva Personal Brand"
             autocomplete="organization">
+        </div>
+
+        <!-- Q_WHATSAPP — phone migrou do gate pra cá (ADR 0012 adendo 2026-05-12 tarde) -->
+        <div class="form-field">
+          <label class="field-label" for="q_whatsapp">📱 WhatsApp com DDD *</label>
+          <input type="tel" id="q_whatsapp" name="q_whatsapp"
+            placeholder="(11) 99999-9999"
+            autocomplete="tel" inputmode="tel" maxlength="40">
         </div>
 
         <!-- Q2 -->
@@ -1573,13 +1567,15 @@
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// CAPTURE GATE — gate aberto: nome + telefone + email -> libera direto
-// Backend: POST nucleo-api.roicomia.com/public/tracking/extrator-signup
-// Lead nasce no nucleo_roi com source='lp-roicomia-extrator' + tag.
-// Ver ADR 0012 do nucleo_roi.
+// CHECK GATE — gate de 1 input (email): lookup na base + libera sempre
+// Backend: POST nucleo-api.roicomia.com/public/tracking/extrator-check
+//   - Email existe → retorna {found:true, name} → pré-preenche q1
+//   - Email novo  → cria lead com fallback name → libera (q1 vazio)
+// Phone vem depois nas 20 perguntas (campo dedicado no extrator).
+// Ver ADR 0012 do nucleo_roi (Adendo 2026-05-12 tarde).
 // ══════════════════════════════════════════════════════════════
 
-const SIGNUP_URL   = 'https://nucleo-api.roicomia.com/public/tracking/extrator-signup';
+const CHECK_URL    = 'https://nucleo-api.roicomia.com/public/tracking/extrator-check';
 const GATE_API_KEY = 'nuc_0621ef28c9c3f69d50633b2abe4fe7d62349065f';
 
 function gateShowState(id) {
@@ -1587,36 +1583,8 @@ function gateShowState(id) {
   document.getElementById(id).classList.add('active');
 }
 
-function gateClearFieldErrors() {
-  document.querySelectorAll('.gate-field-err').forEach(el => {
-    el.classList.remove('show');
-    el.textContent = '';
-  });
-  document.querySelectorAll('.gate-input').forEach(el => el.classList.remove('error'));
-}
-
-function gateShowFieldError(field, msg) {
-  const errEl = document.querySelector('.gate-field-err[data-for="' + field + '"]');
-  const inputEl = document.getElementById('gate-' + field);
-  if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
-  if (inputEl) inputEl.classList.add('error');
-}
-
-function validateGateInputs(values) {
-  const errors = {};
-  if (!values.name || values.name.length < 2) {
-    errors.name = 'Informe seu nome (mínimo 2 caracteres).';
-  }
-  // phone: aceita qualquer formato com 8+ dígitos numéricos (BR ou internacional)
-  const phoneDigits = (values.phone || '').replace(/\D/g, '');
-  if (phoneDigits.length < 8) {
-    errors.phone = 'Informe um telefone válido com DDD.';
-  }
-  // email: regex padrão simples (a validação rigorosa é no backend)
-  if (!values.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = 'Informe um e-mail válido.';
-  }
-  return errors;
+function isValidEmail(v) {
+  return !!v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
 function collectUtm() {
@@ -1629,28 +1597,23 @@ function collectUtm() {
   return Object.keys(utm).length ? utm : undefined;
 }
 
-async function captureGateSubmit() {
-  const nameEl  = document.getElementById('gate-name');
-  const phoneEl = document.getElementById('gate-phone');
+async function gateCheckOrCreate() {
   const emailEl = document.getElementById('gate-email');
   const errEl   = document.getElementById('gate-err');
   const btnEl   = document.getElementById('btn-gate-check');
 
-  const name  = (nameEl.value  || '').trim();
-  const phone = (phoneEl.value || '').trim();
   const email = (emailEl.value || '').trim();
 
-  // limpa erros visuais
+  // limpa erro
   errEl.style.display = 'none';
-  gateClearFieldErrors();
+  emailEl.classList.remove('error');
 
   // valida client-side
-  const errors = validateGateInputs({ name, phone, email });
-  if (Object.keys(errors).length > 0) {
-    Object.keys(errors).forEach(k => gateShowFieldError(k, errors[k]));
-    const first = Object.keys(errors)[0];
-    const focusEl = document.getElementById('gate-' + first);
-    if (focusEl) focusEl.focus();
+  if (!isValidEmail(email)) {
+    errEl.textContent   = 'Por favor, informe um e-mail válido.';
+    errEl.style.display = 'block';
+    emailEl.classList.add('error');
+    emailEl.focus();
     return;
   }
 
@@ -1658,15 +1621,13 @@ async function captureGateSubmit() {
   gateShowState('gate-loading');
 
   try {
-    const res = await fetch(SIGNUP_URL, {
+    const res = await fetch(CHECK_URL, {
       method: 'POST',
       headers: {
         'X-API-Key': GATE_API_KEY,
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        name: name,
-        phone: phone,
         email: email,
         pageUrl: window.location.href,
         referrer: document.referrer || undefined,
@@ -1680,25 +1641,34 @@ async function captureGateSubmit() {
     }
 
     const data = await res.json();
-    const leadId = data && data.leadId;
+    const leadId         = data && data.leadId;
     const leadIdExternal = data && data.leadIdExternal;
+    const name           = (data && data.name) || '';
+    const found          = !!(data && data.found);
 
-    // Propaga pro tracker pra amarrar submissões posteriores ao mesmo lead
+    // Propaga pro tracker amarrar submissões posteriores ao mesmo lead
     window._leadEmail = email;
     window._leadNome  = name;
-    window._leadPhone = phone;
     if (window.__tracker) {
       try {
-        window.__tracker.setLeadInfo({ name: name, email: email, phone: phone });
-        window.__tracker.trackNow('extrator_gate_submitted', { leadId: leadId, leadIdExternal: leadIdExternal });
+        window.__tracker.setLeadInfo({ name: name, email: email });
+        window.__tracker.trackNow('extrator_gate_checked', {
+          leadId: leadId,
+          leadIdExternal: leadIdExternal,
+          found: found,
+        });
       } catch (e) { /* tracker é best-effort */ }
     }
 
     document.getElementById('email-gate').style.display = 'none';
+    // Pré-preenche q1 com nome retornado:
+    //  - found=true → nome real do lead existente (UX igual ao check-access antigo)
+    //  - found=false → nome derivado do email (joao.silva@x → "Joao Silva")
+    //                  pessoa pode editar à vontade no q1
     grantAccess(email, name);
 
   } catch (err) {
-    console.warn('[gate] captureGateSubmit falhou:', (err && err.message) || err);
+    console.warn('[gate] gateCheckOrCreate falhou:', (err && err.message) || err);
     gateShowState('gate-input');
     errEl.textContent   = 'Erro ao liberar. Tente novamente em instantes.';
     errEl.style.display = 'block';
@@ -1810,6 +1780,8 @@ function updateProgress() {
 
   // Q1: min 3 chars
   if ((document.getElementById('q1').value || '').trim().length >= 3) answered++;
+  // Q_WHATSAPP: phone com 8+ dígitos numéricos
+  if (((document.getElementById('q_whatsapp').value || '').replace(/\D/g, '')).length >= 8) answered++;
   // Q2: valid select
   const q2v = document.getElementById('q2').value;
   if (q2v && q2v !== '') answered++;
@@ -1987,6 +1959,13 @@ function handleSubmit() {
     flagError(showError('q1', 'Por favor, informe o nome da empresa ou marca pessoal (mínimo 3 caracteres).'));
   }
 
+  // Q_WHATSAPP — phone obrigatório (migrou do gate pra cá em 2026-05-12)
+  const qWhats = document.getElementById('q_whatsapp');
+  const qWhatsDigits = (qWhats.value || '').replace(/\D/g, '');
+  if (qWhatsDigits.length < 8) {
+    flagError(showError('q_whatsapp', 'Por favor, informe seu WhatsApp com DDD.'));
+  }
+
   // Q2
   const q2 = document.getElementById('q2');
   if (!q2.value || q2.value === '') {
@@ -2110,6 +2089,7 @@ function handleSubmit() {
   const formData = {
     token:           new URLSearchParams(window.location.search).get('token'),
     q1_empresa:      textVal('q1'),
+    q_whatsapp:      textVal('q_whatsapp'),
     q2_setor:        document.getElementById('q2').value === 'Outro'
                        ? textVal('q2-outro')
                        : document.getElementById('q2').value,
@@ -2142,7 +2122,10 @@ function handleSubmit() {
   const funilPayload = {
     nome:              formData.nome,
     email:             formData.email,
-    phone:             window._leadPhone || '',
+    // phone vem do q_whatsapp (campo novo no formulario do extrator pos
+    // adendo do ADR 0012). Fallback p/ _leadPhone caso pessoa tenha
+    // chegado via querystring antiga (?phone=...).
+    phone:             formData.q_whatsapp || window._leadPhone || '',
     empresa:           formData.q1_empresa,
     setor:             formData.q2_setor,
     produto:           formData.q3_produto,

@@ -13,9 +13,13 @@
 	'use strict'
 
 	// ── Config ────────────────────────────────────────────────
-	// Endpoint de tracking do Nucleo em prod (org ROI COM IA).
-	var API_URL = 'https://core-api.roisemhype.cloud'
-	var API_KEY = 'nuc_fff9044f65faaba73c66e3ee000b7531446cdb8b'
+	// Endpoint de tracking do Nucleo em prod (CRM single-tenant da empresa).
+	// Migrado em 2026-05-12 de core-api.roisemhype.cloud (nucleo-inteligencia,
+	// CRM dos clientes) pra nucleo-api.roicomia.com (nucleo_roi, CRM da empresa).
+	// Ver ADR 0012 do nucleo_roi. Key separada da do gate do extrator pra
+	// permitir revogacao independente.
+	var API_URL = 'https://nucleo-api.roicomia.com'
+	var API_KEY = 'nuc_1d4247401154834b18e230083dfa44e7854ff20d'
 
 	// ── State ─────────────────────────────────────────────────
 	var _leadId = null

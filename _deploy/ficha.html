@@ -2200,6 +2200,136 @@ function launchMapaConfetti() {
   const el = document.getElementById(id);
   if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') validateAndLoad(); });
 });
+
+// ══════════════════════════════════════════════════
+// PARTIAL SAVE — capturar quem desistiu antes do submit
+// ══════════════════════════════════════════════════
+// Quando o usuário sai da página sem submeter a ficha, manda um snapshot
+// do que ele já preencheu pro CRM. Mesma chave (externalSubmissionId) do
+// submit final → o backend faz UPSERT na mesma row e flipa pra final quando
+// (e se) o usuário voltar e clicar em "Enviar".
+//
+// navigator.sendBeacon não suporta custom headers — por isso a API key vai
+// no body (suportado pelo middleware publicApiKeyAuth desde nucleo-roi PR #195).
+(function setupPartialSave() {
+  const NUCLEUS_FORMS_URL = 'https://nucleo-api.roicomia.com/webhooks/forms';
+  const NUCLEUS_API_KEY   = 'nuc_e641f7ab3280e586c2810ac59d9bac644f648c2c16e7894bb5fb26e60975cab2';
+  const NUCLEUS_FORM_TYPE = 'ficha-aplicacao';
+
+  // Mesma função do submit (sessionStorage cacheia o UUID da sessão).
+  function getSubmissionId() {
+    const k = 'nucleus-sub-' + NUCLEUS_FORM_TYPE;
+    let id = sessionStorage.getItem(k);
+    if (!id) {
+      id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+      sessionStorage.setItem(k, id);
+    }
+    return id;
+  }
+
+  // Último campo tocado — informa o closer "parou em <X>".
+  let lastFieldFilled = null;
+  const FORM_FIELD_NAMES = [
+    'nome','email','whatsapp','nome_empresa','faturamento','cargo',
+    'ja_testou_ia','ia_testada','ia_bloqueios','desafio_atual',
+  ];
+  document.addEventListener('change', (ev) => {
+    const el = ev.target;
+    if (el && el.name && FORM_FIELD_NAMES.indexOf(el.name) !== -1) {
+      lastFieldFilled = el.name;
+    }
+  }, true);
+  document.addEventListener('input', (ev) => {
+    const el = ev.target;
+    if (el && el.name && FORM_FIELD_NAMES.indexOf(el.name) !== -1) {
+      lastFieldFilled = el.name;
+    }
+  }, true);
+
+  function readCurrentForm() {
+    const get = (id) => {
+      const el = document.getElementById(id);
+      return el ? (el.value || '').trim() : '';
+    };
+    const radio = (name) => {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : '';
+    };
+    return {
+      nome:           get('f-nome'),
+      email:          get('f-email'),
+      whatsapp:       get('f-whatsapp'),
+      empresa:        get('f-empresa'),
+      faturamento:    get('f-faturamento'),
+      cargo:          get('f-cargo'),
+      ja_testou_ia:   radio('ja_testou_ia'),
+      ia_testada:     get('f-ia-testada'),
+      ia_bloqueios:   get('f-ia-bloqueios'),
+      desafio:        get('f-desafio'),
+      source:         'lp-roicomia-ficha',
+      submitted_at:   new Date().toISOString(),
+    };
+  }
+
+  // Flag: o submit final já zerou esta sessão? Não mandar partial depois.
+  let submitted = false;
+  document.addEventListener('submit', () => { submitted = true; }, true);
+
+  function maybeSendPartial() {
+    if (submitted) return;
+    const form = readCurrentForm();
+    // Sem email não dá pra amarrar ao lead. Também ignora se a pessoa só
+    // passou pelo gate e nem tocou no form (nada preenchido além do gate).
+    if (!form.email) return;
+    const startedForm = !!(
+      form.nome || form.empresa || form.faturamento ||
+      form.cargo || form.ja_testou_ia || form.desafio
+    );
+    if (!startedForm) return;
+
+    const payload = {
+      formType:  NUCLEUS_FORM_TYPE,
+      formLabel: 'Ficha de Aplicação',
+      externalSubmissionId: getSubmissionId(),
+      isPartial: true,
+      lastFieldFilled: lastFieldFilled || undefined,
+      apiKey:    NUCLEUS_API_KEY,  // sendBeacon não suporta header
+      leadIdExternal: (window.__tracker && window.__tracker.getLeadId)
+        ? (window.__tracker.getLeadId() || undefined)
+        : undefined,
+      contact: {
+        name:  form.nome || 'Sem nome',
+        email: form.email,
+        phone: form.whatsapp || undefined,
+      },
+      data: form,
+      keyFields: { company: form.empresa || undefined },
+    };
+
+    try {
+      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      navigator.sendBeacon(NUCLEUS_FORMS_URL, blob);
+    } catch (e) {
+      // sendBeacon não está disponível ou falhou — fallback fire-and-forget
+      // com fetch+keepalive (cobre Safari antigo).
+      try {
+        fetch(NUCLEUS_FORMS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          keepalive: true,
+        });
+      } catch (_) { /* engole */ }
+    }
+  }
+
+  // pagehide cobre desktop + iOS (beforeunload não dispara em mobile Safari).
+  window.addEventListener('pagehide', maybeSendPartial);
+  // Backup pra desktop quando aba fecha sem pagehide (alguns browsers antigos).
+  window.addEventListener('beforeunload', maybeSendPartial);
+})();
 </script>
 
 <script src="https://link.funil.ai/js/external-tracking.js" data-tracking-id="tk_51eb73e12aeb45e99193f00b98992aa0"></script>
